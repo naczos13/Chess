@@ -241,7 +241,7 @@ void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
     int x = -1;
     int y = -1;
 
-    Piece* clickedOn = nullptr;
+    Piece* clickedPiece = nullptr;
 
     std::cout << m_handler;
     
@@ -263,32 +263,32 @@ void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
                 {
                     if (x < m_handler->SCREEN_WIDTH / 640)
                     {
-                        clickedOn = new Rook(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
+                        clickedPiece = new Rook(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
                     }
                     else if (x < 2 * m_handler->SCREEN_WIDTH / 640)
                     {
-                        clickedOn = new Knight(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
+                        clickedPiece = new Knight(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
                     }
                     else if (x < 3 * m_handler->SCREEN_WIDTH / 640)
                     {
-                        clickedOn = new Bishop(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
+                        clickedPiece = new Bishop(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
                     }
                     else if (x <= 4 * m_handler->SCREEN_WIDTH / 640)
                     {
-                        clickedOn = new Queen(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
+                        clickedPiece = new Queen(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
                     }
                     std::cout << x << " " << m_handler->SCREEN_WIDTH / 640 << std::endl;
                 }
             }
             
-            if (m_handler->m_event.type == SDL_MOUSEBUTTONUP && clickedOn != nullptr)
+            if (m_handler->m_event.type == SDL_MOUSEBUTTONUP && clickedPiece != nullptr)
             {
                 quit = true;
             }
         }
     }
 
-    m_field[xEnd][yEnd] = clickedOn;
+    m_field[xEnd][yEnd] = clickedPiece;
     m_field[xStart][yStart] = nullptr;
     m_handler->undoPieceRender(xStart, yStart);
     m_handler->renderBackground();

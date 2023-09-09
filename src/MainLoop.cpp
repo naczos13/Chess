@@ -5,6 +5,10 @@
 #include "Game.h"
 #include <memory>
 
+struct Point
+{
+	int x{}, y{};
+};
 
 void MainLoop::run()
 {
@@ -14,11 +18,9 @@ void MainLoop::run()
 
 	std::unique_ptr<Game> game = std::make_unique<Game>(&handler);
 
-	int xStart = -1;
-	int yStart = -1;
-	int xEnd = -1;
-	int yEnd = -1;
-	Piece* clickedOn = nullptr;
+	Point moveStart{};
+	Point moveEnd{};
+	Piece* clickedPiece{};
 
 	while (SDL_WaitEvent(&handler.m_event))
 	{
@@ -30,48 +32,39 @@ void MainLoop::run()
 		}
 		case SDL_MOUSEBUTTONDOWN:
 		{
-			xStart = handler.m_event.button.x / SDL_Handler::CELL_WIDTH;
-			yStart = handler.m_event.button.y / SDL_Handler::CELL_HEIGHT;
-			clickedOn = game->getPieceByPosition(xStart, yStart);
-			if (clickedOn)
+			moveStart.x = handler.m_event.button.x / SDL_Handler::CELL_WIDTH;
+			moveStart.y = handler.m_event.button.y / SDL_Handler::CELL_HEIGHT;
+			clickedPiece = game->getPieceByPosition(moveStart.x, moveStart.y);
+			if (clickedPiece)
 			{
-				if (clickedOn->getTeam() == game->getTurn())
+				if (clickedPiece->getTeam() == game->getTurn())
 				{
-					game->renderPossibleMoves(clickedOn);
+					game->renderPossibleMoves(clickedPiece);
 				}
 			}
 			break;
 		}
 		case SDL_MOUSEBUTTONUP:
 		{
-			if (clickedOn != nullptr)
+			// Clear the board from the possible moves
+			game->undoRenderPossibleMoves(clickedPiece);
+
+			moveEnd.x = handler.m_event.button.x / SDL_Handler::CELL_WIDTH;
+			moveEnd.y = handler.m_event.button.y / SDL_Handler::CELL_HEIGHT;
+			if (clickedPiece)
 			{
-				if (clickedOn->getTeam() == game->getTurn())
+				if ((clickedPiece->getTeam() == game->getTurn())
+					&& (game->isValidMove(moveEnd.x, moveEnd.y, clickedPiece)))
 				{
-					game->undoRenderPossibleMoves(clickedOn);
-				}
-			}
-			xEnd = handler.m_event.button.x / SDL_Handler::CELL_WIDTH;
-			yEnd = handler.m_event.button.y / SDL_Handler::CELL_HEIGHT;
-			if (clickedOn != nullptr)
-			{
-				if ((xStart != -1 && yStart != -1 && xEnd != -1 && yEnd != -1)
-					&& (clickedOn->getTeam() == game->getTurn())
-					&& (game->isValidMove(xEnd, yEnd, clickedOn)))
-				{
-					std::vector<PossibleMove> list = game->getPieceByPosition(xStart, yStart)->getPossibleMoves();
+					std::vector<PossibleMove> list = clickedPiece->getPossibleMoves();
 					for (const auto& [XCoord, YCoord, MoveType] : list)
 					{
-						if (XCoord == xEnd && YCoord == yEnd)
+						if (XCoord == moveEnd.x && YCoord == moveEnd.y)
 						{
-							game->move(clickedOn, PossibleMove{ xEnd, yEnd, MoveType });
+							game->move(clickedPiece, PossibleMove{ moveEnd.x, moveEnd.y, MoveType });
 						}
 					}
-					xStart = -1;
-					yStart = -1;
-					yEnd = -1;
 					game->calcAllMoves();
-					clickedOn = nullptr;
 				}
 			}
 			break;
