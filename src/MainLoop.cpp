@@ -3,15 +3,17 @@
 #include "MainLoop.h"
 #include "SDL_Handler.h"
 #include "Game.h"
+#include <memory>
+
 
 void MainLoop::run()
 {
-	SDL_Handler* handler = new SDL_Handler();
-	handler->init();
+	SDL_Handler handler = SDL_Handler();
+	handler.init();
 
-	handler->renderBackground();
+	handler.renderBackground();
 
-	Game* game = new Game(handler);
+	std::unique_ptr<Game> game = std::make_unique<Game>(&handler);
 	bool quit = false;
 
 	int xStart = -1;
@@ -20,30 +22,32 @@ void MainLoop::run()
 	int yEnd = -1;
 	Piece* clickedOn = nullptr;
 
-	while (quit == false)
+	while (!quit)
 	{
-		while (SDL_PollEvent(&handler->m_event))
+		while (SDL_WaitEvent(&handler.m_event))
 		{
-			if (handler->m_event.type == SDL_QUIT)
+			switch (handler.m_event.type)
+			{
+			case SDL_QUIT:
 			{
 				quit = true;
+				break;
 			}
-
-			if (handler->m_event.type == SDL_MOUSEBUTTONDOWN)
+			case SDL_MOUSEBUTTONDOWN:
 			{
-				xStart = handler->m_event.button.x / 80;
-				yStart = handler->m_event.button.y / 80;
+				xStart = handler.m_event.button.x / SDL_Handler::CELL_WIDTH;
+				yStart = handler.m_event.button.y / SDL_Handler::CELL_HEIGHT;
 				clickedOn = game->getFieldPos(xStart, yStart);
-				if (clickedOn != nullptr)
+				if (clickedOn)
 				{
 					if (clickedOn->getTeam() == game->getTurn())
 					{
 						game->renderPossibleMoves(clickedOn);
 					}
 				}
+				break;
 			}
-
-			if (handler->m_event.type == SDL_MOUSEBUTTONUP)
+			case SDL_MOUSEBUTTONUP:
 			{
 				if (clickedOn != nullptr)
 				{
@@ -52,20 +56,20 @@ void MainLoop::run()
 						game->undoRenderPossibleMoves(clickedOn);
 					}
 				}
-				xEnd = handler->m_event.button.x / 80;
-				yEnd = handler->m_event.button.y / 80;
+				xEnd = handler.m_event.button.x / SDL_Handler::CELL_WIDTH;
+				yEnd = handler.m_event.button.y / SDL_Handler::CELL_HEIGHT;
 				if (clickedOn != nullptr)
 				{
 					if ((xStart != -1 && yStart != -1 && xEnd != -1 && yEnd != -1)
 						&& (clickedOn->getTeam() == game->getTurn())
 						&& (game->isValidMove(xEnd, yEnd, clickedOn)))
 					{
-						std::vector<std::tuple<int, int, Piece::MoveType>> list = game->getFieldPos(xStart, yStart)->getPossibleMoves();
-						for (const auto& value : list)
+						std::vector<PossibleMove> list = game->getFieldPos(xStart, yStart)->getPossibleMoves();
+						for (const auto& [XCoord, YCoord, MoveType] : list)
 						{
-							if (std::get<0>(value) == xEnd && std::get<1>(value) == yEnd)
+							if (XCoord == xEnd && YCoord == yEnd)
 							{
-								game->move(clickedOn, std::tuple<int, int, Piece::MoveType>(xEnd, yEnd, std::get<2>(value)));
+								game->move(clickedOn, PossibleMove{ xEnd, yEnd, MoveType });
 							}
 						}
 						xStart = -1;
@@ -75,9 +79,11 @@ void MainLoop::run()
 						clickedOn = nullptr;
 					}
 				}
+				break;
+			}
 			}
 		}
 	}
 
-	handler->cleanUp();
+	handler.cleanUp();
 }

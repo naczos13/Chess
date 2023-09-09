@@ -3,11 +3,11 @@
 #include <string>
 #include <iostream>
 
-std::vector<std::tuple<int, int, Piece::MoveType>> Piece::pushMove(std::vector<std::tuple<int, int, Piece::MoveType>> moveList,
-																   std::tuple<int, int, Piece::MoveType> move,
-																   King* king,
-																   Piece* field[8][8],
-																   bool checkCheck)
+std::vector<PossibleMove> Piece::pushMove(std::vector<PossibleMove> moveList,
+											PossibleMove move,
+											King* king,
+											Piece* field[8][8],
+											bool checkCheck)
 {
 	if (!checkCheck)
 	{
@@ -17,29 +17,29 @@ std::vector<std::tuple<int, int, Piece::MoveType>> Piece::pushMove(std::vector<s
 	{
 		bool enemyPlace = true;
 		king->setCheck(field, king->getPos().first, king->getPos().second);
-		Piece* zwisch = &(*field[std::get<0>(move)][std::get<1>(move)]);
+		Piece* zwisch = &(*field[move.XCoord][move.YCoord]);
 		enemyPlace = false;
 
-		if (field[std::get<0>(move)][std::get<1>(move)] != nullptr)
+		if (field[move.XCoord][move.YCoord] != nullptr)
 		{
 			enemyPlace = true;
-			field[std::get<0>(move)][std::get<1>(move)] = nullptr;
+			field[move.XCoord][move.YCoord] = nullptr;
 		}
 
-		std::swap(field[std::get<0>(move)][std::get<1>(move)], field[m_pos.first][m_pos.second]);
+		std::swap(field[move.XCoord][move.YCoord], field[m_pos.first][m_pos.second]);
 		if (m_type == KING)
 		{
-			king->setCheck(field, std::get<0>(move), std::get<1>(move));
+			king->setCheck(field, move.XCoord, move.YCoord);
 		}
 		else
 		{
 			king->setCheck(field, king->getPos().first, king->getPos().second);
 		}
-		std::swap(field[std::get<0>(move)][std::get<1>(move)], field[m_pos.first][m_pos.second]);
+		std::swap(field[move.XCoord][move.YCoord], field[m_pos.first][m_pos.second]);
 
 		if (enemyPlace)
 		{
-			field[std::get<0>(move)][std::get<1>(move)] = &(*zwisch);
+			field[move.XCoord][move.YCoord] = &(*zwisch);
 		}
 		if (!king->getCheck())
 		{
@@ -58,7 +58,7 @@ King* Piece::getOwnKing(Piece* field[8][8])
 		{
 			if (field[i][j] != nullptr)
 			{
-				if (field[i][j]->getTeam() == m_team && field[i][j]->getType() == Piece::KING)
+				if (field[i][j]->getTeam() == m_team && field[i][j]->getType() == PieceType::KING)
 				{
 					King* ret = static_cast<King*>(field[i][j]);
 					return ret;

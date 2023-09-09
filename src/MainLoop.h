@@ -1,7 +1,5 @@
 #pragma once
-class MainLoop
+namespace MainLoop
 {
-public:
-	static void run();
-};
-
+	void run();
+}

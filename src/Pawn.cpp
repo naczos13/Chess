@@ -43,14 +43,14 @@ void Pawn::sayMyName()
 
 void Pawn::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 {
-	std::vector<std::tuple<int, int, Piece::MoveType>> moves;
+	std::vector<PossibleMove> moves;
 
 	if (m_pos.second + m_dy == 0 || m_pos.second + m_dy == 7)
 	{
 		if (field[m_pos.first][m_pos.second + m_dy] == nullptr)
 		{
 			moves = pushMove(moves,
-				std::tuple<int, int, Piece::MoveType>(m_pos.first, m_pos.second + m_dy, Piece::NEWPIECE),
+				PossibleMove{ m_pos.first, m_pos.second + m_dy, MoveType::NEWPIECE },
 				getOwnKing(field),
 				field,
 				checkCheck);
@@ -61,7 +61,7 @@ void Pawn::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 		if (field[m_pos.first][m_pos.second + m_dy] == nullptr)
 		{
 			moves = pushMove(moves,
-				std::tuple<int, int, Piece::MoveType>(m_pos.first, m_pos.second + m_dy, Piece::NORMAL),
+				PossibleMove{ m_pos.first, m_pos.second + m_dy, MoveType::NORMAL },
 				getOwnKing(field),
 				field,
 				checkCheck);
@@ -73,7 +73,7 @@ void Pawn::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 		if (field[m_pos.first][m_pos.second + 2 * m_dy] == nullptr && !m_hasMoved)
 		{
 			moves = pushMove(moves,
-				std::tuple<int, int, Piece::MoveType>(m_pos.first, m_pos.second + 2 * m_dy, Piece::NORMAL),
+				PossibleMove(m_pos.first, m_pos.second + 2 * m_dy, MoveType::NORMAL),
 				getOwnKing(field),
 				field,
 				checkCheck);
@@ -89,7 +89,7 @@ void Pawn::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 				if (m_pos.second + m_dy == 0 || m_pos.second + m_dy == 7)
 				{
 					moves = pushMove(moves,
-						std::tuple<int, int, Piece::MoveType>(m_pos.first + 1, m_pos.second + m_dy, Piece::NEWPIECE),
+						PossibleMove(m_pos.first + 1, m_pos.second + m_dy, MoveType::NEWPIECE),
 						getOwnKing(field),
 						field,
 						checkCheck);
@@ -97,7 +97,7 @@ void Pawn::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 				else
 				{
 					moves = pushMove(moves,
-						std::tuple<int, int, Piece::MoveType>(m_pos.first + 1, m_pos.second + m_dy, Piece::NORMAL),
+						PossibleMove(m_pos.first + 1, m_pos.second + m_dy, MoveType::NORMAL),
 						getOwnKing(field),
 						field,
 						checkCheck);
@@ -114,7 +114,7 @@ void Pawn::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 				if (m_pos.second + m_dy == 0 || m_pos.second + m_dy == 7)
 				{
 					moves = pushMove(moves,
-						std::tuple<int, int, Piece::MoveType>(m_pos.first - 1, m_pos.second + m_dy, Piece::NEWPIECE),
+						PossibleMove(m_pos.first - 1, m_pos.second + m_dy, MoveType::NEWPIECE),
 						getOwnKing(field),
 						field,
 						checkCheck);
@@ -122,7 +122,7 @@ void Pawn::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 				else
 				{
 					moves = pushMove(moves,
-						std::tuple<int, int, Piece::MoveType>(m_pos.first - 1, m_pos.second + m_dy, Piece::NORMAL),
+						PossibleMove(m_pos.first - 1, m_pos.second + m_dy, MoveType::NORMAL),
 						getOwnKing(field),
 						field,
 						checkCheck);
@@ -134,7 +134,7 @@ void Pawn::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 	if (m_enPassant == std::pair<bool, int>(true, -1))
 	{
 		moves = pushMove(moves,
-			std::tuple<int, int, Piece::MoveType>(m_pos.first + 1, m_pos.second + m_dy, Piece::ENPASSANT),
+			PossibleMove(m_pos.first + 1, m_pos.second + m_dy, MoveType::ENPASSANT),
 			getOwnKing(field),
 			field,
 			checkCheck);
@@ -142,7 +142,7 @@ void Pawn::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 	if (m_enPassant == std::pair<bool, int>(true, 1))
 	{
 		moves = pushMove(moves,
-			std::tuple<int, int, Piece::MoveType>(m_pos.first - 1, m_pos.second + m_dy, Piece::ENPASSANT),
+			PossibleMove(m_pos.first - 1, m_pos.second + m_dy, MoveType::ENPASSANT),
 			getOwnKing(field),
 			field,
 			checkCheck);

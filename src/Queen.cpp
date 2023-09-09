@@ -33,7 +33,7 @@ void Queen::sayMyName()
 
 void Queen::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 {
-	std::vector<std::tuple <int, int, Piece::MoveType>> moves;
+	std::vector<PossibleMove> moves;
 	int dx_copy;
 	int dy_copy;
 	for (int dx = -1; dx <= 1; dx++)
@@ -45,7 +45,7 @@ void Queen::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 			while (field[m_pos.first + dx_copy][m_pos.second + dy_copy] == nullptr)
 			{
 				moves = pushMove(moves,
-					std::tuple <int, int, Piece::MoveType>(m_pos.first + dx_copy, m_pos.second + dy_copy, Piece::NORMAL),
+					PossibleMove(m_pos.first + dx_copy, m_pos.second + dy_copy, MoveType::NORMAL),
 					getOwnKing(field),
 					field,
 					checkCheck);
@@ -72,7 +72,7 @@ void Queen::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 				if (field[m_pos.first + dx_copy][m_pos.second + dy_copy]->getTeam() != m_team)
 				{
 					moves = pushMove(moves,
-						std::tuple <int, int, Piece::MoveType>(m_pos.first + dx_copy, m_pos.second + dy_copy, Piece::NORMAL),
+						PossibleMove(m_pos.first + dx_copy, m_pos.second + dy_copy, MoveType::NORMAL),
 						getOwnKing(field),
 						field,
 						checkCheck);

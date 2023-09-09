@@ -33,7 +33,7 @@ void Rook::sayMyName()
 
 void Rook::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 {
-	std::vector<std::tuple <int, int, Piece::MoveType>> moves;
+	std::vector<PossibleMove> moves;
 
 	int dx_copy;
 	int dy_copy;
@@ -49,7 +49,7 @@ void Rook::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 					&& (m_pos.first + dx_copy >= 0 && m_pos.first + dx_copy <= 7 && m_pos.second + dy_copy >= 0 && m_pos.second + dy_copy <= 7))
 				{
 					moves = pushMove(moves,
-									 std::tuple<int, int, Piece::MoveType>(m_pos.first + dx_copy, m_pos.second + dy_copy, Piece::NORMAL),
+									 PossibleMove{ m_pos.first + dx_copy, m_pos.second + dy_copy, MoveType::NORMAL },
 									 getOwnKing(field),
 									 field,
 									 checkCheck);
@@ -77,7 +77,7 @@ void Rook::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 					if (field[m_pos.first + dx_copy][m_pos.second + dy_copy]->getTeam() != m_team)
 					{
 						moves = pushMove(moves,
-										 std::tuple<int, int, Piece::MoveType>(m_pos.first + dx_copy, m_pos.second + dy_copy, Piece::NORMAL),
+										 PossibleMove{ m_pos.first + dx_copy, m_pos.second + dy_copy, MoveType::NORMAL },
 										 getOwnKing(field),
 										 field,
 										 checkCheck);

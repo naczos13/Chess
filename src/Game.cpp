@@ -2,39 +2,39 @@
 #include <iostream>
 
 Game::Game(SDL_Handler* handler)
-       :pl1(new Pawn(Piece::WHITE, std::pair<int, int>(0, 1), handler)),
-        pl2(new Pawn(Piece::WHITE, std::pair<int, int>(1, 1), handler)),
-        pl3(new Pawn(Piece::WHITE, std::pair<int, int>(2, 1), handler)),
-        pl4(new Pawn(Piece::WHITE, std::pair<int, int>(3, 1), handler)),
-        pl5(new Pawn(Piece::WHITE, std::pair<int, int>(4, 1), handler)),
-        pl6(new Pawn(Piece::WHITE, std::pair<int, int>(5, 1), handler)),
-        pl7(new Pawn(Piece::WHITE, std::pair<int, int>(6, 1), handler)),
-        pl8(new Pawn(Piece::WHITE, std::pair<int, int>(7, 1), handler)),
-        pb1(new Pawn(Piece::BLACK, std::pair<int, int>(0, 6), handler)),
-        pb2(new Pawn(Piece::BLACK, std::pair<int, int>(1, 6), handler)),
-        pb3(new Pawn(Piece::BLACK, std::pair<int, int>(2, 6), handler)),
-        pb4(new Pawn(Piece::BLACK, std::pair<int, int>(3, 6), handler)),
-        pb5(new Pawn(Piece::BLACK, std::pair<int, int>(4, 6), handler)),
-        pb6(new Pawn(Piece::BLACK, std::pair<int, int>(5, 6), handler)),
-        pb7(new Pawn(Piece::BLACK, std::pair<int, int>(6, 6), handler)),
-        pb8(new Pawn(Piece::BLACK, std::pair<int, int>(7, 6), handler)),
-        rb1(new Rook(Piece::BLACK, std::pair<int, int>(0, 7), handler)),
-        rb2(new Rook(Piece::BLACK, std::pair<int, int>(7, 7), handler)),
-        rl1(new Rook(Piece::WHITE, std::pair<int, int>(0, 0), handler)),
-        rl2(new Rook(Piece::WHITE, std::pair<int, int>(7, 0), handler)),
-        nb1(new Knight(Piece::BLACK, std::pair<int, int>(1, 7), handler)),
-        nb2(new Knight(Piece::BLACK, std::pair<int, int>(6, 7), handler)),
-        nl1(new Knight(Piece::WHITE, std::pair<int, int>(1, 0), handler)),
-        nl2(new Knight(Piece::WHITE, std::pair<int, int>(6, 0), handler)),
-        bb1(new Bishop(Piece::BLACK, std::pair<int, int>(2, 7), handler)),
-        bb2(new Bishop(Piece::BLACK, std::pair<int, int>(5, 7), handler)),
-        bl1(new Bishop(Piece::WHITE, std::pair<int, int>(2, 0), handler)),
-        bl2(new Bishop(Piece::WHITE, std::pair<int, int>(5, 0), handler)),
-        kb1(new King(Piece::BLACK, std::pair<int, int>(3, 7), handler)),
-        kl1(new King(Piece::WHITE, std::pair<int, int>(3, 0), handler)),
-        qb1(new Queen(Piece::BLACK, std::pair<int, int>(4, 7), handler)),
-        ql1(new Queen(Piece::WHITE, std::pair<int, int>(4, 0), handler)),
-        m_turn(Piece::WHITE),
+       :pl1(new Pawn(Team::WHITE, std::pair<int, int>(0, 1), handler)),
+        pl2(new Pawn(Team::WHITE, std::pair<int, int>(1, 1), handler)),
+        pl3(new Pawn(Team::WHITE, std::pair<int, int>(2, 1), handler)),
+        pl4(new Pawn(Team::WHITE, std::pair<int, int>(3, 1), handler)),
+        pl5(new Pawn(Team::WHITE, std::pair<int, int>(4, 1), handler)),
+        pl6(new Pawn(Team::WHITE, std::pair<int, int>(5, 1), handler)),
+        pl7(new Pawn(Team::WHITE, std::pair<int, int>(6, 1), handler)),
+        pl8(new Pawn(Team::WHITE, std::pair<int, int>(7, 1), handler)),
+        pb1(new Pawn(Team::BLACK, std::pair<int, int>(0, 6), handler)),
+        pb2(new Pawn(Team::BLACK, std::pair<int, int>(1, 6), handler)),
+        pb3(new Pawn(Team::BLACK, std::pair<int, int>(2, 6), handler)),
+        pb4(new Pawn(Team::BLACK, std::pair<int, int>(3, 6), handler)),
+        pb5(new Pawn(Team::BLACK, std::pair<int, int>(4, 6), handler)),
+        pb6(new Pawn(Team::BLACK, std::pair<int, int>(5, 6), handler)),
+        pb7(new Pawn(Team::BLACK, std::pair<int, int>(6, 6), handler)),
+        pb8(new Pawn(Team::BLACK, std::pair<int, int>(7, 6), handler)),
+        rb1(new Rook(Team::BLACK, std::pair<int, int>(0, 7), handler)),
+        rb2(new Rook(Team::BLACK, std::pair<int, int>(7, 7), handler)),
+        rl1(new Rook(Team::WHITE, std::pair<int, int>(0, 0), handler)),
+        rl2(new Rook(Team::WHITE, std::pair<int, int>(7, 0), handler)),
+        nb1(new Knight(Team::BLACK, std::pair<int, int>(1, 7), handler)),
+        nb2(new Knight(Team::BLACK, std::pair<int, int>(6, 7), handler)),
+        nl1(new Knight(Team::WHITE, std::pair<int, int>(1, 0), handler)),
+        nl2(new Knight(Team::WHITE, std::pair<int, int>(6, 0), handler)),
+        bb1(new Bishop(Team::BLACK, std::pair<int, int>(2, 7), handler)),
+        bb2(new Bishop(Team::BLACK, std::pair<int, int>(5, 7), handler)),
+        bl1(new Bishop(Team::WHITE, std::pair<int, int>(2, 0), handler)),
+        bl2(new Bishop(Team::WHITE, std::pair<int, int>(5, 0), handler)),
+        kb1(new King(Team::BLACK, std::pair<int, int>(3, 7), handler)),
+        kl1(new King(Team::WHITE, std::pair<int, int>(3, 0), handler)),
+        qb1(new Queen(Team::BLACK, std::pair<int, int>(4, 7), handler)),
+        ql1(new Queen(Team::WHITE, std::pair<int, int>(4, 0), handler)),
+        m_turn(Team::WHITE),
         m_handler(handler),
         m_checkEnPassant(true)
 {
@@ -100,7 +100,7 @@ Piece* Game::getFieldPos(int row, int col)
 }
 
 
-void Game::move(Piece* start, std::tuple<int, int, Piece::MoveType> move)
+void Game::move(Piece* start, PossibleMove move)
 {
     if (m_checkEnPassant)
     {
@@ -111,19 +111,19 @@ void Game::move(Piece* start, std::tuple<int, int, Piece::MoveType> move)
         m_checkEnPassant = true;
     }
 
-    switch (std::get<2>(move))
+    switch (move.MoveType)
     {
-        case Piece::NORMAL:
-            normal(start->getPos().first, start->getPos().second, std::get<0>(move), std::get<1>(move));
+        case MoveType::NORMAL:
+            normal(start->getPos().first, start->getPos().second, move.XCoord, move.YCoord);
             break;
-        case Piece::CASTLE:
-            castles(start->getPos().first, start->getPos().second, std::get<0>(move), std::get<1>(move));
+        case MoveType::CASTLE:
+            castles(start->getPos().first, start->getPos().second, move.XCoord, move.YCoord);
             break;
-        case Piece::ENPASSANT:
-            enPassant(start->getPos().first, start->getPos().second, std::get<0>(move), std::get<1>(move));
+        case MoveType::ENPASSANT:
+            enPassant(start->getPos().first, start->getPos().second, move.XCoord, move.YCoord);
             break;
-        case Piece::NEWPIECE:
-            exchange(start->getPos().first, start->getPos().second, std::get<0>(move), std::get<1>(move));
+        case MoveType::NEWPIECE:
+            exchange(start->getPos().first, start->getPos().second, move.XCoord, move.YCoord);
             break;
         default:
             break;
@@ -146,7 +146,7 @@ void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
     }
     m_field[xEnd][yEnd]->render();
 
-    if (m_field[xEnd][yEnd]->getType() == Piece::PAWN)
+    if (m_field[xEnd][yEnd]->getType() == PieceType::PAWN)
     {
         if (abs(yEnd - yStart) == 2)
         {
@@ -154,7 +154,7 @@ void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
             {
                 if (m_field[xEnd - 1][yEnd] != nullptr)
                 {
-                    if (m_field[xEnd - 1][yEnd]->getType() == Piece::PAWN)
+                    if (m_field[xEnd - 1][yEnd]->getType() == PieceType::PAWN)
                     {
                         Pawn* pwn = static_cast<Pawn*>(m_field[xEnd - 1][yEnd]);
                         pwn->setEnPassant(std::pair<bool, int>(true, -1));
@@ -167,7 +167,7 @@ void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
             {
                 if (m_field[xEnd + 1][yEnd] != nullptr)
                 {
-                    if (m_field[xEnd + 1][yEnd]->getType() == Piece::PAWN)
+                    if (m_field[xEnd + 1][yEnd]->getType() == PieceType::PAWN)
                     {
                         Pawn* pwn = static_cast<Pawn*>(m_field[xEnd + 1][yEnd]);
                         pwn->setEnPassant(std::pair<bool, int>(true, 1));
@@ -201,16 +201,16 @@ void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
     SDL_Texture* text_bishop = m_handler->loadImage("../res/Chess_blt60.png");
     SDL_Texture* text_queen = m_handler->loadImage("../res/Chess_qlt60.png");
     int y_draw = 0;
-    Piece::Team team = Piece::WHITE;
+    Team team = Team::WHITE;
 
-    if (m_field[xStart][yStart]->getTeam() == Piece::BLACK)
+    if (m_field[xStart][yStart]->getTeam() == Team::BLACK)
     {
         text_rook = m_handler->loadImage("../res/Chess_rdt60.png");
         text_knight = m_handler->loadImage("../res/Chess_ndt60.png");
         text_bishop = m_handler->loadImage("../res/Chess_bdt60.png");
         text_queen = m_handler->loadImage("../res/Chess_qdt60.png");
         y_draw = 3 * m_handler->SCREEN_HEIGHT / 4;
-        team = Piece::BLACK;
+        team = Team::BLACK;
     }
 
     SDL_SetRenderDrawColor(m_handler->m_renderer, 155, 103, 60, 255);
@@ -350,7 +350,7 @@ void Game::gameState()
     bool lost = true;
     King* pivot = kb1;
 
-    if (m_turn == Piece::BLACK)
+    if (m_turn == Team::BLACK)
     {
         pivot = kl1;
     }
@@ -376,7 +376,7 @@ void Game::gameState()
 
     if (pivot->getCheck() && lost)
     {
-        if (m_turn == Piece::BLACK)
+        if (m_turn == Team::BLACK)
         {
             std::cout << "Black wins!";
         }
@@ -387,7 +387,7 @@ void Game::gameState()
     }
     else if (lost)
     {
-        if (m_turn == Piece::BLACK)
+        if (m_turn == Team::BLACK)
         {
             std::cout << "Remis!";
         }
@@ -396,13 +396,13 @@ void Game::gameState()
             std::cout << "Remis!";
         }
     }
-    if (m_turn == Piece::BLACK)
+    if (m_turn == Team::BLACK)
     {
-        m_turn = Piece::WHITE;
+        m_turn = Team::WHITE;
     }
     else
     {
-        m_turn = Piece::BLACK;
+        m_turn = Team::BLACK;
     }
 
 }
@@ -416,7 +416,7 @@ void Game::disableEnPassant()
         {
             if (m_field[i][j] != nullptr)
             {
-                if (m_field[i][j]->getType() == Piece::PAWN)
+                if (m_field[i][j]->getType() == PieceType::PAWN)
                 {
                     Pawn* pwn = static_cast<Pawn*>(m_field[i][j]);
                     pwn->setEnPassant(std::pair<bool, int>(false, 0));
@@ -430,10 +430,10 @@ void Game::disableEnPassant()
 void Game::renderPossibleMoves(Piece* piece)
 {
     piece->calcPossibleMoves(m_field, true);
-    std::vector<std::tuple<int, int, Piece::MoveType>> possible = piece->getPossibleMoves();
+    std::vector<PossibleMove> possible = piece->getPossibleMoves();
     SDL_Rect rectangle;
-    for (const auto& value : possible) {
-        if ((std::get<0>(value) % 2 == 0 && std::get<1>(value) % 2 == 1) || (std::get<0>(value) % 2 == 1 && std::get<1>(value) % 2 == 0))
+    for (const auto& [XCoord, YCoord, MoveType] : possible) {
+        if ((XCoord % 2 == 0 && YCoord % 2 == 1) || (XCoord % 2 == 1 && YCoord % 2 == 0))
         {
             SDL_SetRenderDrawColor(m_handler->m_renderer, 0, 134, 139, 255);
         }
@@ -441,8 +441,8 @@ void Game::renderPossibleMoves(Piece* piece)
         {
             SDL_SetRenderDrawColor(m_handler->m_renderer, 164, 211, 238, 255);
         }
-        rectangle = { std::get<0>(value) * m_handler->SCREEN_WIDTH / 8,
-                      std::get<1>(value)* m_handler->SCREEN_HEIGHT / 8,
+        rectangle = { XCoord * m_handler->SCREEN_WIDTH / 8,
+                      YCoord * m_handler->SCREEN_HEIGHT / 8,
                       m_handler->SCREEN_WIDTH / 8,
                       m_handler->SCREEN_HEIGHT / 8 };
         SDL_RenderFillRect(m_handler->m_renderer, &rectangle);
@@ -462,9 +462,9 @@ void Game::renderPossibleMoves(Piece* piece)
 
 void Game::undoRenderPossibleMoves(Piece* piece)
 {
-    std::vector<std::tuple<int, int, Piece::MoveType>> possible = piece->getPossibleMoves();
-    for (const auto& value : possible) {
-        if ((std::get<0>(value) % 2 == 0 && std::get<1>(value) % 2 == 1) || (std::get<0>(value) % 2 == 1 && std::get<1>(value) % 2 == 0))
+    std::vector<PossibleMove> possible = piece->getPossibleMoves();
+    for (const auto& [XCoord, YCoord, MoveType] : possible) {
+        if ((XCoord % 2 == 0 && YCoord % 2 == 1) || (XCoord % 2 == 1 && YCoord % 2 == 0))
         {
             SDL_SetRenderDrawColor(m_handler->m_renderer, 155, 103, 60, 255);
         }
@@ -472,8 +472,8 @@ void Game::undoRenderPossibleMoves(Piece* piece)
         {
             SDL_SetRenderDrawColor(m_handler->m_renderer, 255, 255, 255, 255);
         }
-        SDL_Rect rectangle = { std::get<0>(value) * m_handler->SCREEN_WIDTH / 8,
-                                  std::get<1>(value) * m_handler->SCREEN_HEIGHT / 8,
+        SDL_Rect rectangle = { XCoord * m_handler->SCREEN_WIDTH / 8,
+                                  YCoord * m_handler->SCREEN_HEIGHT / 8,
                                   m_handler->SCREEN_WIDTH / 8,
                                   m_handler->SCREEN_HEIGHT / 8 };
         SDL_RenderFillRect(m_handler->m_renderer, &rectangle);
@@ -507,9 +507,9 @@ void Game::calcAllMoves()
 
 bool Game::isValidMove(int x, int y, Piece* piece)
 {
-    std::vector<std::tuple<int, int, Piece::MoveType>> list = piece->getPossibleMoves();
-    for (const auto& value : list) {
-        if (std::get<0>(value) == x && std::get<1>(value) == y)
+    std::vector<PossibleMove> list = piece->getPossibleMoves();
+    for (const auto& [XCoord, YCoord, MoveType] : list) {
+        if (XCoord == x && YCoord == y)
         {
             return true;
         }

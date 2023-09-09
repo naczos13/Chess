@@ -89,9 +89,14 @@ void SDL_Handler::DrawRectangle(SDL_Rect source, SDL_Rect dest, SDL_Texture* tex
 }
 
 
+SDL_Handler::SDL_Handler() {
+	init();
+}
+
 
 SDL_Handler::~SDL_Handler()
 {
+	cleanUp();
 }
 
 

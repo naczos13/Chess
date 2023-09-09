@@ -22,10 +22,10 @@ public:
 	Piece* getFieldPos(int row, int col);
 
     //Moves a piece
-    void move(Piece* piece, std::tuple<int, int, Piece::MoveType> move);
+    void move(Piece* piece, PossibleMove move);
 
     // returns m_turn
-    Piece::Team getTurn() { return m_turn; };
+    Team getTurn() { return m_turn; };
 
     // true, if the move is valid  ;  false if not
     bool isValidMove(int x, int y, Piece* piece);
@@ -40,7 +40,7 @@ public:
     void undoRenderPossibleMoves(Piece* piece);
 
 private: 
-	// 2D Field array, every Position has got a PIece::Team and a piece
+	// 2D Field array, every Position has got a Team and a piece
 	Piece* m_field[8][8];
 
     // disables enPassant for every Piece
@@ -62,7 +62,7 @@ private:
     std::string m_backgroundFilename;
 
     // Decides whether if its black or whites turn
-    Piece::Team m_turn;
+    Team m_turn;
 
     // handler
     SDL_Handler* m_handler;
