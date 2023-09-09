@@ -5,6 +5,10 @@
 #include <string>
 
 
+struct color {
+	int r, g, b;
+};
+
 class SDL_Handler
 {
 public:
@@ -14,6 +18,7 @@ public:
 	static const int SCREEN_HEIGHT = 480;
 	static const int CELL_WIDTH = SCREEN_WIDTH / 8;
 	static const int CELL_HEIGHT = SCREEN_HEIGHT / 8;
+
 
 	// constructor
 	SDL_Handler();
@@ -53,6 +58,7 @@ public:
 	void renderBackground();
 
 private:
-
+	const color DARK{ 155, 103, 60 };
+	const color LIGHT{ 255, 255, 255 };
 };
 

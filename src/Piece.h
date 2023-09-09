@@ -7,9 +7,9 @@
 #include <tuple>
 
 
-enum Team { BLACK, WHITE, NONE };
+enum Team { NONE=0, BLACK, WHITE };
 
-enum PieceType { PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN, EMPTY };
+enum PieceType { EMPTY=0, PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN };
 
 enum MoveType { NORMAL, CASTLE, ENPASSANT, NEWPIECE, INIT };
 

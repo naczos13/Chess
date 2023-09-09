@@ -19,7 +19,7 @@ public:
     ~Game();
 
 	// returns a the Piece in field (row, col)
-	Piece* getFieldPos(int row, int col);
+	Piece* getPieceByPosition(int row, int col);
 
     //Moves a piece
     void move(Piece* piece, PossibleMove move);
@@ -62,7 +62,7 @@ private:
     std::string m_backgroundFilename;
 
     // Decides whether if its black or whites turn
-    Team m_turn;
+    Team m_turn{};
 
     // handler
     SDL_Handler* m_handler;

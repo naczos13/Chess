@@ -94,7 +94,7 @@ Game::~Game()
 }
 
 
-Piece* Game::getFieldPos(int row, int col)
+Piece* Game::getPieceByPosition(int row, int col)
 {
     return m_field[row][col];
 }
@@ -135,7 +135,7 @@ void Game::move(Piece* start, PossibleMove move)
 
 void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
 {
-    m_field[xEnd][yEnd] = getFieldPos(xStart, yStart);
+    m_field[xEnd][yEnd] = getPieceByPosition(xStart, yStart);
     m_field[xEnd][yEnd]->m_hasMoved = true;
     m_field[xStart][yStart] = nullptr;
     m_handler->undoPieceRender(xStart, yStart);
@@ -184,7 +184,7 @@ void Game::enPassant(int xStart, int yStart, int xEnd, int yEnd)
 {
     Pawn* pawn_start = static_cast<Pawn*>(m_field[xStart][yStart]);
     m_field[xEnd][yEnd - pawn_start->m_dy] = nullptr;
-    m_field[xEnd][yEnd] = getFieldPos(xStart, yStart);
+    m_field[xEnd][yEnd] = getPieceByPosition(xStart, yStart);
     m_field[xEnd][yEnd]->m_hasMoved = true;
     m_field[xStart][yStart] = nullptr;
     m_handler->undoPieceRender(xStart, yStart);

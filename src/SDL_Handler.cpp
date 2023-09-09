@@ -22,18 +22,21 @@ SDL_Texture* SDL_Handler::loadImage(std::string filename)
 void SDL_Handler::renderBackground()
 {
 	bool white = true;
-	SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
 
+	// Iterate over the whole board
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
+			// Choose the color
 			if (white)
 			{
+				// Choose white color as paint
 				SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
 			}
 			else
 			{
+				// Choose gray color as paint
 				SDL_SetRenderDrawColor(m_renderer, 155, 103, 60, 255);
 			}
 			white = !white;
@@ -41,6 +44,7 @@ void SDL_Handler::renderBackground()
 								  j * SCREEN_HEIGHT / 8,
 								  SCREEN_WIDTH / 8,
 								  SCREEN_HEIGHT / 8 };
+			// paint the specific rectangle
 			SDL_RenderFillRect(m_renderer, &rectangle);
 		}
 		white = !white;
@@ -49,13 +53,16 @@ void SDL_Handler::renderBackground()
 
 void SDL_Handler::undoPieceRender(int x, int y)
 {
+	// Unrender the pice from the specific rectangle
+
+	// Check the modulo to find out if the rectagle should be render Dark or light
 	if ((x % 2 == 0 && y % 2 == 0) || (x % 2 == 1 && y % 2 == 1))
 	{
-		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
+		SDL_SetRenderDrawColor(m_renderer, LIGHT.r, LIGHT.g, LIGHT.b, 255);
 	}
 	else
 	{
-		SDL_SetRenderDrawColor(m_renderer, 155, 103, 60, 255);
+		SDL_SetRenderDrawColor(m_renderer, DARK.r, DARK.g, DARK.b, 255);
 	}
 	SDL_Rect rectangle = { x * SCREEN_WIDTH / 8,
 						  y * SCREEN_HEIGHT / 8,
