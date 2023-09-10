@@ -6,7 +6,7 @@ class Rook :
 {
 public:
     // Constructor
-    Rook(Team team, std::pair<int, int> pos, SDL_Handler* handler);
+    Rook(Team team, Point pos, SDL_Handler* handler);
 
     // prints name of piece
     void sayMyName();

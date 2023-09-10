@@ -8,6 +8,7 @@
 #include "Bishop.h"
 #include "King.h"
 #include "Queen.h"
+#include <memory>
 
 class Game
 {
@@ -19,7 +20,7 @@ public:
     ~Game();
 
 	// returns a the Piece in field (row, col)
-	Piece* getPieceByPosition(int row, int col);
+    Piece* getPieceByPosition(int row, int col);
 
     //Moves a piece
     void move(Piece* piece, PossibleMove move);
@@ -38,6 +39,9 @@ public:
 
     // undos the renderPossibleMoves function
     void undoRenderPossibleMoves(Piece* piece);
+
+    void createPieces();
+
 
 private: 
 	// 2D Field array, every Position has got a Team and a piece
@@ -73,38 +77,14 @@ private:
     // checks current game state, determines winner or remis
     void gameState();
 
-    // every single piece
-    Pawn* pl1;
-    Pawn* pl2;
-    Pawn* pl3;
-    Pawn* pl4;
-    Pawn* pl5;
-    Pawn* pl6;
-    Pawn* pl7;
-    Pawn* pl8;
-    Pawn* pb1;
-    Pawn* pb2;
-    Pawn* pb3;
-    Pawn* pb4;
-    Pawn* pb5;
-    Pawn* pb6;
-    Pawn* pb7;
-    Pawn* pb8;
-    Rook* rb1;
-    Rook* rb2;
-    Rook* rl1;
-    Rook* rl2;
-    Knight* nb1;
-    Knight* nb2;
-    Knight* nl1;
-    Knight* nl2;
-    Bishop* bb1;
-    Bishop* bb2;
-    Bishop* bl1;
-    Bishop* bl2;
-    King* kb1;
-    King* kl1;
-    Queen* qb1; 
-    Queen* ql1; 
+    // Own the pieces, and ensure their release when game over
+    std::vector<std::unique_ptr<Piece>> pieces;
+
+    King* blackKing;
+    King* whiteKing;
+
+
+
+
 };
 

@@ -1,7 +1,7 @@
 #include "Knight.h"
 #include <iostream>
 
-Knight::Knight(Team team, std::pair<int, int> pos, SDL_Handler* handler)
+Knight::Knight(Team team, Point pos, SDL_Handler* handler)
 	:Piece(team, pos, handler, KNIGHT)
 {
 	std::string filename;
@@ -38,22 +38,22 @@ void Knight::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 	{
 		for (int dy = -1; dy <= 1; dy += 2)
 		{
-			if (m_pos.first + dx >= 0 && m_pos.first + dx <= 7 && m_pos.second + dy >= 0 && m_pos.second + dy <= 7)
+			if (m_pos.x + dx >= 0 && m_pos.x + dx <= 7 && m_pos.y + dy >= 0 && m_pos.y + dy <= 7)
 			{
-				if (field[m_pos.first + dx][m_pos.second + dy] == nullptr)
+				if (field[m_pos.x + dx][m_pos.y + dy] == nullptr)
 				{
 					moves = pushMove(moves,
-						PossibleMove{ m_pos.first + dx, m_pos.second + dy, MoveType::NORMAL },
+						PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
 									 getOwnKing(field),
 									 field,
 									 checkCheck);
 				}
-				else if (field[m_pos.first + dx][m_pos.second + dy] != nullptr)
+				else if (field[m_pos.x + dx][m_pos.y + dy] != nullptr)
 				{
-					if (field[m_pos.first + dx][m_pos.second + dy]->getTeam() != m_team)
+					if (field[m_pos.x + dx][m_pos.y + dy]->getTeam() != m_team)
 					{
 						moves = pushMove(moves,
-							PossibleMove{ m_pos.first + dx, m_pos.second + dy, MoveType::NORMAL },
+							PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
 										 getOwnKing(field),
 										 field,
 										 checkCheck);
@@ -67,22 +67,22 @@ void Knight::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 	{
 		for (int dx = -1; dx <= 1; dx += 2)
 		{
-			if (m_pos.first + dx >= 0 && m_pos.first + dx <= 7 && m_pos.second + dy >= 0 && m_pos.second + dy <= 7)
+			if (m_pos.x + dx >= 0 && m_pos.x + dx <= 7 && m_pos.y + dy >= 0 && m_pos.y + dy <= 7)
 			{
-				if (field[m_pos.first + dx][m_pos.second + dy] == nullptr)
+				if (field[m_pos.x + dx][m_pos.y + dy] == nullptr)
 				{
 					moves = pushMove(moves,
-						PossibleMove{ m_pos.first + dx, m_pos.second + dy, MoveType::NORMAL },
+						PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
 						getOwnKing(field),
 						field,
 						checkCheck);
 				}
-				else if (field[m_pos.first + dx][m_pos.second + dy] != nullptr)
+				else if (field[m_pos.x + dx][m_pos.y + dy] != nullptr)
 				{
-					if (field[m_pos.first + dx][m_pos.second + dy]->getTeam() != m_team)
+					if (field[m_pos.x + dx][m_pos.y + dy]->getTeam() != m_team)
 					{
 						moves = pushMove(moves,
-							PossibleMove{ m_pos.first + dx, m_pos.second + dy, MoveType::NORMAL },
+							PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
 							getOwnKing(field),
 							field,
 							checkCheck);

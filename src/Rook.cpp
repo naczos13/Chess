@@ -1,7 +1,7 @@
 #include "Rook.h"
 #include <iostream>
 
-Rook::Rook(Team team, std::pair<int, int> pos, SDL_Handler* handler)
+Rook::Rook(Team team, Point pos, SDL_Handler* handler)
 	:Piece(team, pos, handler, ROOK)
 {
 	std::string filename;
@@ -45,11 +45,11 @@ void Rook::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 			{
 				dx_copy = dx;
 				dy_copy = dy;
-				while (field[m_pos.first + dx_copy][m_pos.second + dy_copy] == nullptr
-					&& (m_pos.first + dx_copy >= 0 && m_pos.first + dx_copy <= 7 && m_pos.second + dy_copy >= 0 && m_pos.second + dy_copy <= 7))
+				while (field[m_pos.x + dx_copy][m_pos.y + dy_copy] == nullptr
+					&& (m_pos.x + dx_copy >= 0 && m_pos.x + dx_copy <= 7 && m_pos.y + dy_copy >= 0 && m_pos.y + dy_copy <= 7))
 				{
 					moves = pushMove(moves,
-									 PossibleMove{ m_pos.first + dx_copy, m_pos.second + dy_copy, MoveType::NORMAL },
+									 PossibleMove{ m_pos.x + dx_copy, m_pos.y + dy_copy, MoveType::NORMAL },
 									 getOwnKing(field),
 									 field,
 									 checkCheck);
@@ -71,13 +71,13 @@ void Rook::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 						dy_copy += 1;
 					}
 				}
-				if (field[m_pos.first + dx_copy][m_pos.second + dy_copy] != nullptr
-					&& (m_pos.first + dx_copy >= 0 && m_pos.first + dx_copy <= 7 && m_pos.second + dy_copy >= 0 && m_pos.second + dy_copy <= 7))
+				if (field[m_pos.x + dx_copy][m_pos.y + dy_copy] != nullptr
+					&& (m_pos.x + dx_copy >= 0 && m_pos.x + dx_copy <= 7 && m_pos.y + dy_copy >= 0 && m_pos.y + dy_copy <= 7))
 				{
-					if (field[m_pos.first + dx_copy][m_pos.second + dy_copy]->getTeam() != m_team)
+					if (field[m_pos.x + dx_copy][m_pos.y + dy_copy]->getTeam() != m_team)
 					{
 						moves = pushMove(moves,
-										 PossibleMove{ m_pos.first + dx_copy, m_pos.second + dy_copy, MoveType::NORMAL },
+										 PossibleMove{ m_pos.x + dx_copy, m_pos.y + dy_copy, MoveType::NORMAL },
 										 getOwnKing(field),
 										 field,
 										 checkCheck);

@@ -5,7 +5,7 @@ class Knight :
     public Piece
 {
 public:
-    Knight(Team team, std::pair<int, int> pos, SDL_Handler* handler);
+    Knight(Team team, Point pos, SDL_Handler* handler);
 
     // calls name an
     void sayMyName();

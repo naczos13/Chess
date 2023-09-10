@@ -4,8 +4,14 @@
 #include <vector>
 #include "SDL_Handler.h"
 #include <SDL.h>
-#include <tuple>
 
+struct Point
+{
+	Point(int x, int y) : x{ x }, y{ y } {};
+	Point(const Point& other) : x{ other.x }, y{ other.y } {};
+	Point() : x{}, y{} {};
+	int x{}, y{};
+};
 
 enum Team { NONE=0, BLACK, WHITE };
 
@@ -22,8 +28,6 @@ struct PossibleMove
 	MoveType MoveType;
 };
 
-
-
 class Piece
 {
 public:
@@ -35,13 +39,13 @@ public:
 	Team getTeam() { return m_team; };
 
 	// sets new position
-	void setPosition(std::pair<int, int> newPos) { m_pos = newPos; };
+	void setPosition(Point newPos) { m_pos = newPos; };
 
 	// return position of piece
-	std::pair<int, int> getPos() { return m_pos; };
+	Point getPos() { return m_pos; };
 
 	// Constructor
-	Piece(Team team, std::pair<int,int> pos, SDL_Handler* handler, PieceType type);
+	Piece(Team team, Point pos, SDL_Handler* handler, PieceType type);
 
 	// Copy-Constructor
 	Piece(const Piece& piece);
@@ -53,7 +57,7 @@ public:
 	void render();
 
 	// prints name of piece
-	virtual void sayMyName();
+	virtual void sayMyName() = 0;
 
 	// calculates every possible Move this piece can do
 	virtual void calcPossibleMoves(Piece* field[8][8], bool checkCheck) = 0;
@@ -82,7 +86,7 @@ protected:
 	std::vector<PossibleMove> m_possibleMoves;
 	
 	// Position of the piece
-	std::pair<int, int> m_pos;
+	Point m_pos;
 
 	// pushes the move, if its allowed.
 	// simulates the move, and checks wheter the own king is still checked
@@ -98,5 +102,7 @@ protected:
 
 	// returns king of own team from field
 	King* getOwnKing(Piece* field[8][8]);
-};
 
+public:
+	static int s_piece_counter;
+};

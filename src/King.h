@@ -5,7 +5,7 @@ class King :
     public Piece
 {
 public:
-    King(Team team, std::pair<int, int> pos, SDL_Handler* handler);
+    King(Team team, Point pos, SDL_Handler* handler);
 
     // calls type and color to debug
     void sayMyName();

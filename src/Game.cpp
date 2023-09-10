@@ -2,80 +2,83 @@
 #include <iostream>
 
 Game::Game(SDL_Handler* handler)
-       :pl1(new Pawn(Team::WHITE, std::pair<int, int>(0, 1), handler)),
-        pl2(new Pawn(Team::WHITE, std::pair<int, int>(1, 1), handler)),
-        pl3(new Pawn(Team::WHITE, std::pair<int, int>(2, 1), handler)),
-        pl4(new Pawn(Team::WHITE, std::pair<int, int>(3, 1), handler)),
-        pl5(new Pawn(Team::WHITE, std::pair<int, int>(4, 1), handler)),
-        pl6(new Pawn(Team::WHITE, std::pair<int, int>(5, 1), handler)),
-        pl7(new Pawn(Team::WHITE, std::pair<int, int>(6, 1), handler)),
-        pl8(new Pawn(Team::WHITE, std::pair<int, int>(7, 1), handler)),
-        pb1(new Pawn(Team::BLACK, std::pair<int, int>(0, 6), handler)),
-        pb2(new Pawn(Team::BLACK, std::pair<int, int>(1, 6), handler)),
-        pb3(new Pawn(Team::BLACK, std::pair<int, int>(2, 6), handler)),
-        pb4(new Pawn(Team::BLACK, std::pair<int, int>(3, 6), handler)),
-        pb5(new Pawn(Team::BLACK, std::pair<int, int>(4, 6), handler)),
-        pb6(new Pawn(Team::BLACK, std::pair<int, int>(5, 6), handler)),
-        pb7(new Pawn(Team::BLACK, std::pair<int, int>(6, 6), handler)),
-        pb8(new Pawn(Team::BLACK, std::pair<int, int>(7, 6), handler)),
-        rb1(new Rook(Team::BLACK, std::pair<int, int>(0, 7), handler)),
-        rb2(new Rook(Team::BLACK, std::pair<int, int>(7, 7), handler)),
-        rl1(new Rook(Team::WHITE, std::pair<int, int>(0, 0), handler)),
-        rl2(new Rook(Team::WHITE, std::pair<int, int>(7, 0), handler)),
-        nb1(new Knight(Team::BLACK, std::pair<int, int>(1, 7), handler)),
-        nb2(new Knight(Team::BLACK, std::pair<int, int>(6, 7), handler)),
-        nl1(new Knight(Team::WHITE, std::pair<int, int>(1, 0), handler)),
-        nl2(new Knight(Team::WHITE, std::pair<int, int>(6, 0), handler)),
-        bb1(new Bishop(Team::BLACK, std::pair<int, int>(2, 7), handler)),
-        bb2(new Bishop(Team::BLACK, std::pair<int, int>(5, 7), handler)),
-        bl1(new Bishop(Team::WHITE, std::pair<int, int>(2, 0), handler)),
-        bl2(new Bishop(Team::WHITE, std::pair<int, int>(5, 0), handler)),
-        kb1(new King(Team::BLACK, std::pair<int, int>(3, 7), handler)),
-        kl1(new King(Team::WHITE, std::pair<int, int>(3, 0), handler)),
-        qb1(new Queen(Team::BLACK, std::pair<int, int>(4, 7), handler)),
-        ql1(new Queen(Team::WHITE, std::pair<int, int>(4, 0), handler)),
-        m_turn(Team::WHITE),
+       :m_turn(Team::WHITE),
         m_handler(handler),
         m_checkEnPassant(true)
 {
-    m_field[0][7] = rb1;
-    m_field[7][7] = rb2;
-    m_field[0][0] = rl1;
-    m_field[7][0] = rl2;
+    createPieces();
+    calcAllMoves();
+}
 
-    m_field[1][7] = nb1;
-    m_field[6][7] = nb2;
-    m_field[1][0] = nl1;
-    m_field[6][0] = nl2;
 
-    m_field[2][7] = bb1;
-    m_field[5][7] = bb2;
-    m_field[2][0] = bl1;
-    m_field[5][0] = bl2;
+void Game::createPieces()
+{
+    pieces.push_back(std::make_unique<Queen>(Team::WHITE, Point(4, 7), m_handler));
 
-    m_field[3][7] = kb1;
-    m_field[3][0] = kl1;
+    // Create pawns
+    for (int x{}; x < 8; x++) {
+        // white
+        pieces.push_back(std::make_unique<Pawn>(Team::WHITE, Point(x, 1), m_handler));
+        m_field[x][1] = pieces.back().get();
+        // black
+        pieces.push_back(std::make_unique<Pawn>(Team::BLACK, Point(x, 6), m_handler));
+        m_field[x][6] = pieces.back().get();
+    }
 
-    m_field[4][7] = qb1;
-    m_field[4][0] = ql1;
+    // Create Rook
+    // White
+    pieces.push_back(std::make_unique<Rook>(Team::WHITE, Point(0, 0), m_handler));
+    m_field[0][0] = pieces.back().get();
+    pieces.push_back(std::make_unique<Rook>(Team::WHITE, Point(7, 0), m_handler));
+    m_field[7][0] = pieces.back().get();
+    // Black
+    pieces.push_back(std::make_unique<Rook>(Team::BLACK, Point(0, 7), m_handler));
+    m_field[0][7] = pieces.back().get();
+    pieces.push_back(std::make_unique<Rook>(Team::BLACK, Point(7, 7), m_handler));
+    m_field[7][7] = pieces.back().get();
 
-    m_field[0][1] = pl1;
-    m_field[1][1] = pl2;
-    m_field[2][1] = pl3;
-    m_field[3][1] = pl4;
-    m_field[4][1] = pl5;
-    m_field[5][1] = pl6;
-    m_field[6][1] = pl7;
-    m_field[7][1] = pl8;
+    // Create Knight
+    //White
+    pieces.push_back(std::make_unique<Knight>(Team::WHITE, Point(1, 0), m_handler));
+    m_field[1][0] = pieces.back().get();
+    pieces.push_back(std::make_unique<Knight>(Team::WHITE, Point(6, 0), m_handler));
+    m_field[6][0] = pieces.back().get();
+    //Black
+    pieces.push_back(std::make_unique<Knight>(Team::BLACK, Point(1, 7), m_handler));
+    m_field[1][7] = pieces.back().get();
+    pieces.push_back(std::make_unique<Knight>(Team::BLACK, Point(6, 7), m_handler));
+    m_field[6][7] = pieces.back().get();
 
-    m_field[0][6] = pb1;
-    m_field[1][6] = pb2;
-    m_field[2][6] = pb3;
-    m_field[3][6] = pb4;
-    m_field[4][6] = pb5;
-    m_field[5][6] = pb6;
-    m_field[6][6] = pb7;
-    m_field[7][6] = pb8;
+    //Create Bishop
+    //White
+    pieces.push_back(std::make_unique<Bishop>(Team::WHITE, Point(2, 0), m_handler));
+    m_field[2][0] = pieces.back().get();
+    pieces.push_back(std::make_unique<Bishop>(Team::WHITE, Point(5, 0), m_handler));
+    m_field[5][0] = pieces.back().get();
+    //Black
+    pieces.push_back(std::make_unique<Bishop>(Team::BLACK, Point(2, 7), m_handler));
+    m_field[2][7] = pieces.back().get();
+    pieces.push_back(std::make_unique<Bishop>(Team::BLACK, Point(5, 7), m_handler));
+    m_field[5][7] = pieces.back().get();
+
+    // Create King
+    //Black
+    pieces.push_back(std::make_unique<King>(Team::BLACK, Point(3, 7), m_handler));
+    m_field[3][7] = pieces.back().get();
+    blackKing = static_cast<King*>(pieces.back().get());
+
+    //White
+    pieces.push_back(std::make_unique<King>(Team::WHITE, Point(3, 0), m_handler));
+    m_field[3][0] = pieces.back().get();
+    whiteKing = static_cast<King*>(pieces.back().get());
+
+    // Create Queen
+    // Black
+    pieces.push_back(std::make_unique<Queen>(Team::BLACK, Point(4, 7), m_handler));
+    m_field[4][7] = pieces.back().get();
+    // WHITE
+    pieces.push_back(std::make_unique<Queen>(Team::WHITE, Point(4, 0), m_handler));
+    m_field[4][0] = pieces.back().get();
 
     for (int i = 2; i < 6; i++)
     {
@@ -84,10 +87,7 @@ Game::Game(SDL_Handler* handler)
             m_field[j][i] = nullptr;
         }
     }
-
-    calcAllMoves();
 }
- 
 
 Game::~Game()
 {
@@ -114,16 +114,16 @@ void Game::move(Piece* start, PossibleMove move)
     switch (move.MoveType)
     {
         case MoveType::NORMAL:
-            normal(start->getPos().first, start->getPos().second, move.XCoord, move.YCoord);
+            normal(start->getPos().x, start->getPos().y, move.XCoord, move.YCoord);
             break;
         case MoveType::CASTLE:
-            castles(start->getPos().first, start->getPos().second, move.XCoord, move.YCoord);
+            castles(start->getPos().x, start->getPos().y, move.XCoord, move.YCoord);
             break;
         case MoveType::ENPASSANT:
-            enPassant(start->getPos().first, start->getPos().second, move.XCoord, move.YCoord);
+            enPassant(start->getPos().x, start->getPos().y, move.XCoord, move.YCoord);
             break;
         case MoveType::NEWPIECE:
-            exchange(start->getPos().first, start->getPos().second, move.XCoord, move.YCoord);
+            exchange(start->getPos().x, start->getPos().y, move.XCoord, move.YCoord);
             break;
         default:
             break;
@@ -139,7 +139,7 @@ void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
     m_field[xEnd][yEnd]->m_hasMoved = true;
     m_field[xStart][yStart] = nullptr;
     m_handler->undoPieceRender(xStart, yStart);
-    m_field[xEnd][yEnd]->setPosition(std::pair<int, int>(xEnd, yEnd));
+    m_field[xEnd][yEnd]->setPosition(Point(xEnd, yEnd));
     if (m_field[xEnd][yEnd] != nullptr)
     {
         m_handler->undoPieceRender(xEnd, yEnd);
@@ -189,7 +189,7 @@ void Game::enPassant(int xStart, int yStart, int xEnd, int yEnd)
     m_field[xStart][yStart] = nullptr;
     m_handler->undoPieceRender(xStart, yStart);
     m_handler->undoPieceRender(xEnd, yEnd - pawn_start->m_dy);
-    m_field[xEnd][yEnd]->setPosition(std::pair<int, int>(xEnd, yEnd));
+    m_field[xEnd][yEnd]->setPosition(Point(xEnd, yEnd));
     m_field[xEnd][yEnd]->render();
 }
 
@@ -263,19 +263,19 @@ void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
                 {
                     if (x < m_handler->SCREEN_WIDTH / 640)
                     {
-                        clickedPiece = new Rook(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
+                        clickedPiece = new Rook(team ,Point(xEnd, yEnd), m_handler);
                     }
                     else if (x < 2 * m_handler->SCREEN_WIDTH / 640)
                     {
-                        clickedPiece = new Knight(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
+                        clickedPiece = new Knight(team ,Point(xEnd, yEnd), m_handler);
                     }
                     else if (x < 3 * m_handler->SCREEN_WIDTH / 640)
                     {
-                        clickedPiece = new Bishop(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
+                        clickedPiece = new Bishop(team ,Point(xEnd, yEnd), m_handler);
                     }
                     else if (x <= 4 * m_handler->SCREEN_WIDTH / 640)
                     {
-                        clickedPiece = new Queen(team ,std::pair<int, int>(xEnd, yEnd), m_handler);
+                        clickedPiece = new Queen(team ,Point(xEnd, yEnd), m_handler);
                     }
                     std::cout << x << " " << m_handler->SCREEN_WIDTH / 640 << std::endl;
                 }
@@ -319,8 +319,8 @@ void Game::castles(int xStart, int yStart, int xEnd, int yEnd)
         m_field[3][yEnd] = m_field[0][yEnd];
         m_field[2][yEnd]->m_hasMoved = true;
         m_field[3][yEnd]->m_hasMoved = true;
-        m_field[2][yEnd]->setPosition(std::pair<int, int>(2, yEnd));
-        m_field[3][yEnd]->setPosition(std::pair<int, int>(3, yEnd));
+        m_field[2][yEnd]->setPosition(Point(2, yEnd));
+        m_field[3][yEnd]->setPosition(Point(3, yEnd));
         m_field[4][yEnd] = nullptr;
         m_field[0][yEnd] = nullptr;
         m_handler->undoPieceRender(4, yEnd);
@@ -334,8 +334,8 @@ void Game::castles(int xStart, int yStart, int xEnd, int yEnd)
         m_field[5][yEnd] = m_field[7][yEnd];
         m_field[6][yEnd]->m_hasMoved = true;
         m_field[5][yEnd]->m_hasMoved = true;
-        m_field[6][yEnd]->setPosition(std::pair<int, int>(6, yEnd));
-        m_field[5][yEnd]->setPosition(std::pair<int, int>(5, yEnd));
+        m_field[6][yEnd]->setPosition(Point(6, yEnd));
+        m_field[5][yEnd]->setPosition(Point(5, yEnd));
         m_field[4][yEnd] = nullptr;
         m_field[7][yEnd] = nullptr;
         m_handler->undoPieceRender(4, yEnd);
@@ -348,14 +348,14 @@ void Game::castles(int xStart, int yStart, int xEnd, int yEnd)
 void Game::gameState()
 {
     bool lost = true;
-    King* pivot = kb1;
+    King* pivot = blackKing;
 
     if (m_turn == Team::BLACK)
     {
-        pivot = kl1;
+        pivot = whiteKing;
     }
 
-    pivot->setCheck(m_field, kl1->getPos().first, kl1->getPos().second);
+    pivot->setCheck(m_field, whiteKing->getPos().x, whiteKing->getPos().y);
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)

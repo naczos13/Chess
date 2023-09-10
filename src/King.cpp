@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdlib.h>
 
-King::King(Team team, std::pair<int, int> pos, SDL_Handler* handler)
+King::King(Team team, Point pos, SDL_Handler* handler)
 	:Piece(team, pos, handler, KING), m_check(false)
 {
 	std::string filename;
@@ -43,14 +43,14 @@ void King::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 	{
 		for (int dy = -1; dy <= 1; dy++)
 		{
-			if (m_pos.first + dx >= 0 && m_pos.first + dx <= 7 && m_pos.second + dy >= 0 && m_pos.second + dy <= 7)
+			if (m_pos.x + dx >= 0 && m_pos.x + dx <= 7 && m_pos.y + dy >= 0 && m_pos.y + dy <= 7)
 			{
-				if (field[m_pos.first + dx][m_pos.second + dy] != nullptr)
+				if (field[m_pos.x + dx][m_pos.y + dy] != nullptr)
 				{
-					if (field[m_pos.first + dx][m_pos.second + dy]->getTeam() != m_team)
+					if (field[m_pos.x + dx][m_pos.y + dy]->getTeam() != m_team)
 					{
 						moves = pushMove(moves,
-							PossibleMove{ m_pos.first + dx, m_pos.second + dy, MoveType::NORMAL },
+							PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
 							getOwnKing(field),
 							field,
 							checkCheck);
@@ -59,7 +59,7 @@ void King::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 				else
 				{
 					moves = pushMove(moves,
-									 PossibleMove{ m_pos.first + dx, m_pos.second + dy, MoveType::NORMAL },
+									 PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
 									 getOwnKing(field),
 									 field,
 									 checkCheck);
@@ -155,7 +155,7 @@ void King::setCheck(Piece* field[8][8], int x, int y)
 				{
 					if (field[i][j]->getType() == KING)
 					{
-						if (abs(field[i][j]->getPos().first - x) <= 1 && abs(field[i][j]->getPos().second - y) <= 1)
+						if (abs(field[i][j]->getPos().x - x) <= 1 && abs(field[i][j]->getPos().y - y) <= 1)
 						{
 							check = true;
 						}
@@ -172,7 +172,7 @@ void King::setCheck(Piece* field[8][8], int x, int y)
 						{
 							dy_pawn = -1;
 						}
-						if ((x == field[i][j]->getPos().first + 1 || x == field[i][j]->getPos().first - 1) && y == field[i][j]->getPos().second + dy_pawn)
+						if ((x == field[i][j]->getPos().x + 1 || x == field[i][j]->getPos().x - 1) && y == field[i][j]->getPos().y + dy_pawn)
 						{
 							check = true;
 						}

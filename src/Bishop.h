@@ -6,7 +6,7 @@ class Bishop :
 {
 public:
     //Constructor
-    Bishop(Team team, std::pair<int, int> pos, SDL_Handler* handler);
+    Bishop(Team team, Point pos, SDL_Handler* handler);
 
     // used to debug some stuff
     void sayMyName();
