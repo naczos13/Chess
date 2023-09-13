@@ -141,62 +141,6 @@ std::vector<PossibleMove> King::calcPossibleMoves(Piece** board, bool checkCheck
 	return moves;
 }
 
-void King::setCheck(Piece** board, int x, int y)
-{
-	bool check = false;
-
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			if (board[CoordToIndex(i, j)] != nullptr)
-			{
-				if (board[CoordToIndex(i, j)]->getTeam() != m_team)
-				{
-					if (board[CoordToIndex(i, j)]->getType() == KING)
-					{
-						if (abs(board[CoordToIndex(i, j)]->getPos().x - x) <= 1 && abs(board[CoordToIndex(i, j)]->getPos().y - y) <= 1)
-						{
-							check = true;
-						}
-
-					}
-					else if (board[CoordToIndex(i, j)]->getType() == PAWN)
-					{
-						int dy_pawn;
-						if (board[CoordToIndex(i, j)]->getTeam() == WHITE)
-						{
-							dy_pawn = 1;
-						}
-						else
-						{
-							dy_pawn = -1;
-						}
-						if ((x == board[CoordToIndex(i, j)]->getPos().x + 1 || x == board[CoordToIndex(i, j)]->getPos().x - 1) && y == board[CoordToIndex(i, j)]->getPos().y + dy_pawn)
-						{
-							check = true;
-						}
-					}
-					else
-					{
-						board[CoordToIndex(i, j)]->calcPossibleMoves(board, false);
-						std::vector<PossibleMove> notPossible = board[CoordToIndex(i, j)]->getPossibleMoves(board);
-						for (const auto& [XCoord, YCoord, MoveType] : notPossible)
-						{
-							if (XCoord == x && YCoord == y)
-							{
-								check = true;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	m_check = check;
-}
-
 std::vector<Point> King::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;

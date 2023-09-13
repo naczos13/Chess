@@ -13,9 +13,6 @@ public:
     // calculates the possible moves
     std::vector<PossibleMove> calcPossibleMoves(Piece** board, bool checkCheck) override;
 
-    // controls whether this piece is checked or not
-    void setCheck(Piece** board, int x, int y);
-
     // get check
     bool getCheck() { return m_check; };
 
