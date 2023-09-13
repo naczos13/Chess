@@ -21,6 +21,9 @@ public:
 	// returns a the Piece in field (row, col)
     Piece* getPieceByPosition(int row, int col);
 
+    // return possible moves per piece
+    std::vector<PossibleMove> getPosibleMovesForPiece(Piece* piece) const;
+
     //Moves a piece
     void move(Piece* piece, PossibleMove move);
 
@@ -34,10 +37,10 @@ public:
     void calcAllMoves();
 
     // light up the possible Moves
-    void renderPossibleMoves(Piece* piece);
+    void renderPossibleMoves(const std::vector<PossibleMove>& possible);
 
     // undos the renderPossibleMoves function
-    void undoRenderPossibleMoves(Piece* piece);
+    void undoRenderPossibleMoves(const std::vector<PossibleMove>& possible);
 
     void createPieces();
 

@@ -98,6 +98,14 @@ Piece* Game::getPieceByPosition(int row, int col)
     return m_field[row * 8 + col];
 }
 
+std::vector<PossibleMove> Game::getPosibleMovesForPiece(Piece* piece) const
+{
+    if (piece)
+        return piece->getPossibleMoves(m_field);
+    else
+        return {};
+}
+
 
 void Game::move(Piece* start, PossibleMove move)
 {
@@ -425,9 +433,8 @@ void Game::disableEnPassant()
 }
 
 
-void Game::renderPossibleMoves(Piece* piece)
+void Game::renderPossibleMoves(const std::vector<PossibleMove>& possible)
 {
-    std::vector<PossibleMove> possible = piece->getPossibleMoves(m_field, true);
     SDL_Rect rectangle;
     for (const auto& [XCoord, YCoord, MoveType] : possible) {
         if ((XCoord % 2 == 0 && YCoord % 2 == 1) || (XCoord % 2 == 1 && YCoord % 2 == 0))
@@ -457,9 +464,8 @@ void Game::renderPossibleMoves(Piece* piece)
     } 
 }
 
-void Game::undoRenderPossibleMoves(Piece* piece)
+void Game::undoRenderPossibleMoves(const std::vector<PossibleMove>& possible)
 {
-    std::vector<PossibleMove> possible = piece->getPossibleMoves(m_field);
     for (const auto& [XCoord, YCoord, MoveType] : possible) {
         if ((XCoord % 2 == 0 && YCoord % 2 == 1) || (XCoord % 2 == 1 && YCoord % 2 == 0))
         {

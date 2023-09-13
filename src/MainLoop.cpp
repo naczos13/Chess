@@ -16,6 +16,7 @@ void MainLoop::run()
 	Point moveStart;
 	Point moveEnd;
 	Piece* clickedPiece{};
+	std::vector<PossibleMove> possibleMoves;
 
 	while (SDL_WaitEvent(&handler.m_event))
 	{
@@ -34,7 +35,8 @@ void MainLoop::run()
 			{
 				if (clickedPiece->getTeam() == game.getTurn())
 				{
-					game.renderPossibleMoves(clickedPiece);
+					possibleMoves = game.getPosibleMovesForPiece(clickedPiece);
+					game.renderPossibleMoves(possibleMoves);
 				}
 			}
 			break;
@@ -45,7 +47,7 @@ void MainLoop::run()
 			if (clickedPiece)
 			{
 				// Clear the board from the possible moves
-				game.undoRenderPossibleMoves(clickedPiece);
+				game.undoRenderPossibleMoves(possibleMoves);
 
 				moveEnd.x = handler.m_event.button.x / SDL_Handler::CELL_WIDTH;
 				moveEnd.y = handler.m_event.button.y / SDL_Handler::CELL_HEIGHT;
