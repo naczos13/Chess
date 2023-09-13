@@ -30,7 +30,7 @@ void Knight::sayMyName()
 	}
 }
 
-std::vector<PossibleMove> Knight::calcPossibleMoves(Piece** field, bool checkCheck)
+std::vector<PossibleMove> Knight::calcPossibleMoves(Piece** board, bool checkCheck)
 {
 	std::vector<PossibleMove> moves;
 	
@@ -40,22 +40,22 @@ std::vector<PossibleMove> Knight::calcPossibleMoves(Piece** field, bool checkChe
 		{
 			if (m_pos.x + dx >= 0 && m_pos.x + dx <= 7 && m_pos.y + dy >= 0 && m_pos.y + dy <= 7)
 			{
-				if (field[CoordToIndex(m_pos.x + dx, m_pos.y + dy)] == nullptr)
+				if (board[CoordToIndex(m_pos.x + dx, m_pos.y + dy)] == nullptr)
 				{
 					moves = simulateMove(moves,
 						PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
-									 getOwnKing(field),
-									 field,
+									 getOwnKing(board),
+									 board,
 									 checkCheck);
 				}
-				else if (field[CoordToIndex(m_pos.x + dx, m_pos.y + dy)] != nullptr)
+				else if (board[CoordToIndex(m_pos.x + dx, m_pos.y + dy)] != nullptr)
 				{
-					if (field[CoordToIndex(m_pos.x + dx, m_pos.y + dy)]->getTeam() != m_team)
+					if (board[CoordToIndex(m_pos.x + dx, m_pos.y + dy)]->getTeam() != m_team)
 					{
 						moves = simulateMove(moves,
 							PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
-										 getOwnKing(field),
-										 field,
+										 getOwnKing(board),
+										 board,
 										 checkCheck);
 					}
 				}
@@ -69,22 +69,22 @@ std::vector<PossibleMove> Knight::calcPossibleMoves(Piece** field, bool checkChe
 		{
 			if (m_pos.x + dx >= 0 && m_pos.x + dx <= 7 && m_pos.y + dy >= 0 && m_pos.y + dy <= 7)
 			{
-				if (field[CoordToIndex(m_pos.x + dx, m_pos.y + dy)] == nullptr)
+				if (board[CoordToIndex(m_pos.x + dx, m_pos.y + dy)] == nullptr)
 				{
 					moves = simulateMove(moves,
 						PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
-						getOwnKing(field),
-						field,
+						getOwnKing(board),
+						board,
 						checkCheck);
 				}
-				else if (field[CoordToIndex(m_pos.x + dx, m_pos.y + dy)] != nullptr)
+				else if (board[CoordToIndex(m_pos.x + dx, m_pos.y + dy)] != nullptr)
 				{
-					if (field[CoordToIndex(m_pos.x + dx, m_pos.y + dy)]->getTeam() != m_team)
+					if (board[CoordToIndex(m_pos.x + dx, m_pos.y + dy)]->getTeam() != m_team)
 					{
 						moves = simulateMove(moves,
 							PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
-							getOwnKing(field),
-							field,
+							getOwnKing(board),
+							board,
 							checkCheck);
 					}
 				}
@@ -95,7 +95,7 @@ std::vector<PossibleMove> Knight::calcPossibleMoves(Piece** field, bool checkChe
 	return moves;
 }
 
-std::vector<Point> Knight::getPhysicallyPossiblePositions(Piece** field) const
+std::vector<Point> Knight::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;
 	return posible_positions;

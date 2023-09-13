@@ -33,7 +33,7 @@ void King::sayMyName()
 	}
 }
 
-std::vector<PossibleMove> King::calcPossibleMoves(Piece** field, bool checkCheck)
+std::vector<PossibleMove> King::calcPossibleMoves(Piece** board, bool checkCheck)
 {
 	std::vector<PossibleMove> moves;
 	/*bool castles = true;
@@ -45,14 +45,14 @@ std::vector<PossibleMove> King::calcPossibleMoves(Piece** field, bool checkCheck
 		{
 			if (m_pos.x + dx >= 0 && m_pos.x + dx <= 7 && m_pos.y + dy >= 0 && m_pos.y + dy <= 7)
 			{
-				if (field[CoordToIndex(m_pos.x + dx, m_pos.y + dy)] != nullptr)
+				if (board[CoordToIndex(m_pos.x + dx, m_pos.y + dy)] != nullptr)
 				{
-					if (field[CoordToIndex(m_pos.x + dx, m_pos.y + dy)]->getTeam() != m_team)
+					if (board[CoordToIndex(m_pos.x + dx, m_pos.y + dy)]->getTeam() != m_team)
 					{
 						moves = simulateMove(moves,
 							PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
-							getOwnKing(field),
-							field,
+							getOwnKing(board),
+							board,
 							checkCheck);
 					}
 				}
@@ -60,8 +60,8 @@ std::vector<PossibleMove> King::calcPossibleMoves(Piece** field, bool checkCheck
 				{
 					moves = simulateMove(moves,
 									 PossibleMove{ m_pos.x + dx, m_pos.y + dy, MoveType::NORMAL },
-									 getOwnKing(field),
-									 field,
+									 getOwnKing(board),
+									 board,
 									 checkCheck);
 				}
 			}
@@ -75,9 +75,9 @@ std::vector<PossibleMove> King::calcPossibleMoves(Piece** field, bool checkCheck
 			for (int j = 0; j <= 7; j += 7)
 			{
 				castles = true;
-				if (field[CoordToIndex(i, j)] != nullptr)
+				if (board[CoordToIndex(i, j)] != nullptr)
 				{
-					if (field[CoordToIndex(i, j)]->getTeam() == m_team && field[CoordToIndex(i, j)]->getType() == ROOK && !field[CoordToIndex(i, j)]->m_hasMoved)
+					if (board[CoordToIndex(i, j)]->getTeam() == m_team && board[CoordToIndex(i, j)]->getType() == ROOK && !board[CoordToIndex(i, j)]->m_hasMoved)
 					{
 						int a, b, c;
 						if (i == 0)
@@ -92,17 +92,17 @@ std::vector<PossibleMove> King::calcPossibleMoves(Piece** field, bool checkCheck
 							b = 6;
 							c = 6;
 						}
-						if (field[CoordToIndex(a, j)] == nullptr && field[CoordToIndex(b, j)] == nullptr && field[CoordToIndex(c, j)] == nullptr)
+						if (board[CoordToIndex(a, j)] == nullptr && board[CoordToIndex(b, j)] == nullptr && board[CoordToIndex(c, j)] == nullptr)
 						{
 							for (int k = 0; k < 8; k++)
 							{
 								for (int l = 0; l < 8; l++)
 								{
-									if (field[CoordToIndex(k, l)] != nullptr)
+									if (board[CoordToIndex(k, l)] != nullptr)
 									{
-										if (field[CoordToIndex(k, l)]->getTeam() != m_team)
+										if (board[CoordToIndex(k, l)]->getTeam() != m_team)
 										{
-											std::vector<PossibleMove> notPossible = field[CoordToIndex(k, l)]->getPossibleMoves(field);
+											std::vector<PossibleMove> notPossible = board[CoordToIndex(k, l)]->getPossibleMoves(board);
 											for (const auto& [XCoord, YCoord, MoveType] : notPossible)
 											{
 												if (i == 0)
@@ -141,7 +141,7 @@ std::vector<PossibleMove> King::calcPossibleMoves(Piece** field, bool checkCheck
 	return moves;
 }
 
-void King::setCheck(Piece** field, int x, int y)
+void King::setCheck(Piece** board, int x, int y)
 {
 	bool check = false;
 
@@ -149,22 +149,22 @@ void King::setCheck(Piece** field, int x, int y)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			if (field[CoordToIndex(i, j)] != nullptr)
+			if (board[CoordToIndex(i, j)] != nullptr)
 			{
-				if (field[CoordToIndex(i, j)]->getTeam() != m_team)
+				if (board[CoordToIndex(i, j)]->getTeam() != m_team)
 				{
-					if (field[CoordToIndex(i, j)]->getType() == KING)
+					if (board[CoordToIndex(i, j)]->getType() == KING)
 					{
-						if (abs(field[CoordToIndex(i, j)]->getPos().x - x) <= 1 && abs(field[CoordToIndex(i, j)]->getPos().y - y) <= 1)
+						if (abs(board[CoordToIndex(i, j)]->getPos().x - x) <= 1 && abs(board[CoordToIndex(i, j)]->getPos().y - y) <= 1)
 						{
 							check = true;
 						}
 
 					}
-					else if (field[CoordToIndex(i, j)]->getType() == PAWN)
+					else if (board[CoordToIndex(i, j)]->getType() == PAWN)
 					{
 						int dy_pawn;
-						if (field[CoordToIndex(i, j)]->getTeam() == WHITE)
+						if (board[CoordToIndex(i, j)]->getTeam() == WHITE)
 						{
 							dy_pawn = 1;
 						}
@@ -172,15 +172,15 @@ void King::setCheck(Piece** field, int x, int y)
 						{
 							dy_pawn = -1;
 						}
-						if ((x == field[CoordToIndex(i, j)]->getPos().x + 1 || x == field[CoordToIndex(i, j)]->getPos().x - 1) && y == field[CoordToIndex(i, j)]->getPos().y + dy_pawn)
+						if ((x == board[CoordToIndex(i, j)]->getPos().x + 1 || x == board[CoordToIndex(i, j)]->getPos().x - 1) && y == board[CoordToIndex(i, j)]->getPos().y + dy_pawn)
 						{
 							check = true;
 						}
 					}
 					else
 					{
-						field[CoordToIndex(i, j)]->calcPossibleMoves(field, false);
-						std::vector<PossibleMove> notPossible = field[CoordToIndex(i, j)]->getPossibleMoves(field);
+						board[CoordToIndex(i, j)]->calcPossibleMoves(board, false);
+						std::vector<PossibleMove> notPossible = board[CoordToIndex(i, j)]->getPossibleMoves(board);
 						for (const auto& [XCoord, YCoord, MoveType] : notPossible)
 						{
 							if (XCoord == x && YCoord == y)
@@ -197,7 +197,7 @@ void King::setCheck(Piece** field, int x, int y)
 	m_check = check;
 }
 
-std::vector<Point> King::getPhysicallyPossiblePositions(Piece** field) const
+std::vector<Point> King::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;
 	return posible_positions;

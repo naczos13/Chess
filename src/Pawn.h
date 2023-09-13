@@ -12,7 +12,7 @@ public:
     void sayMyName();
 
     // calculates possible moves
-    virtual std::vector<PossibleMove> calcPossibleMoves(Piece** field, bool checkCheck) override;
+    virtual std::vector<PossibleMove> calcPossibleMoves(Piece** board, bool checkCheck) override;
 
     // direction the pawn moves
     int m_dy;
@@ -24,7 +24,7 @@ public:
     void setEnPassant(std::pair<bool, int> modifi) { m_enPassant = modifi; };
 
     // Get the vector of Physically Possible Positions in next move, without checking for checkmate
-    std::vector<Point> getPhysicallyPossiblePositions(Piece** field) const override;
+    std::vector<Point> getPhysicallyPossiblePositions(Piece** board) const override;
 
     // Just made a double move
     bool m_justMadeDoubleMove;

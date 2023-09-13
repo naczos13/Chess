@@ -31,7 +31,7 @@ void Queen::sayMyName()
 	}
 }
 
-std::vector<PossibleMove> Queen::calcPossibleMoves(Piece** field, bool checkCheck)
+std::vector<PossibleMove> Queen::calcPossibleMoves(Piece** board, bool checkCheck)
 {
 	std::vector<PossibleMove> moves;
 	/*int dx_copy;
@@ -42,12 +42,12 @@ std::vector<PossibleMove> Queen::calcPossibleMoves(Piece** field, bool checkChec
 		{
 			dx_copy = dx;
 			dy_copy = dy;
-			while (field[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)] == nullptr)
+			while (board[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)] == nullptr)
 			{
 				moves = simulateMove(moves,
 					PossibleMove(m_pos.x + dx_copy, m_pos.y + dy_copy, MoveType::NORMAL),
-					getOwnKing(field),
-					field,
+					getOwnKing(board),
+					board,
 					checkCheck);
 				if (dx_copy < 0)
 				{
@@ -66,15 +66,15 @@ std::vector<PossibleMove> Queen::calcPossibleMoves(Piece** field, bool checkChec
 					dy_copy += 1;
 				}
 			}
-			if (field[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)] != nullptr
+			if (board[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)] != nullptr
 				&& (m_pos.x + dx_copy >= 0 && m_pos.x + dx_copy <= 7 && m_pos.y + dy_copy >= 0 && m_pos.y + dy_copy <= 7))
 			{
-				if (field[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)]->getTeam() != m_team)
+				if (board[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)]->getTeam() != m_team)
 				{
 					moves = simulateMove(moves,
 						PossibleMove(m_pos.x + dx_copy, m_pos.y + dy_copy, MoveType::NORMAL),
-						getOwnKing(field),
-						field,
+						getOwnKing(board),
+						board,
 						checkCheck);
 				}
 			}
@@ -84,7 +84,7 @@ std::vector<PossibleMove> Queen::calcPossibleMoves(Piece** field, bool checkChec
 	return moves;
 }
 
-std::vector<Point> Queen::getPhysicallyPossiblePositions(Piece** field) const
+std::vector<Point> Queen::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;
 	return posible_positions;

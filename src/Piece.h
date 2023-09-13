@@ -35,7 +35,7 @@ class Piece
 public:
 
 	// returns list of possible Moves
-	std::vector<PossibleMove> getPossibleMoves(Piece** field, bool checkCheck=true);
+	std::vector<PossibleMove> getPossibleMoves(Piece** board, bool checkCheck=true);
 
 	// return whether BLACK or WHITE
 	Team getTeam() const { return m_team; };
@@ -65,7 +65,7 @@ public:
 	virtual void sayMyName() = 0;
 
 	// calculates every possible Move this piece can do
-	virtual std::vector<PossibleMove> calcPossibleMoves(Piece** field, bool checkCheck) = 0;
+	virtual std::vector<PossibleMove> calcPossibleMoves(Piece** board, bool checkCheck) = 0;
 
 	// true, if piece has moved
 	bool m_hasMoved;
@@ -73,11 +73,11 @@ public:
 	// returns type of piece
 	PieceType getType() const { return m_type; };
 
-	bool moveMakeMyKingToBeCheck(Piece** field, const King* king, const Point* move, Piece* CurrentPiece) const;
+	bool moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point* move, Piece* CurrentPiece) const;
 
-	virtual std::vector<Point> getPhysicallyPossiblePositions(Piece** field) const = 0;
+	virtual std::vector<Point> getPhysicallyPossiblePositions(Piece** board) const = 0;
 
-	bool canEliminateKing(Piece** field, const Piece* king) const;
+	bool canEliminateKing(Piece** board, const Piece* king) const;
 
 protected:
 
@@ -108,11 +108,11 @@ protected:
 	std::vector<PossibleMove> simulateMove(std::vector<PossibleMove> moveList,
 										PossibleMove move,
 										King* king,
-										Piece** field,
+										Piece** board,
 										bool checkCheck) const;
 
-	// returns king of own team from field
-	King* getOwnKing(Piece** field) const;
+	// returns king of own team from board
+	King* getOwnKing(Piece** board) const;
 
 public:
 	static int s_piece_counter;

@@ -35,7 +35,7 @@ public:
 	// Event (Mouseclick etc)
 	SDL_Event m_event;
 	
-	// initialize the field
+	// initialize the board
 	// returns true, if everything worked
 	bool init();
 
@@ -54,7 +54,7 @@ public:
 	// gets filename, return texture of the jpg file
 	SDL_Texture* loadImage(std::string filename);
 
-	//renders the background of the field
+	//renders the background of the board
 	void renderBackground();
 
 private:

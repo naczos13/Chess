@@ -15,10 +15,10 @@ public:
     ~Rook();
 
     // calculates the possible moves
-    std::vector<PossibleMove> calcPossibleMoves(Piece** field, bool checkCheck) override;
+    std::vector<PossibleMove> calcPossibleMoves(Piece** board, bool checkCheck) override;
 
     // Get the vector of Physically Possible Positions in next move, without checking for checkmate
-    std::vector<Point> getPhysicallyPossiblePositions(Piece** field) const override;
+    std::vector<Point> getPhysicallyPossiblePositions(Piece** board) const override;
 };
 
 

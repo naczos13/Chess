@@ -31,7 +31,7 @@ void Rook::sayMyName()
 	}
 }
 
-std::vector<PossibleMove> Rook::calcPossibleMoves(Piece** field, bool checkCheck)
+std::vector<PossibleMove> Rook::calcPossibleMoves(Piece** board, bool checkCheck)
 {
 	std::vector<PossibleMove> moves;
 
@@ -45,13 +45,13 @@ std::vector<PossibleMove> Rook::calcPossibleMoves(Piece** field, bool checkCheck
 			{
 				dx_copy = dx;
 				dy_copy = dy;
-				while (field[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)] == nullptr
+				while (board[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)] == nullptr
 					&& (m_pos.x + dx_copy >= 0 && m_pos.x + dx_copy <= 7 && m_pos.y + dy_copy >= 0 && m_pos.y + dy_copy <= 7))
 				{
 					moves = simulateMove(moves,
 									 PossibleMove{ m_pos.x + dx_copy, m_pos.y + dy_copy, MoveType::NORMAL },
-									 getOwnKing(field),
-									 field,
+									 getOwnKing(board),
+									 board,
 									 checkCheck);
 
 					if (dx_copy < 0)
@@ -71,15 +71,15 @@ std::vector<PossibleMove> Rook::calcPossibleMoves(Piece** field, bool checkCheck
 						dy_copy += 1;
 					}
 				}
-				if (field[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)] != nullptr
+				if (board[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)] != nullptr
 					&& (m_pos.x + dx_copy >= 0 && m_pos.x + dx_copy <= 7 && m_pos.y + dy_copy >= 0 && m_pos.y + dy_copy <= 7))
 				{
-					if (field[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)]->getTeam() != m_team)
+					if (board[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)]->getTeam() != m_team)
 					{
 						moves = simulateMove(moves,
 										 PossibleMove{ m_pos.x + dx_copy, m_pos.y + dy_copy, MoveType::NORMAL },
-										 getOwnKing(field),
-										 field,
+										 getOwnKing(board),
+										 board,
 										 checkCheck);
 					}
 				}
@@ -96,7 +96,7 @@ Rook::~Rook()
 }
 
 
-std::vector<Point> Rook::getPhysicallyPossiblePositions(Piece** field) const
+std::vector<Point> Rook::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;
 	return posible_positions;

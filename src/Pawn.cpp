@@ -41,17 +41,17 @@ void Pawn::sayMyName()
 	}
 }
 
-std::vector<PossibleMove> Pawn::calcPossibleMoves(Piece** field, bool checkCheck)
+std::vector<PossibleMove> Pawn::calcPossibleMoves(Piece** board, bool checkCheck)
 {
 	std::vector<PossibleMove> posible_moves;
 
-	std::vector<Point> posible_positions = getPhysicallyPossiblePositions(field);
+	std::vector<Point> posible_positions = getPhysicallyPossiblePositions(board);
 
 	for (const Point& newPosition : posible_positions)
 	{
 		// simulate the move
 		// need to check this because maybe this move can led to own checkmate
-		if (!moveMakeMyKingToBeCheck(field, getOwnKing(field), &newPosition, this))
+		if (!moveMakeMyKingToBeCheck(board, getOwnKing(board), &newPosition, this))
 		{
 			posible_moves.emplace_back(PossibleMove{ newPosition.x, newPosition.y, MoveType::NORMAL });
 		}
@@ -60,13 +60,13 @@ std::vector<PossibleMove> Pawn::calcPossibleMoves(Piece** field, bool checkCheck
 	return posible_moves;
 }
 
-std::vector<Point> Pawn::getPhysicallyPossiblePositions(Piece** field) const
+std::vector<Point> Pawn::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;
 
 	// single forward - only if the place is empty
 	Point singleForwardMove = { m_pos.x, m_pos.y + m_dy };
-	Piece* singleForwadPiece = field[CoordToIndex(singleForwardMove.x, singleForwardMove.y)];
+	Piece* singleForwadPiece = board[CoordToIndex(singleForwardMove.x, singleForwardMove.y)];
 	if (!singleForwadPiece)
 		posible_positions.emplace_back(singleForwardMove);
 
@@ -74,7 +74,7 @@ std::vector<Point> Pawn::getPhysicallyPossiblePositions(Piece** field) const
 	Point doubleForward = { m_pos.x, m_pos.y + 2 * m_dy };
 	if (!m_hasMoved && // only if this is firs move
 		!singleForwadPiece && // only if the way is empty
-		!field[CoordToIndex(doubleForward.x, doubleForward.y)])
+		!board[CoordToIndex(doubleForward.x, doubleForward.y)])
 	{
 		posible_positions.emplace_back(doubleForward);
 	}
@@ -86,7 +86,7 @@ std::vector<Point> Pawn::getPhysicallyPossiblePositions(Piece** field) const
 		Point moveVertical{ m_pos.x + dx, m_pos.y + m_dy };
 		if (moveVertical.x >= 0 && moveVertical.x < 8)
 		{
-			Piece* toCapture = field[CoordToIndex(moveVertical.x, moveVertical.y)];
+			Piece* toCapture = board[CoordToIndex(moveVertical.x, moveVertical.y)];
 			if (toCapture && toCapture->getTeam() != getTeam())
 			{
 				posible_positions.push_back(moveVertical);

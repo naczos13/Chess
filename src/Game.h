@@ -25,7 +25,7 @@ public:
     // Destructor
     ~Game();
 
-	// returns a the Piece in field (row, col)
+	// returns a the Piece in board (row, col)
     Piece* getPieceByPosition(int row, int col);
 
     // return possible moves per piece
@@ -39,9 +39,6 @@ public:
 
     std::optional<PossibleMove> GetValidMove(const Point& endPoint, const std::vector<PossibleMove>& possibleMoves) const;
 
-    // true, if the move is valid  ;  false if not
-    bool isValidMove(int x, int y, Piece* piece);
-
     // calculates all allowed moves of every piece
     void calcAllMoves();
 
@@ -53,9 +50,9 @@ public:
 
     void createPieces();
 
-    // 2D Field array, every Position has got a Team and a piece
+    // 2D board array, every Position has got a Team and a piece
     Piece* board[64];
-    Piece** m_field = board;
+    Piece** m_board = board;
 
 private: 
 
