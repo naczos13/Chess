@@ -73,8 +73,11 @@ std::vector<PossibleMove> Piece::getPossibleMoves(Piece** board, bool checkCheck
 	return calcPossibleMoves(board, checkCheck);
 }
 
-King* Piece::getOwnKing(Piece** board) const
+King* Piece::getOwnKing(Piece** board)
 {
+	if (m_ownKing)
+		return m_ownKing;
+
 	for  (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
@@ -83,13 +86,13 @@ King* Piece::getOwnKing(Piece** board) const
 			{
 				if (board[CoordToIndex(i, j)]->getTeam() == m_team && board[CoordToIndex(i, j)]->getType() == PieceType::KING)
 				{
-					King* ret = (King*)(board[CoordToIndex(i, j)]);
-					return ret;
+					m_ownKing = (King*)(board[CoordToIndex(i, j)]);
+					return m_ownKing;
 				}
 			}
 		}
 	}
-	return nullptr;
+	return m_ownKing;
 }
 
 Piece::Piece(Team team, Point pos, SDL_Handler* handler, PieceType type)

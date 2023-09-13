@@ -102,7 +102,9 @@ protected:
 	Point m_pos;
 
 	// returns king of own team from board
-	King* getOwnKing(Piece** board) const;
+	King* getOwnKing(Piece** board);
+
+	King* m_ownKing = nullptr;
 
 public:
 	static int s_piece_counter;

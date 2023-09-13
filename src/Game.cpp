@@ -96,15 +96,15 @@ void Game::createPieces()
 
     // Create KING
     // White
-    createPiece(PieceType::KING, Team::WHITE, { 3, 0 });
+    createPiece(PieceType::KING, Team::WHITE, { 4, 0 });
     // Black
-    createPiece(PieceType::KING, Team::BLACK, { 3, 7 });
+    createPiece(PieceType::KING, Team::BLACK, { 4, 7 });
 
     // Create QUEEN
     // White
-    createPiece(PieceType::QUEEN, Team::WHITE, { 4, 0 });
+    createPiece(PieceType::QUEEN, Team::WHITE, { 3, 0 });
     // Black
-    createPiece(PieceType::QUEEN, Team::BLACK, { 4, 7 });
+    createPiece(PieceType::QUEEN, Team::BLACK, { 3, 7 });
 
 }
 
