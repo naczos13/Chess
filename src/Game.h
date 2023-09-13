@@ -22,9 +22,6 @@ public:
 	// returns a the Piece in board (row, col)
     Piece* getPieceByPosition(int row, int col);
 
-    // return possible moves per piece
-    std::vector<PossibleMove> getPosibleMovesForPiece(Piece* piece) const;
-
     //Moves a piece
     void move(Piece* piece, PossibleMove move);
 

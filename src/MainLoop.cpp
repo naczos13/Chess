@@ -35,7 +35,7 @@ void MainLoop::run()
 			{
 				if (clickedPiece->getTeam() == game.getTurn())
 				{
-					possibleMoves = game.getPosibleMovesForPiece(clickedPiece);
+					possibleMoves = clickedPiece->getPossibleMoves(game.m_board);
 					game.renderPossibleMoves(possibleMoves);
 				}
 			}

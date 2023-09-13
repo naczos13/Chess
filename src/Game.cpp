@@ -91,20 +91,10 @@ Game::~Game()
 {
 }
 
-
 Piece* Game::getPieceByPosition(int row, int col)
 {
     return m_board[row * 8 + col];
 }
-
-std::vector<PossibleMove> Game::getPosibleMovesForPiece(Piece* piece) const
-{
-    if (piece)
-        return piece->getPossibleMoves(m_board);
-    else
-        return {};
-}
-
 
 void Game::move(Piece* start, PossibleMove move)
 {
@@ -137,7 +127,6 @@ void Game::move(Piece* start, PossibleMove move)
 
     gameState();
 }
-
 
 void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
 {
@@ -185,7 +174,6 @@ void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
     }
 }
 
-
 void Game::enPassant(int xStart, int yStart, int xEnd, int yEnd)
 {
     Pawn* pawn_start = static_cast<Pawn*>(m_board[CoordToIndex(xStart, yStart)]);
@@ -198,7 +186,6 @@ void Game::enPassant(int xStart, int yStart, int xEnd, int yEnd)
     m_board[CoordToIndex(xEnd, yEnd)]->setPosition(Point(xEnd, yEnd));
     m_board[CoordToIndex(xEnd, yEnd)]->render();
 }
-
 
 void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
 {
@@ -316,7 +303,6 @@ void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
     SDL_DestroyTexture(text_queen);
 }
 
-
 void Game::castles(int xStart, int yStart, int xEnd, int yEnd)
 {
     if (xEnd == 0)
@@ -402,7 +388,6 @@ void Game::gameState()
     SDL_PushEvent(&quitEvent);
 }
 
-
 void Game::disableEnPassant()
 {
     for (int i = 0; i < 8; i++)
@@ -420,7 +405,6 @@ void Game::disableEnPassant()
         }
     }
 }
-
 
 void Game::renderPossibleMoves(const std::vector<PossibleMove>& possible)
 {
