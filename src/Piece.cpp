@@ -86,7 +86,7 @@ King* Piece::getOwnKing(Piece** board)
 			{
 				if (board[CoordToIndex(i, j)]->getTeam() == m_team && board[CoordToIndex(i, j)]->getType() == PieceType::KING)
 				{
-					m_ownKing = (King*)(board[CoordToIndex(i, j)]);
+					m_ownKing = static_cast<King*>(board[CoordToIndex(i, j)]);
 					return m_ownKing;
 				}
 			}
