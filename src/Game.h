@@ -40,6 +40,9 @@ public:
 
     void createPieces();
 
+
+    void createPiece(const PieceType& type, const Team& team, const Point& position);
+
     // 2D board array, every Position has got a Team and a piece
     std::array<Piece*, 64> board;
     Piece** m_board = board.data();
