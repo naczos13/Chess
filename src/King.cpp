@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 King::King(Team team, Point pos, SDL_Handler* handler)
-	:Piece(team, pos, handler, KING), m_check(false)
+	:Piece(team, pos, handler, KING)
 {
 	std::string filename;
 	if (team == BLACK)

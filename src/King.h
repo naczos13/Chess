@@ -13,15 +13,8 @@ public:
     // calculates the possible moves
     std::vector<PossibleMove> calcPossibleMoves(Piece** board, bool checkCheck) override;
 
-    // get check
-    bool getCheck() { return m_check; };
-
     // Get the vector of Physically Possible Positions in next move, without checking for checkmate
     std::vector<Point> getPhysicallyPossiblePositions(Piece** board) const override;
 
-private:
-
-    // true, if the king is on any of the other teams movelist's
-    bool m_check;
 };
 
