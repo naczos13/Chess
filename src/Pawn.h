@@ -12,7 +12,7 @@ public:
     void sayMyName();
 
     // calculates possible moves
-    void calcPossibleMoves(Piece* field[8][8], bool checkCheck);
+    virtual std::vector<PossibleMove> calcPossibleMoves(Piece** field, bool checkCheck) override;
 
     // direction the pawn moves
     int m_dy;
@@ -22,6 +22,12 @@ public:
 
     // set m_enPassant
     void setEnPassant(std::pair<bool, int> modifi) { m_enPassant = modifi; };
+
+    // Get the vector of Physically Possible Positions in next move, without checking for checkmate
+    std::vector<Point> getPhysicallyPossiblePositions(Piece** field) const override;
+
+    // Just made a double move
+    bool m_justMadeDoubleMove;
 
 private:
     // if true, en passant is possible in the int direction

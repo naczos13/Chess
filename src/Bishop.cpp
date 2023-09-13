@@ -1,5 +1,6 @@
 #include "Bishop.h"
 #include <iostream>
+#include <array>
 
 Bishop::Bishop(Team team, Point pos, SDL_Handler* handler)
 	:Piece(team, pos, handler, BISHOP)
@@ -30,59 +31,64 @@ void Bishop::sayMyName()
 	}
 }
 
-void Bishop::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
+std::vector<PossibleMove> Bishop::calcPossibleMoves(Piece** field, bool checkCheck)
 {
-	std::vector<PossibleMove> moves;
-	int dx_copy;
-	int dy_copy;
-	for (int dx = -1; dx <= 1; dx += 2)
+	std::vector<PossibleMove> posible_moves;
+
+	std::vector<Point> posible_positions = getPhysicallyPossiblePositions(field);
+
+	for (const Point& newPosition : posible_positions)
 	{
-		for (int dy = -1; dy <= 1; dy += 2)
+		// simulate the move
+		// need to check this because maybe this move can led to own checkmate
+		if (!moveMakeMyKingToBeCheck(field, getOwnKing(field), &newPosition, this))
 		{
-			dx_copy = dx;
-			dy_copy = dy;
-			while (field[m_pos.x + dx_copy][m_pos.y + dy_copy] == nullptr
-				&& (m_pos.x + dx_copy >= 0 && m_pos.x + dx_copy <= 7 && m_pos.y + dy_copy >= 0 && m_pos.y + dy_copy <= 7))
-			{
-				moves = pushMove(moves,
-						 PossibleMove{ m_pos.x + dx_copy, m_pos.y + dy_copy, MoveType::NORMAL },
-						 getOwnKing(field),
-						 field,
-						 checkCheck);
-				if (dx_copy < 0)
-				{
-					dx_copy -= 1;
-				}
-				else
-				{
-					dx_copy += 1;
-				}
-				if (dy_copy < 0)
-				{
-					dy_copy -= 1;
-				}
-				else
-				{
-					dy_copy += 1;
-				}
-			}
-			if (field[m_pos.x + dx_copy][m_pos.y + dy_copy] != nullptr
-				&& (m_pos.x + dx_copy >= 0 && m_pos.x + dx_copy <= 7 && m_pos.y + dy_copy >= 0 && m_pos.y + dy_copy <= 7))
-			{
-				if (field[m_pos.x + dx_copy][m_pos.y + dy_copy]->getTeam() != m_team)
-				{
-					moves = pushMove(moves,
-						PossibleMove{ m_pos.x + dx_copy, m_pos.y + dy_copy, MoveType::NORMAL },
-						getOwnKing(field),
-						field,
-						checkCheck);
-				}
-			}
+			posible_moves.emplace_back(PossibleMove{ newPosition.x, newPosition.y, MoveType::NORMAL });
 		}
 	}
 
-	m_possibleMoves = moves;
+	return posible_moves;
 }
 
+std::vector<Point> Bishop::getPhysicallyPossiblePositions(Piece** field) const
+{
+	std::vector<Point> posible_positions;
+
+	// Bishop can move by diagonal
+	Point moveDirection[4] = {
+		{-1, -1},	// left down
+		{-1,  1},	// left up
+		{ 1, -1},	// right down
+		{ 1,  1}	// right up
+	};
+
+	for (const auto [dx, dy] : moveDirection) {
+		for (int multiplyer{ 1 }; multiplyer < 8; multiplyer++) { // in each direction the the bishop can possible make 7 moves
+
+			int newX = m_pos.x + dx * multiplyer;
+			int newY = m_pos.y + dy * multiplyer;
+
+			// if pass the border, stop checking this direction
+			if (newX < 0 || newX > 7 || newY < 0 || newY > 7)
+				break;
+
+			// if in the way is piece, 
+			if (const Piece* potential_piece = field[CoordToIndex(newX, newY)]) {
+				// if the piece is in opossite team add this as possible move
+				if (potential_piece->getTeam() != m_team)
+				{
+					posible_positions.emplace_back(newX, newY);
+				}
+				// then stop checking this direction
+				break;
+			}
+
+			// if this is simply empty space, just add it
+			posible_positions.emplace_back(newX, newY);
+		}
+	}
+
+	return posible_positions;
+}
 
 

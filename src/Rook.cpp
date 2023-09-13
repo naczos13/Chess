@@ -31,11 +31,11 @@ void Rook::sayMyName()
 	}
 }
 
-void Rook::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
+std::vector<PossibleMove> Rook::calcPossibleMoves(Piece** field, bool checkCheck)
 {
 	std::vector<PossibleMove> moves;
 
-	int dx_copy;
+	/*int dx_copy;
 	int dy_copy;
 	for (int dx = -1; dx <= 1; dx ++)
 	{
@@ -45,10 +45,10 @@ void Rook::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 			{
 				dx_copy = dx;
 				dy_copy = dy;
-				while (field[m_pos.x + dx_copy][m_pos.y + dy_copy] == nullptr
+				while (field[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)] == nullptr
 					&& (m_pos.x + dx_copy >= 0 && m_pos.x + dx_copy <= 7 && m_pos.y + dy_copy >= 0 && m_pos.y + dy_copy <= 7))
 				{
-					moves = pushMove(moves,
+					moves = simulateMove(moves,
 									 PossibleMove{ m_pos.x + dx_copy, m_pos.y + dy_copy, MoveType::NORMAL },
 									 getOwnKing(field),
 									 field,
@@ -71,12 +71,12 @@ void Rook::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 						dy_copy += 1;
 					}
 				}
-				if (field[m_pos.x + dx_copy][m_pos.y + dy_copy] != nullptr
+				if (field[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)] != nullptr
 					&& (m_pos.x + dx_copy >= 0 && m_pos.x + dx_copy <= 7 && m_pos.y + dy_copy >= 0 && m_pos.y + dy_copy <= 7))
 				{
-					if (field[m_pos.x + dx_copy][m_pos.y + dy_copy]->getTeam() != m_team)
+					if (field[CoordToIndex(m_pos.x + dx_copy, m_pos.y + dy_copy)]->getTeam() != m_team)
 					{
-						moves = pushMove(moves,
+						moves = simulateMove(moves,
 										 PossibleMove{ m_pos.x + dx_copy, m_pos.y + dy_copy, MoveType::NORMAL },
 										 getOwnKing(field),
 										 field,
@@ -85,12 +85,19 @@ void Rook::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
 				}
 			}
 		}
-	}
+	}*/
 
-	m_possibleMoves = moves;
+	return moves;
 }
 
 
 Rook::~Rook()
 {
+}
+
+
+std::vector<Point> Rook::getPhysicallyPossiblePositions(Piece** field) const
+{
+	std::vector<Point> posible_positions;
+	return posible_positions;
 }

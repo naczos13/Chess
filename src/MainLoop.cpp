@@ -41,18 +41,19 @@ void MainLoop::run()
 		}
 		case SDL_MOUSEBUTTONUP:
 		{
-			// Clear the board from the possible moves
-			game.undoRenderPossibleMoves(clickedPiece);
 
 			if (clickedPiece)
 			{
+				// Clear the board from the possible moves
+				game.undoRenderPossibleMoves(clickedPiece);
+
 				moveEnd.x = handler.m_event.button.x / SDL_Handler::CELL_WIDTH;
 				moveEnd.y = handler.m_event.button.y / SDL_Handler::CELL_HEIGHT;
 
 				if ((clickedPiece->getTeam() == game.getTurn())
 					&& (game.isValidMove(moveEnd.x, moveEnd.y, clickedPiece)))
 				{
-					std::vector<PossibleMove> list = clickedPiece->getPossibleMoves();
+					std::vector<PossibleMove> list = clickedPiece->getPossibleMoves(game.m_field);
 					for (const auto& [XCoord, YCoord, MoveType] : list)
 					{
 						if (XCoord == moveEnd.x && YCoord == moveEnd.y)

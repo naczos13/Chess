@@ -11,13 +11,16 @@ public:
     void sayMyName();
 
     // calculates the possible moves
-    void calcPossibleMoves(Piece* field[8][8], bool checkCheck);
+    std::vector<PossibleMove> calcPossibleMoves(Piece** field, bool checkCheck) override;
 
     // controls whether this piece is checked or not
-    void setCheck(Piece* field[8][8], int x, int y);
+    void setCheck(Piece** field, int x, int y);
 
     // get check
     bool getCheck() { return m_check; };
+
+    // Get the vector of Physically Possible Positions in next move, without checking for checkmate
+    std::vector<Point> getPhysicallyPossiblePositions(Piece** field) const override;
 
 private:
 

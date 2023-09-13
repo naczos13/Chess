@@ -1,6 +1,6 @@
 #include "Pawn.h"
 #include <iostream>
-#include <list>
+#include <array>
 
 Pawn::Pawn(Team team, Point pos, SDL_Handler* handler)
 	:Piece(team, pos, handler, PAWN), m_enPassant(std::pair<bool, int>(false, 0))
@@ -41,116 +41,64 @@ void Pawn::sayMyName()
 	}
 }
 
-void Pawn::calcPossibleMoves(Piece* field[8][8], bool checkCheck)
+std::vector<PossibleMove> Pawn::calcPossibleMoves(Piece** field, bool checkCheck)
 {
-	std::vector<PossibleMove> moves;
+	std::vector<PossibleMove> posible_moves;
 
-	if (m_pos.y + m_dy == 0 || m_pos.y + m_dy == 7)
+	std::vector<Point> posible_positions = getPhysicallyPossiblePositions(field);
+
+	for (const Point& newPosition : posible_positions)
 	{
-		if (field[m_pos.x][m_pos.y + m_dy] == nullptr)
+		// simulate the move
+		// need to check this because maybe this move can led to own checkmate
+		if (!moveMakeMyKingToBeCheck(field, getOwnKing(field), &newPosition, this))
 		{
-			moves = pushMove(moves,
-				PossibleMove{ m_pos.x, m_pos.y + m_dy, MoveType::NEWPIECE },
-				getOwnKing(field),
-				field,
-				checkCheck);
-		}
-	}
-	else
-	{
-		if (field[m_pos.x][m_pos.y + m_dy] == nullptr)
-		{
-			moves = pushMove(moves,
-				PossibleMove{ m_pos.x, m_pos.y + m_dy, MoveType::NORMAL },
-				getOwnKing(field),
-				field,
-				checkCheck);
+			posible_moves.emplace_back(PossibleMove{ newPosition.x, newPosition.y, MoveType::NORMAL });
 		}
 	}
 
-	if ((m_pos.y + 2 * m_dy >= 0) && (m_pos.y + 2 * m_dy <= 7))
-	{
-		if (field[m_pos.x][m_pos.y + 2 * m_dy] == nullptr && !m_hasMoved)
-		{
-			moves = pushMove(moves,
-				PossibleMove(m_pos.x, m_pos.y + 2 * m_dy, MoveType::NORMAL),
-				getOwnKing(field),
-				field,
-				checkCheck);
-		}
-	}
-
-	if (m_pos.x + 1 <= 7)
-	{
-		if (field[m_pos.x + 1][m_pos.y + m_dy] != nullptr)
-		{
-			if (field[m_pos.x + 1][m_pos.y + m_dy]->getTeam() != m_team)
-			{
-				if (m_pos.y + m_dy == 0 || m_pos.y + m_dy == 7)
-				{
-					moves = pushMove(moves,
-						PossibleMove(m_pos.x + 1, m_pos.y + m_dy, MoveType::NEWPIECE),
-						getOwnKing(field),
-						field,
-						checkCheck);
-				}
-				else
-				{
-					moves = pushMove(moves,
-						PossibleMove(m_pos.x + 1, m_pos.y + m_dy, MoveType::NORMAL),
-						getOwnKing(field),
-						field,
-						checkCheck);
-				}
-			}
-		}
-	}
-	if (m_pos.x - 1 >= 0)
-	{
-		if (field[m_pos.x - 1][m_pos.y + m_dy] != nullptr)
-		{
-			if (field[m_pos.x - 1][m_pos.y + m_dy]->getTeam() != m_team)
-			{
-				if (m_pos.y + m_dy == 0 || m_pos.y + m_dy == 7)
-				{
-					moves = pushMove(moves,
-						PossibleMove(m_pos.x - 1, m_pos.y + m_dy, MoveType::NEWPIECE),
-						getOwnKing(field),
-						field,
-						checkCheck);
-				}
-				else
-				{
-					moves = pushMove(moves,
-						PossibleMove(m_pos.x - 1, m_pos.y + m_dy, MoveType::NORMAL),
-						getOwnKing(field),
-						field,
-						checkCheck);
-				}
-			}
-		}
-	}
-
-	if (m_enPassant == std::pair<bool, int>(true, -1))
-	{
-		moves = pushMove(moves,
-			PossibleMove(m_pos.x + 1, m_pos.y + m_dy, MoveType::ENPASSANT),
-			getOwnKing(field),
-			field,
-			checkCheck);
-	}
-	if (m_enPassant == std::pair<bool, int>(true, 1))
-	{
-		moves = pushMove(moves,
-			PossibleMove(m_pos.x - 1, m_pos.y + m_dy, MoveType::ENPASSANT),
-			getOwnKing(field),
-			field,
-			checkCheck);
-	}
-	m_possibleMoves = moves;
+	return posible_moves;
 }
 
+std::vector<Point> Pawn::getPhysicallyPossiblePositions(Piece** field) const
+{
+	std::vector<Point> posible_positions;
 
+	// single forward - only if the place is empty
+	Point singleForwardMove = { m_pos.x, m_pos.y + m_dy };
+	Piece* singleForwadPiece = field[CoordToIndex(singleForwardMove.x, singleForwardMove.y)];
+	if (!singleForwadPiece)
+		posible_positions.emplace_back(singleForwardMove);
+
+	// double forward - only if this is first move and in the way are no pieces
+	Point doubleForward = { m_pos.x, m_pos.y + 2 * m_dy };
+	if (!m_hasMoved && // only if this is firs move
+		!singleForwadPiece && // only if the way is empty
+		!field[CoordToIndex(doubleForward.x, doubleForward.y)])
+	{
+		posible_positions.emplace_back(doubleForward);
+	}
+
+	// capture - only if still in bounds and there is a enemy piece
+	std::array<int, 2> verticalDirection{ -1, 1 };
+	for (const int dx : verticalDirection)
+	{
+		Point moveVertical{ m_pos.x + dx, m_pos.y + m_dy };
+		if (moveVertical.x >= 0 && moveVertical.x < 8)
+		{
+			Piece* toCapture = field[CoordToIndex(moveVertical.x, moveVertical.y)];
+			if (toCapture && toCapture->getTeam() != getTeam())
+			{
+				posible_positions.push_back(moveVertical);
+			}
+		}
+	}
+
+	// enpassant
+	//TODO
+
+	return posible_positions;
+}
 
 
 

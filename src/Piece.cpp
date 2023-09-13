@@ -3,11 +3,78 @@
 #include <string>
 #include <iostream>
 
-std::vector<PossibleMove> Piece::pushMove(std::vector<PossibleMove> moveList,
+int CoordToIndex(int x, int y) {
+	return x * 8 + y;
+}
+
+bool Piece::moveMakeMyKingToBeCheck(Piece** field, const King* king, const Point* move, Piece* CurrentPiece) const
+{
+	// make this move, loop over all the enemy pieces and check if the can checkmate the king, then revert the move
+
+	// what I need
+	// - make a move
+	// - list of enemy Pieces
+	//		- 
+	// - function that check if piece can capture a king
+	// - revert the move
+
+	bool captureTheKing = false;
+
+	// # Make a move
+	Piece* capturePiece = field[CoordToIndex(move->x, move->y)];
+	const Point prevPiecePosition = CurrentPiece->getPos();
+	CurrentPiece->setPosition(*move);
+	field[CoordToIndex(move->x, move->y)] = CurrentPiece;
+	field[CoordToIndex(prevPiecePosition.x, prevPiecePosition.y)] = nullptr;
+
+	for (int x{ 0 }; x < 8; x++)
+	{
+		for (int y{ 0 }; y < 8; y++)
+		{
+			const Piece* potentialEnemy = field[CoordToIndex(x, y)];
+			if (potentialEnemy && potentialEnemy->getTeam() != king->getTeam())
+			{
+				if (potentialEnemy->canEliminateKing(field, king))
+				{
+					// revert the move
+					field[CoordToIndex(move->x, move->y)] = capturePiece;
+					CurrentPiece->setPosition(prevPiecePosition);
+					field[CoordToIndex(prevPiecePosition.x, prevPiecePosition.y)] = CurrentPiece;
+					return true;
+				}
+			}
+		}
+	}
+
+	// revert the move
+	field[CoordToIndex(move->x, move->y)] = capturePiece;
+	CurrentPiece->setPosition(prevPiecePosition);
+	field[CoordToIndex(prevPiecePosition.x, prevPiecePosition.y)] = CurrentPiece;
+	return false;
+}
+
+bool Piece::canEliminateKing(Piece** field, const Piece* king) const
+{
+	std::vector<Point> posible_positions = getPhysicallyPossiblePositions(field);
+	for (const auto& [x, y] : posible_positions)
+	{
+		const Piece* possiblePiece = field[CoordToIndex(x, y)];
+		if (possiblePiece == king)
+			return true;
+	}
+	return false;
+}
+
+std::vector<PossibleMove> Piece::getPossibleMoves(Piece** field, bool checkCheck)
+{
+	return calcPossibleMoves(field, checkCheck);
+}
+
+std::vector<PossibleMove> Piece::simulateMove(std::vector<PossibleMove> moveList,
 											PossibleMove move,
 											King* king,
-											Piece* field[8][8],
-											bool checkCheck)
+											Piece** field,
+											bool checkCheck) const
 {
 	if (!checkCheck)
 	{
@@ -17,16 +84,16 @@ std::vector<PossibleMove> Piece::pushMove(std::vector<PossibleMove> moveList,
 	{
 		bool enemyPlace = true;
 		king->setCheck(field, king->getPos().x, king->getPos().y);
-		Piece* zwisch = &(*field[move.XCoord][move.YCoord]);
+		Piece* zwisch = field[CoordToIndex(move.XCoord, move.YCoord)];
 		enemyPlace = false;
 
-		if (field[move.XCoord][move.YCoord] != nullptr)
+		if (field[CoordToIndex(move.XCoord, move.YCoord)] != nullptr)
 		{
 			enemyPlace = true;
-			field[move.XCoord][move.YCoord] = nullptr;
+			field[CoordToIndex(move.XCoord, move.YCoord)] = nullptr;
 		}
 
-		std::swap(field[move.XCoord][move.YCoord], field[m_pos.x][m_pos.y]);
+		std::swap(field[CoordToIndex(move.XCoord, move.YCoord)], field[CoordToIndex(m_pos.x, m_pos.y)]);
 		if (m_type == KING)
 		{
 			king->setCheck(field, move.XCoord, move.YCoord);
@@ -35,11 +102,11 @@ std::vector<PossibleMove> Piece::pushMove(std::vector<PossibleMove> moveList,
 		{
 			king->setCheck(field, king->getPos().x, king->getPos().y);
 		}
-		std::swap(field[move.XCoord][move.YCoord], field[m_pos.x][m_pos.y]);
+		std::swap(field[CoordToIndex(move.XCoord, move.YCoord)], field[CoordToIndex(m_pos.x, m_pos.y)]);
 
 		if (enemyPlace)
 		{
-			field[move.XCoord][move.YCoord] = &(*zwisch);
+			field[CoordToIndex(move.XCoord, move.YCoord)] = zwisch;
 		}
 		if (!king->getCheck())
 		{
@@ -50,17 +117,17 @@ std::vector<PossibleMove> Piece::pushMove(std::vector<PossibleMove> moveList,
 	return moveList;
 }
 
-King* Piece::getOwnKing(Piece* field[8][8])
+King* Piece::getOwnKing(Piece** field) const
 {
 	for  (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			if (field[i][j] != nullptr)
+			if (field[CoordToIndex(i, j)] != nullptr)
 			{
-				if (field[i][j]->getTeam() == m_team && field[i][j]->getType() == PieceType::KING)
+				if (field[CoordToIndex(i, j)]->getTeam() == m_team && field[CoordToIndex(i, j)]->getType() == PieceType::KING)
 				{
-					King* ret = static_cast<King*>(field[i][j]);
+					King* ret = (King*)(field[CoordToIndex(i, j)]);
 					return ret;
 				}
 			}
@@ -73,6 +140,11 @@ Piece::Piece(Team team, Point pos, SDL_Handler* handler, PieceType type)
 	:m_team(team), m_pos(pos), m_handler(handler), m_texture(NULL), m_hasMoved(false), m_type(type)
 {
 	std::cout << "Created Piece: count: " << ++Piece::s_piece_counter << std::endl;
+}
+
+Piece::Piece()
+{
+	std::cout << "Created Empty Piece: count: " << ++Piece::s_piece_counter << std::endl;
 }
 
 Piece::Piece(const Piece& piece)

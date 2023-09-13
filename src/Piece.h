@@ -13,6 +13,8 @@ struct Point
 	int x{}, y{};
 };
 
+int CoordToIndex(int x, int y);
+
 enum Team { NONE=0, BLACK, WHITE };
 
 enum PieceType { EMPTY=0, PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN };
@@ -33,19 +35,22 @@ class Piece
 public:
 
 	// returns list of possible Moves
-	std::vector<PossibleMove> getPossibleMoves() { return m_possibleMoves; };
+	std::vector<PossibleMove> getPossibleMoves(Piece** field, bool checkCheck=true);
 
 	// return whether BLACK or WHITE
-	Team getTeam() { return m_team; };
+	Team getTeam() const { return m_team; };
 
 	// sets new position
 	void setPosition(Point newPos) { m_pos = newPos; };
 
 	// return position of piece
-	Point getPos() { return m_pos; };
+	Point getPos() const { return m_pos; };
 
 	// Constructor
 	Piece(Team team, Point pos, SDL_Handler* handler, PieceType type);
+
+	// Empty Constructor
+	Piece();
 
 	// Copy-Constructor
 	Piece(const Piece& piece);
@@ -60,13 +65,19 @@ public:
 	virtual void sayMyName() = 0;
 
 	// calculates every possible Move this piece can do
-	virtual void calcPossibleMoves(Piece* field[8][8], bool checkCheck) = 0;
+	virtual std::vector<PossibleMove> calcPossibleMoves(Piece** field, bool checkCheck) = 0;
 
 	// true, if piece has moved
 	bool m_hasMoved;
 
 	// returns type of piece
-	PieceType getType() { return m_type; };
+	PieceType getType() const { return m_type; };
+
+	bool moveMakeMyKingToBeCheck(Piece** field, const King* king, const Point* move, Piece* CurrentPiece) const;
+
+	virtual std::vector<Point> getPhysicallyPossiblePositions(Piece** field) const = 0;
+
+	bool canEliminateKing(Piece** field, const Piece* king) const;
 
 protected:
 
@@ -94,14 +105,14 @@ protected:
 	// if checkCheck is true the king simulation will determine whether the move is allowed or not
 	// if checkCheck is false, we will just push the move. checkCheck is only false in King's setCheck function,
 	// because otherwise it will produce stack overflow (pushMove calls setCheck, setCheck calls pushMove and so on)
-	std::vector<PossibleMove> pushMove(std::vector<PossibleMove> moveList,
+	std::vector<PossibleMove> simulateMove(std::vector<PossibleMove> moveList,
 										PossibleMove move,
 										King* king,
-										Piece* field[8][8],
-										bool checkCheck);
+										Piece** field,
+										bool checkCheck) const;
 
 	// returns king of own team from field
-	King* getOwnKing(Piece* field[8][8]);
+	King* getOwnKing(Piece** field) const;
 
 public:
 	static int s_piece_counter;

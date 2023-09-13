@@ -1,5 +1,4 @@
 #pragma once
-#include "Piece.h"
 #include "SDL_Handler.h"
 #include "Piece.h"
 #include "Pawn.h"
@@ -42,10 +41,13 @@ public:
 
     void createPieces();
 
+    // 2D Field array, every Position has got a Team and a piece
+    Piece* board[64];
+    Piece** m_field = board;
 
 private: 
-	// 2D Field array, every Position has got a Team and a piece
-	Piece* m_field[8][8];
+
+
 
     // disables enPassant for every Piece
     void disableEnPassant();

@@ -10,7 +10,6 @@ Game::Game(SDL_Handler* handler)
     calcAllMoves();
 }
 
-
 void Game::createPieces()
 {
     pieces.push_back(std::make_unique<Queen>(Team::WHITE, Point(4, 7), m_handler));
@@ -19,72 +18,72 @@ void Game::createPieces()
     for (int x{}; x < 8; x++) {
         // white
         pieces.push_back(std::make_unique<Pawn>(Team::WHITE, Point(x, 1), m_handler));
-        m_field[x][1] = pieces.back().get();
+        m_field[CoordToIndex(x,1)] = pieces.back().get();
         // black
         pieces.push_back(std::make_unique<Pawn>(Team::BLACK, Point(x, 6), m_handler));
-        m_field[x][6] = pieces.back().get();
+        m_field[CoordToIndex(x,6)] = pieces.back().get();
     }
 
     // Create Rook
     // White
     pieces.push_back(std::make_unique<Rook>(Team::WHITE, Point(0, 0), m_handler));
-    m_field[0][0] = pieces.back().get();
+    m_field[CoordToIndex(0,0)] = pieces.back().get();
     pieces.push_back(std::make_unique<Rook>(Team::WHITE, Point(7, 0), m_handler));
-    m_field[7][0] = pieces.back().get();
+    m_field[CoordToIndex(7, 0)] = pieces.back().get();
     // Black
     pieces.push_back(std::make_unique<Rook>(Team::BLACK, Point(0, 7), m_handler));
-    m_field[0][7] = pieces.back().get();
+    m_field[CoordToIndex(0, 7)] = pieces.back().get();
     pieces.push_back(std::make_unique<Rook>(Team::BLACK, Point(7, 7), m_handler));
-    m_field[7][7] = pieces.back().get();
+    m_field[CoordToIndex(7, 7)] = pieces.back().get();
 
     // Create Knight
     //White
     pieces.push_back(std::make_unique<Knight>(Team::WHITE, Point(1, 0), m_handler));
-    m_field[1][0] = pieces.back().get();
+    m_field[CoordToIndex(1, 0)] = pieces.back().get();
     pieces.push_back(std::make_unique<Knight>(Team::WHITE, Point(6, 0), m_handler));
-    m_field[6][0] = pieces.back().get();
+    m_field[CoordToIndex(6, 0)] = pieces.back().get();
     //Black
     pieces.push_back(std::make_unique<Knight>(Team::BLACK, Point(1, 7), m_handler));
-    m_field[1][7] = pieces.back().get();
+    m_field[CoordToIndex(1, 7)] = pieces.back().get();
     pieces.push_back(std::make_unique<Knight>(Team::BLACK, Point(6, 7), m_handler));
-    m_field[6][7] = pieces.back().get();
+    m_field[CoordToIndex(6, 7)] = pieces.back().get();
 
     //Create Bishop
     //White
     pieces.push_back(std::make_unique<Bishop>(Team::WHITE, Point(2, 0), m_handler));
-    m_field[2][0] = pieces.back().get();
+    m_field[CoordToIndex(2, 0)] = pieces.back().get();
     pieces.push_back(std::make_unique<Bishop>(Team::WHITE, Point(5, 0), m_handler));
-    m_field[5][0] = pieces.back().get();
+    m_field[CoordToIndex(5, 0)] = pieces.back().get();
     //Black
     pieces.push_back(std::make_unique<Bishop>(Team::BLACK, Point(2, 7), m_handler));
-    m_field[2][7] = pieces.back().get();
+    m_field[CoordToIndex(2, 7)] = pieces.back().get();
     pieces.push_back(std::make_unique<Bishop>(Team::BLACK, Point(5, 7), m_handler));
-    m_field[5][7] = pieces.back().get();
+    m_field[CoordToIndex(5, 0)] = pieces.back().get();
 
     // Create King
     //Black
     pieces.push_back(std::make_unique<King>(Team::BLACK, Point(3, 7), m_handler));
-    m_field[3][7] = pieces.back().get();
+    m_field[CoordToIndex(3, 7)] = pieces.back().get();
     blackKing = static_cast<King*>(pieces.back().get());
 
     //White
     pieces.push_back(std::make_unique<King>(Team::WHITE, Point(3, 0), m_handler));
-    m_field[3][0] = pieces.back().get();
+    m_field[CoordToIndex(3, 0)] = pieces.back().get();
     whiteKing = static_cast<King*>(pieces.back().get());
 
     // Create Queen
     // Black
     pieces.push_back(std::make_unique<Queen>(Team::BLACK, Point(4, 7), m_handler));
-    m_field[4][7] = pieces.back().get();
+    m_field[CoordToIndex(4, 7)] = pieces.back().get();
     // WHITE
     pieces.push_back(std::make_unique<Queen>(Team::WHITE, Point(4, 0), m_handler));
-    m_field[4][0] = pieces.back().get();
+    m_field[CoordToIndex(4, 0)] = pieces.back().get();
 
     for (int i = 2; i < 6; i++)
     {
         for (int j = 0; j < 8; j++)
         {
-            m_field[j][i] = nullptr;
+            m_field[CoordToIndex(j, i)] = nullptr;
         }
     }
 }
@@ -96,7 +95,7 @@ Game::~Game()
 
 Piece* Game::getPieceByPosition(int row, int col)
 {
-    return m_field[row][col];
+    return m_field[row * 8 + col];
 }
 
 
@@ -135,28 +134,28 @@ void Game::move(Piece* start, PossibleMove move)
 
 void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
 {
-    m_field[xEnd][yEnd] = getPieceByPosition(xStart, yStart);
-    m_field[xEnd][yEnd]->m_hasMoved = true;
-    m_field[xStart][yStart] = nullptr;
+    m_field[CoordToIndex(xEnd, yEnd)] = getPieceByPosition(xStart, yStart);
+    m_field[CoordToIndex(xEnd, yEnd)]->m_hasMoved = true;
+    m_field[CoordToIndex(xStart, yStart)] = nullptr;
     m_handler->undoPieceRender(xStart, yStart);
-    m_field[xEnd][yEnd]->setPosition(Point(xEnd, yEnd));
-    if (m_field[xEnd][yEnd] != nullptr)
+    m_field[CoordToIndex(xEnd, yEnd)]->setPosition(Point(xEnd, yEnd));
+    if (m_field[CoordToIndex(xEnd, yEnd)] != nullptr)
     {
         m_handler->undoPieceRender(xEnd, yEnd);
     }
-    m_field[xEnd][yEnd]->render();
+    m_field[CoordToIndex(xEnd, yEnd)]->render();
 
-    if (m_field[xEnd][yEnd]->getType() == PieceType::PAWN)
+    if (m_field[CoordToIndex(xEnd, yEnd)]->getType() == PieceType::PAWN)
     {
         if (abs(yEnd - yStart) == 2)
         {
             if (xEnd - 1 >= 0)
             {
-                if (m_field[xEnd - 1][yEnd] != nullptr)
+                if (m_field[CoordToIndex(xEnd - 1, yEnd)] != nullptr)
                 {
-                    if (m_field[xEnd - 1][yEnd]->getType() == PieceType::PAWN)
+                    if (m_field[CoordToIndex(xEnd - 1, yEnd)]->getType() == PieceType::PAWN)
                     {
-                        Pawn* pwn = static_cast<Pawn*>(m_field[xEnd - 1][yEnd]);
+                        Pawn* pwn = static_cast<Pawn*>(m_field[CoordToIndex(xEnd - 1, yEnd)]);
                         pwn->setEnPassant(std::pair<bool, int>(true, -1));
                         m_checkEnPassant = false;
                     }
@@ -165,11 +164,11 @@ void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
 
             if (xEnd + 1 <= 7)
             {
-                if (m_field[xEnd + 1][yEnd] != nullptr)
+                if (m_field[CoordToIndex(xEnd + 1, yEnd)] != nullptr)
                 {
-                    if (m_field[xEnd + 1][yEnd]->getType() == PieceType::PAWN)
+                    if (m_field[CoordToIndex(xEnd + 1, yEnd)]->getType() == PieceType::PAWN)
                     {
-                        Pawn* pwn = static_cast<Pawn*>(m_field[xEnd + 1][yEnd]);
+                        Pawn* pwn = static_cast<Pawn*>(m_field[CoordToIndex(xEnd + 1, yEnd)]);
                         pwn->setEnPassant(std::pair<bool, int>(true, 1));
                         m_checkEnPassant = false;
                     }
@@ -182,15 +181,15 @@ void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
 
 void Game::enPassant(int xStart, int yStart, int xEnd, int yEnd)
 {
-    Pawn* pawn_start = static_cast<Pawn*>(m_field[xStart][yStart]);
-    m_field[xEnd][yEnd - pawn_start->m_dy] = nullptr;
-    m_field[xEnd][yEnd] = getPieceByPosition(xStart, yStart);
-    m_field[xEnd][yEnd]->m_hasMoved = true;
-    m_field[xStart][yStart] = nullptr;
+    Pawn* pawn_start = static_cast<Pawn*>(m_field[CoordToIndex(xStart, yStart)]);
+    m_field[CoordToIndex(xEnd, yEnd - pawn_start->m_dy)] = nullptr;
+    m_field[CoordToIndex(xEnd, yEnd)] = getPieceByPosition(xStart, yStart);
+    m_field[CoordToIndex(xEnd, yEnd)]->m_hasMoved = true;
+    m_field[CoordToIndex(xStart, yStart)] = nullptr;
     m_handler->undoPieceRender(xStart, yStart);
     m_handler->undoPieceRender(xEnd, yEnd - pawn_start->m_dy);
-    m_field[xEnd][yEnd]->setPosition(Point(xEnd, yEnd));
-    m_field[xEnd][yEnd]->render();
+    m_field[CoordToIndex(xEnd, yEnd)]->setPosition(Point(xEnd, yEnd));
+    m_field[CoordToIndex(xEnd, yEnd)]->render();
 }
 
 
@@ -203,7 +202,7 @@ void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
     int y_draw = 0;
     Team team = Team::WHITE;
 
-    if (m_field[xStart][yStart]->getTeam() == Team::BLACK)
+    if (m_field[CoordToIndex(xStart, yStart)]->getTeam() == Team::BLACK)
     {
         text_rook = m_handler->loadImage("../res/Chess_rdt60.png");
         text_knight = m_handler->loadImage("../res/Chess_ndt60.png");
@@ -288,8 +287,8 @@ void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
         }
     }
 
-    m_field[xEnd][yEnd] = clickedPiece;
-    m_field[xStart][yStart] = nullptr;
+    m_field[CoordToIndex(xEnd, yEnd)] = clickedPiece;
+    m_field[CoordToIndex(xStart, yStart)] = nullptr;
     m_handler->undoPieceRender(xStart, yStart);
     m_handler->renderBackground();
     
@@ -297,9 +296,9 @@ void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
     {
         for (int j = 0; j < 8; j++)
         {
-            if (m_field[i][j] != nullptr)
+            if (m_field[CoordToIndex(i, j)] != nullptr)
             {
-                m_field[i][j]->render();
+                m_field[CoordToIndex(i, j)]->render();
             }
         }
     }
@@ -315,33 +314,33 @@ void Game::castles(int xStart, int yStart, int xEnd, int yEnd)
 {
     if (xEnd == 0)
     {
-        m_field[2][yEnd] = m_field[4][yEnd];
-        m_field[3][yEnd] = m_field[0][yEnd];
-        m_field[2][yEnd]->m_hasMoved = true;
-        m_field[3][yEnd]->m_hasMoved = true;
-        m_field[2][yEnd]->setPosition(Point(2, yEnd));
-        m_field[3][yEnd]->setPosition(Point(3, yEnd));
-        m_field[4][yEnd] = nullptr;
-        m_field[0][yEnd] = nullptr;
+        m_field[CoordToIndex(2, yEnd)] = m_field[CoordToIndex(4, yEnd)];
+        m_field[CoordToIndex(3, yEnd)] = m_field[CoordToIndex(0, yEnd)];
+        m_field[CoordToIndex(2, yEnd)]->m_hasMoved = true;
+        m_field[CoordToIndex(3, yEnd)]->m_hasMoved = true;
+        m_field[CoordToIndex(2, yEnd)]->setPosition(Point(2, yEnd));
+        m_field[CoordToIndex(3, yEnd)]->setPosition(Point(3, yEnd));
+        m_field[CoordToIndex(4, yEnd)] = nullptr;
+        m_field[CoordToIndex(0, yEnd)] = nullptr;
         m_handler->undoPieceRender(4, yEnd);
         m_handler->undoPieceRender(0, yEnd);
-        m_field[2][yEnd]->render();
-        m_field[3][yEnd]->render();
+        m_field[CoordToIndex(2, yEnd)]->render();
+        m_field[CoordToIndex(3, yEnd)]->render();
     }
     else
     {
-        m_field[6][yEnd] = m_field[4][yEnd];
-        m_field[5][yEnd] = m_field[7][yEnd];
-        m_field[6][yEnd]->m_hasMoved = true;
-        m_field[5][yEnd]->m_hasMoved = true;
-        m_field[6][yEnd]->setPosition(Point(6, yEnd));
-        m_field[5][yEnd]->setPosition(Point(5, yEnd));
-        m_field[4][yEnd] = nullptr;
-        m_field[7][yEnd] = nullptr;
+        m_field[CoordToIndex(6, yEnd)] = m_field[CoordToIndex(4, yEnd)];
+        m_field[CoordToIndex(5, yEnd)] = m_field[CoordToIndex(7, yEnd)];
+        m_field[CoordToIndex(6, yEnd)]->m_hasMoved = true;
+        m_field[CoordToIndex(5, yEnd)]->m_hasMoved = true;
+        m_field[CoordToIndex(6, yEnd)]->setPosition(Point(6, yEnd));
+        m_field[CoordToIndex(5, yEnd)]->setPosition(Point(5, yEnd));
+        m_field[CoordToIndex(4, yEnd)] = nullptr;
+        m_field[CoordToIndex(7, yEnd)] = nullptr;
         m_handler->undoPieceRender(4, yEnd);
         m_handler->undoPieceRender(7, yEnd);
-        m_field[6][yEnd]->render();
-        m_field[5][yEnd]->render();
+        m_field[CoordToIndex(6, yEnd)]->render();
+        m_field[CoordToIndex(5, yEnd)]->render();
     }
 }
 
@@ -360,12 +359,11 @@ void Game::gameState()
     {
         for (int j = 0; j < 8; j++)
         {
-            if (m_field[i][j] != nullptr)
+            if (m_field[CoordToIndex(i, j)] != nullptr)
             {
-                if (m_field[i][j]->getTeam() != m_turn)
+                if (m_field[CoordToIndex(i, j)]->getTeam() != m_turn)
                 {
-                    m_field[i][j]->calcPossibleMoves(m_field, true);
-                    if (!m_field[i][j]->getPossibleMoves().empty())
+                    if (!m_field[CoordToIndex(i, j)]->getPossibleMoves(m_field, true).empty())
                     {
                         lost = false;
                     }
@@ -414,11 +412,11 @@ void Game::disableEnPassant()
     {
         for (int j = 0; j < 8; j++)
         {
-            if (m_field[i][j] != nullptr)
+            if (m_field[CoordToIndex(i, j)] != nullptr)
             {
-                if (m_field[i][j]->getType() == PieceType::PAWN)
+                if (m_field[CoordToIndex(i, j)]->getType() == PieceType::PAWN)
                 {
-                    Pawn* pwn = static_cast<Pawn*>(m_field[i][j]);
+                    Pawn* pwn = static_cast<Pawn*>(m_field[CoordToIndex(i, j)]);
                     pwn->setEnPassant(std::pair<bool, int>(false, 0));
                 }
             }
@@ -429,8 +427,7 @@ void Game::disableEnPassant()
 
 void Game::renderPossibleMoves(Piece* piece)
 {
-    piece->calcPossibleMoves(m_field, true);
-    std::vector<PossibleMove> possible = piece->getPossibleMoves();
+    std::vector<PossibleMove> possible = piece->getPossibleMoves(m_field, true);
     SDL_Rect rectangle;
     for (const auto& [XCoord, YCoord, MoveType] : possible) {
         if ((XCoord % 2 == 0 && YCoord % 2 == 1) || (XCoord % 2 == 1 && YCoord % 2 == 0))
@@ -451,9 +448,9 @@ void Game::renderPossibleMoves(Piece* piece)
         {
             for (int j = 0; j < 8; j++)
             {
-                if (m_field[i][j] != nullptr)
+                if (m_field[CoordToIndex(i, j)] != nullptr)
                 {
-                    m_field[i][j]->render();
+                    m_field[CoordToIndex(i, j)]->render();
                 }
             }
         }
@@ -462,7 +459,7 @@ void Game::renderPossibleMoves(Piece* piece)
 
 void Game::undoRenderPossibleMoves(Piece* piece)
 {
-    std::vector<PossibleMove> possible = piece->getPossibleMoves();
+    std::vector<PossibleMove> possible = piece->getPossibleMoves(m_field);
     for (const auto& [XCoord, YCoord, MoveType] : possible) {
         if ((XCoord % 2 == 0 && YCoord % 2 == 1) || (XCoord % 2 == 1 && YCoord % 2 == 0))
         {
@@ -482,9 +479,9 @@ void Game::undoRenderPossibleMoves(Piece* piece)
         {
             for (int j = 0; j < 8; j++)
             {
-                if (m_field[i][j] != nullptr)
+                if (m_field[CoordToIndex(i, j)] != nullptr)
                 {
-                    m_field[i][j]->render();
+                    m_field[CoordToIndex(i, j)]->render();
                 }
             }
         }
@@ -497,9 +494,9 @@ void Game::calcAllMoves()
     {
         for (int j = 0; j < 8; j++)
         {
-            if (m_field[i][j] != nullptr)
+            if (m_field[CoordToIndex(i, j)] != nullptr)
             {
-                m_field[i][j]->calcPossibleMoves(m_field, true);
+                m_field[CoordToIndex(i, j)]->calcPossibleMoves(m_field, true);
             }
         }
     }
@@ -507,7 +504,7 @@ void Game::calcAllMoves()
 
 bool Game::isValidMove(int x, int y, Piece* piece)
 {
-    std::vector<PossibleMove> list = piece->getPossibleMoves();
+    std::vector<PossibleMove> list = piece->getPossibleMoves(m_field);
     for (const auto& [XCoord, YCoord, MoveType] : list) {
         if (XCoord == x && YCoord == y)
         {
