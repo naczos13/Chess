@@ -13,12 +13,11 @@ int CoordToIndex(Point p) {
 
 bool Piece::moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point* move, Piece* CurrentPiece) const
 {
-	// make this move, loop over all the enemy pieces and check if the can checkmate the king, then revert the move
+	// make this move, loop over all the enemy pieces and check if this can lead to checkmate of own king, then revert the move
 
 	// what I need
 	// - make a move
 	// - list of enemy Pieces
-	//		- 
 	// - function that check if piece can capture a king
 	// - revert the move
 
@@ -72,53 +71,6 @@ bool Piece::canEliminateKing(Piece** board, const Piece* king) const
 std::vector<PossibleMove> Piece::getPossibleMoves(Piece** board, bool checkCheck)
 {
 	return calcPossibleMoves(board, checkCheck);
-}
-
-std::vector<PossibleMove> Piece::simulateMove(std::vector<PossibleMove> moveList,
-											PossibleMove move,
-											King* king,
-											Piece** board,
-											bool checkCheck) const
-{
-	if (!checkCheck)
-	{
-		moveList.push_back(move);
-	}
-	else
-	{
-		bool enemyPlace = true;
-		king->setCheck(board, king->getPos().x, king->getPos().y);
-		Piece* zwisch = board[CoordToIndex(move.XCoord, move.YCoord)];
-		enemyPlace = false;
-
-		if (board[CoordToIndex(move.XCoord, move.YCoord)] != nullptr)
-		{
-			enemyPlace = true;
-			board[CoordToIndex(move.XCoord, move.YCoord)] = nullptr;
-		}
-
-		std::swap(board[CoordToIndex(move.XCoord, move.YCoord)], board[CoordToIndex(m_pos.x, m_pos.y)]);
-		if (m_type == KING)
-		{
-			king->setCheck(board, move.XCoord, move.YCoord);
-		}
-		else
-		{
-			king->setCheck(board, king->getPos().x, king->getPos().y);
-		}
-		std::swap(board[CoordToIndex(move.XCoord, move.YCoord)], board[CoordToIndex(m_pos.x, m_pos.y)]);
-
-		if (enemyPlace)
-		{
-			board[CoordToIndex(move.XCoord, move.YCoord)] = zwisch;
-		}
-		if (!king->getCheck())
-		{
-			moveList.push_back(move);
-		}
-		king->setCheck(board, king->getPos().x, king->getPos().y);
-	}
-	return moveList;
 }
 
 King* Piece::getOwnKing(Piece** board) const

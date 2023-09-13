@@ -58,7 +58,7 @@ public:
 	Piece(const Piece& piece);
 
 	// Destructor
-	~Piece();
+	virtual ~Piece();
 
 	//render this piece
 	void render();
@@ -100,18 +100,6 @@ protected:
 	
 	// Position of the piece
 	Point m_pos;
-
-	// pushes the move, if its allowed.
-	// simulates the move, and checks wheter the own king is still checked
-	// if king is in check after simulated move, the move is not allowed
-	// if checkCheck is true the king simulation will determine whether the move is allowed or not
-	// if checkCheck is false, we will just push the move. checkCheck is only false in King's setCheck function,
-	// because otherwise it will produce stack overflow (pushMove calls setCheck, setCheck calls pushMove and so on)
-	std::vector<PossibleMove> simulateMove(std::vector<PossibleMove> moveList,
-										PossibleMove move,
-										King* king,
-										Piece** board,
-										bool checkCheck) const;
 
 	// returns king of own team from board
 	King* getOwnKing(Piece** board) const;
