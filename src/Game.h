@@ -9,6 +9,7 @@
 #include "Queen.h"
 #include <memory>
 #include <optional>
+#include <array>
 
 class Game
 {
@@ -40,8 +41,8 @@ public:
     void createPieces();
 
     // 2D board array, every Position has got a Team and a piece
-    Piece* board[64];
-    Piece** m_board = board;
+    std::array<Piece*, 64> board;
+    Piece** m_board = board.data();
 
 private: 
 

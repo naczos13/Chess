@@ -15,6 +15,8 @@ struct Point
 
 int CoordToIndex(int x, int y);
 
+int CoordToIndex(Point p);
+
 enum Team { NONE=0, BLACK, WHITE };
 
 enum PieceType { EMPTY=0, PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN };

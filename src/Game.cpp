@@ -11,80 +11,90 @@ Game::Game(SDL_Handler* handler)
 
 void Game::createPieces()
 {
-    pieces.push_back(std::make_unique<Queen>(Team::WHITE, Point(4, 7), m_handler));
+    Point position;
 
     // Create pawns
     for (int x{}; x < 8; x++) {
         // white
-        pieces.push_back(std::make_unique<Pawn>(Team::WHITE, Point(x, 1), m_handler));
-        m_board[CoordToIndex(x,1)] = pieces.back().get();
+        position = { x, 1 };
+        pieces.push_back(std::make_unique<Pawn>(Team::WHITE, position, m_handler));
+        m_board[CoordToIndex(position)] = pieces.back().get();
         // black
-        pieces.push_back(std::make_unique<Pawn>(Team::BLACK, Point(x, 6), m_handler));
-        m_board[CoordToIndex(x,6)] = pieces.back().get();
+        position = { x, 6 };
+        pieces.push_back(std::make_unique<Pawn>(Team::BLACK, position, m_handler));
+        m_board[CoordToIndex(position)] = pieces.back().get();
     }
 
     // Create Rook
     // White
-    pieces.push_back(std::make_unique<Rook>(Team::WHITE, Point(0, 0), m_handler));
-    m_board[CoordToIndex(0,0)] = pieces.back().get();
-    pieces.push_back(std::make_unique<Rook>(Team::WHITE, Point(7, 0), m_handler));
-    m_board[CoordToIndex(7, 0)] = pieces.back().get();
+    position = { 0, 0 };
+    pieces.push_back(std::make_unique<Rook>(Team::WHITE, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
+    position = { 7, 0 };
+    pieces.push_back(std::make_unique<Rook>(Team::WHITE, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
     // Black
-    pieces.push_back(std::make_unique<Rook>(Team::BLACK, Point(0, 7), m_handler));
-    m_board[CoordToIndex(0, 7)] = pieces.back().get();
-    pieces.push_back(std::make_unique<Rook>(Team::BLACK, Point(7, 7), m_handler));
-    m_board[CoordToIndex(7, 7)] = pieces.back().get();
+    position = { 0, 7 };
+    pieces.push_back(std::make_unique<Rook>(Team::BLACK, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
+    position = { 7, 7 };
+    pieces.push_back(std::make_unique<Rook>(Team::BLACK, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
 
     // Create Knight
     //White
-    pieces.push_back(std::make_unique<Knight>(Team::WHITE, Point(1, 0), m_handler));
-    m_board[CoordToIndex(1, 0)] = pieces.back().get();
-    pieces.push_back(std::make_unique<Knight>(Team::WHITE, Point(6, 0), m_handler));
-    m_board[CoordToIndex(6, 0)] = pieces.back().get();
+    position = { 1, 0 };
+    pieces.push_back(std::make_unique<Knight>(Team::WHITE, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
+    position = { 6, 0 };
+    pieces.push_back(std::make_unique<Knight>(Team::WHITE, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
     //Black
-    pieces.push_back(std::make_unique<Knight>(Team::BLACK, Point(1, 7), m_handler));
-    m_board[CoordToIndex(1, 7)] = pieces.back().get();
-    pieces.push_back(std::make_unique<Knight>(Team::BLACK, Point(6, 7), m_handler));
-    m_board[CoordToIndex(6, 7)] = pieces.back().get();
+    position = { 1, 7 };
+    pieces.push_back(std::make_unique<Knight>(Team::BLACK, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
+    position = { 6, 7 };
+    pieces.push_back(std::make_unique<Knight>(Team::BLACK, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
 
     //Create Bishop
     //White
-    pieces.push_back(std::make_unique<Bishop>(Team::WHITE, Point(2, 0), m_handler));
-    m_board[CoordToIndex(2, 0)] = pieces.back().get();
-    pieces.push_back(std::make_unique<Bishop>(Team::WHITE, Point(5, 0), m_handler));
-    m_board[CoordToIndex(5, 0)] = pieces.back().get();
+    position = { 2, 0 };
+    pieces.push_back(std::make_unique<Bishop>(Team::WHITE, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
+    position = { 5, 0 };
+    pieces.push_back(std::make_unique<Bishop>(Team::WHITE, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
     //Black
-    pieces.push_back(std::make_unique<Bishop>(Team::BLACK, Point(2, 7), m_handler));
-    m_board[CoordToIndex(2, 7)] = pieces.back().get();
-    pieces.push_back(std::make_unique<Bishop>(Team::BLACK, Point(5, 7), m_handler));
-    m_board[CoordToIndex(5, 0)] = pieces.back().get();
+    position = { 2, 7 };
+    pieces.push_back(std::make_unique<Bishop>(Team::BLACK, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
+    position = { 5, 7 };
+    pieces.push_back(std::make_unique<Bishop>(Team::BLACK, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
 
     // Create King
     //Black
-    pieces.push_back(std::make_unique<King>(Team::BLACK, Point(3, 7), m_handler));
-    m_board[CoordToIndex(3, 7)] = pieces.back().get();
+    position = { 3, 7 };
+    pieces.push_back(std::make_unique<King>(Team::BLACK, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
     blackKing = static_cast<King*>(pieces.back().get());
-
     //White
-    pieces.push_back(std::make_unique<King>(Team::WHITE, Point(3, 0), m_handler));
-    m_board[CoordToIndex(3, 0)] = pieces.back().get();
+    position = { 3, 0 };
+    pieces.push_back(std::make_unique<King>(Team::WHITE, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
     whiteKing = static_cast<King*>(pieces.back().get());
 
     // Create Queen
     // Black
-    pieces.push_back(std::make_unique<Queen>(Team::BLACK, Point(4, 7), m_handler));
-    m_board[CoordToIndex(4, 7)] = pieces.back().get();
+    position = { 4, 7 };
+    pieces.push_back(std::make_unique<Queen>(Team::BLACK, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
     // WHITE
-    pieces.push_back(std::make_unique<Queen>(Team::WHITE, Point(4, 0), m_handler));
-    m_board[CoordToIndex(4, 0)] = pieces.back().get();
+    position = { 4, 0 };
+    pieces.push_back(std::make_unique<Queen>(Team::WHITE, position, m_handler));
+    m_board[CoordToIndex(position)] = pieces.back().get();
 
-    for (int i = 2; i < 6; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            m_board[CoordToIndex(j, i)] = nullptr;
-        }
-    }
 }
 
 Game::~Game()

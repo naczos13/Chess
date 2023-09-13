@@ -7,6 +7,10 @@ int CoordToIndex(int x, int y) {
 	return x * 8 + y;
 }
 
+int CoordToIndex(Point p) {
+	return p.x * 8 + p.y;
+}
+
 bool Piece::moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point* move, Piece* CurrentPiece) const
 {
 	// make this move, loop over all the enemy pieces and check if the can checkmate the king, then revert the move
