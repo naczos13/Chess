@@ -10,12 +10,6 @@
 #include <memory>
 #include <optional>
 
-struct ValidMove
-{
-    bool status;
-    PossibleMove move;
-};
-
 class Game
 {
 public:
@@ -37,10 +31,8 @@ public:
     // returns m_turn
     Team getTurn() { return m_turn; };
 
+    // return the move if exist in the pool of possible moves
     std::optional<PossibleMove> GetValidMove(const Point& endPoint, const std::vector<PossibleMove>& possibleMoves) const;
-
-    // calculates all allowed moves of every piece
-    void calcAllMoves();
 
     // light up the possible Moves
     void renderPossibleMoves(const std::vector<PossibleMove>& possible);
@@ -55,8 +47,6 @@ public:
     Piece** m_board = board;
 
 private: 
-
-
 
     // disables enPassant for every Piece
     void disableEnPassant();

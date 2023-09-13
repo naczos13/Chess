@@ -26,9 +26,6 @@ public:
     // Get the vector of Physically Possible Positions in next move, without checking for checkmate
     std::vector<Point> getPhysicallyPossiblePositions(Piece** board) const override;
 
-    // Just made a double move
-    bool m_justMadeDoubleMove;
-
 private:
     // if true, en passant is possible in the int direction
     std::pair<bool, int> m_enPassant;

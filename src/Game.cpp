@@ -7,7 +7,6 @@ Game::Game(SDL_Handler* handler)
         m_checkEnPassant(true)
 {
     createPieces();
-    calcAllMoves();
 }
 
 void Game::createPieces()
@@ -354,54 +353,7 @@ void Game::castles(int xStart, int yStart, int xEnd, int yEnd)
 
 void Game::gameState()
 {
-    bool lost = true;
-    King* pivot = blackKing;
-
-    if (m_turn == Team::BLACK)
-    {
-        pivot = whiteKing;
-    }
-
-    pivot->setCheck(m_board, whiteKing->getPos().x, whiteKing->getPos().y);
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            if (m_board[CoordToIndex(i, j)] != nullptr)
-            {
-                if (m_board[CoordToIndex(i, j)]->getTeam() != m_turn)
-                {
-                    if (!m_board[CoordToIndex(i, j)]->getPossibleMoves(m_board, true).empty())
-                    {
-                        lost = false;
-                    }
-                }
-            }
-        }
-    }
-
-    if (pivot->getCheck() && lost)
-    {
-        if (m_turn == Team::BLACK)
-        {
-            std::cout << "Black wins!";
-        }
-        else
-        {
-            std::cout << "White wins!";
-        }
-    }
-    else if (lost)
-    {
-        if (m_turn == Team::BLACK)
-        {
-            std::cout << "Remis!";
-        }
-        else
-        {
-            std::cout << "Remis!";
-        }
-    }
+    // Change the turn
     if (m_turn == Team::BLACK)
     {
         m_turn = Team::WHITE;
@@ -411,6 +363,43 @@ void Game::gameState()
         m_turn = Team::BLACK;
     }
 
+    // when is game over?
+    // when the team which turn is have no possible moves
+    // how to check it?
+    // Get the current team
+    // iterate over the board and check if any piece can make a move
+
+    for (int i{}; i < 64; i++)
+    {
+        if (Piece* piece = m_board[i])
+        {
+            if (piece->getTeam() == m_turn)
+            {
+                if (!piece->getPossibleMoves(m_board).empty())
+                {
+                    return;
+                }
+            }
+        }
+    }
+
+    //TODO How to check for a draft
+
+    if (m_turn == Team::WHITE)
+    {
+        std::cout << "Black wins!\n";
+    }
+    else
+    {
+        std::cout << "White wins!\n";
+    }
+
+    std::cout << "Press Enter to exit the game";
+
+    std::cin.get();
+    SDL_Event quitEvent;
+    quitEvent.type = SDL_QUIT;
+    SDL_PushEvent(&quitEvent);
 }
 
 
@@ -489,20 +478,6 @@ void Game::undoRenderPossibleMoves(const std::vector<PossibleMove>& possible)
                 {
                     m_board[CoordToIndex(i, j)]->render();
                 }
-            }
-        }
-    }
-}
-
-void Game::calcAllMoves()
-{
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            if (m_board[CoordToIndex(i, j)] != nullptr)
-            {
-                m_board[CoordToIndex(i, j)]->calcPossibleMoves(m_board, true);
             }
         }
     }
