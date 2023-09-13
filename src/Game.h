@@ -8,6 +8,13 @@
 #include "King.h"
 #include "Queen.h"
 #include <memory>
+#include <optional>
+
+struct ValidMove
+{
+    bool status;
+    PossibleMove move;
+};
 
 class Game
 {
@@ -29,6 +36,8 @@ public:
 
     // returns m_turn
     Team getTurn() { return m_turn; };
+
+    std::optional<PossibleMove> GetValidMove(const Point& endPoint, const std::vector<PossibleMove>& possibleMoves) const;
 
     // true, if the move is valid  ;  false if not
     bool isValidMove(int x, int y, Piece* piece);

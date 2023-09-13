@@ -508,14 +508,13 @@ void Game::calcAllMoves()
     }
 }
 
-bool Game::isValidMove(int x, int y, Piece* piece)
+std::optional<PossibleMove> Game::GetValidMove(const Point& endPoint, const std::vector<PossibleMove>& possibleMoves) const
 {
-    std::vector<PossibleMove> list = piece->getPossibleMoves(m_field);
-    for (const auto& [XCoord, YCoord, MoveType] : list) {
-        if (XCoord == x && YCoord == y)
+    for (const auto& move : possibleMoves) {
+        if (move.XCoord == endPoint.x && move.YCoord == endPoint.y)
         {
-            return true;
+            return move;
         }
     }
-    return false;
+    return std::nullopt;
 }

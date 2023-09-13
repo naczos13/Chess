@@ -52,17 +52,9 @@ void MainLoop::run()
 				moveEnd.x = handler.m_event.button.x / SDL_Handler::CELL_WIDTH;
 				moveEnd.y = handler.m_event.button.y / SDL_Handler::CELL_HEIGHT;
 
-				if ((clickedPiece->getTeam() == game.getTurn())
-					&& (game.isValidMove(moveEnd.x, moveEnd.y, clickedPiece)))
+				if (auto move = game.GetValidMove(moveEnd, possibleMoves))
 				{
-					std::vector<PossibleMove> list = clickedPiece->getPossibleMoves(game.m_field);
-					for (const auto& [XCoord, YCoord, MoveType] : list)
-					{
-						if (XCoord == moveEnd.x && YCoord == moveEnd.y)
-						{
-							game.move(clickedPiece, PossibleMove{ moveEnd.x, moveEnd.y, MoveType });
-						}
-					}
+					game.move(clickedPiece, *move);
 					game.calcAllMoves();
 				}
 			}
