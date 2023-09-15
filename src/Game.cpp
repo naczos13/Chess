@@ -131,16 +131,16 @@ void Game::move(Piece* start, PossibleMove move)
     switch (move.MoveType)
     {
         case MoveType::NORMAL:
-            normal(start->getPos().x, start->getPos().y, move.XCoord, move.YCoord);
+            normal(start->getPosition().x, start->getPosition().y, move.XCoord, move.YCoord);
             break;
         case MoveType::CASTLE:
-            castles(start->getPos().x, start->getPos().y, move.XCoord, move.YCoord);
+            castles(start->getPosition().x, start->getPosition().y, move.XCoord, move.YCoord);
             break;
         case MoveType::ENPASSANT:
-            enPassant(start->getPos().x, start->getPos().y, move.XCoord, move.YCoord);
+            enPassant(start->getPosition().x, start->getPosition().y, move.XCoord, move.YCoord);
             break;
         case MoveType::NEWPIECE:
-            exchange(start->getPos().x, start->getPos().y, move.XCoord, move.YCoord);
+            exchange(start->getPosition().x, start->getPosition().y, move.XCoord, move.YCoord);
             break;
         default:
             break;
@@ -198,12 +198,12 @@ void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
 void Game::enPassant(int xStart, int yStart, int xEnd, int yEnd)
 {
     Pawn* pawn_start = static_cast<Pawn*>(m_board[CoordToIndex(xStart, yStart)]);
-    m_board[CoordToIndex(xEnd, yEnd - pawn_start->m_dy)] = nullptr;
+    m_board[CoordToIndex(xEnd, yEnd - pawn_start->yDirection)] = nullptr;
     m_board[CoordToIndex(xEnd, yEnd)] = getPieceByPosition(xStart, yStart);
     m_board[CoordToIndex(xEnd, yEnd)]->m_hasMoved = true;
     m_board[CoordToIndex(xStart, yStart)] = nullptr;
     m_handler->undoPieceRender(xStart, yStart);
-    m_handler->undoPieceRender(xEnd, yEnd - pawn_start->m_dy);
+    m_handler->undoPieceRender(xEnd, yEnd - pawn_start->yDirection);
     m_board[CoordToIndex(xEnd, yEnd)]->setPosition(Point(xEnd, yEnd));
     m_board[CoordToIndex(xEnd, yEnd)]->render();
 }

@@ -15,7 +15,7 @@ public:
     virtual std::vector<PossibleMove> calcPossibleMoves(Piece** board, bool checkCheck) override;
 
     // direction the pawn moves
-    int m_dy;
+    int yDirection;
 
     // getter m_enPassant
     std::pair<bool, int> getEnPassant() { return m_enPassant; };

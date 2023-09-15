@@ -43,10 +43,10 @@ public:
 	Team getTeam() const { return m_team; };
 
 	// sets new position
-	void setPosition(Point newPos) { m_pos = newPos; };
+	void setPosition(Point newPos) { m_posistion = newPos; };
 
 	// return position of piece
-	Point getPos() const { return m_pos; };
+	Point getPosition() const { return m_posistion; };
 
 	// Constructor
 	Piece(Team team, Point pos, SDL_Handler* handler, PieceType type);
@@ -99,7 +99,7 @@ protected:
 	std::vector<PossibleMove> m_possibleMoves;
 	
 	// Position of the piece
-	Point m_pos;
+	Point m_posistion;
 
 	// returns king of own team from board
 	King* getOwnKing(Piece** board);

@@ -19,11 +19,11 @@ Pawn::Pawn(Team team, Point pos, SDL_Handler* handler)
 
 	if (team == BLACK)
 	{
-		m_dy = -1;
+		yDirection = -1;
 	}
 	else
 	{
-		m_dy = 1;
+		yDirection = 1;
 	}
 
 	render();
@@ -65,13 +65,13 @@ std::vector<Point> Pawn::getPhysicallyPossiblePositions(Piece** board) const
 	std::vector<Point> posible_positions;
 
 	// single forward - only if the place is empty
-	Point singleForwardMove = { m_pos.x, m_pos.y + m_dy };
+	Point singleForwardMove = { m_posistion.x, m_posistion.y + yDirection };
 	Piece* singleForwadPiece = board[CoordToIndex(singleForwardMove.x, singleForwardMove.y)];
 	if (!singleForwadPiece)
 		posible_positions.emplace_back(singleForwardMove);
 
 	// double forward - only if this is first move and in the way are no pieces
-	Point doubleForward = { m_pos.x, m_pos.y + 2 * m_dy };
+	Point doubleForward = { m_posistion.x, m_posistion.y + 2 * yDirection };
 	if (!m_hasMoved && // only if this is firs move
 		!singleForwadPiece && // only if the way is empty
 		!board[CoordToIndex(doubleForward.x, doubleForward.y)])
@@ -83,7 +83,7 @@ std::vector<Point> Pawn::getPhysicallyPossiblePositions(Piece** board) const
 	std::array<int, 2> verticalDirection{ -1, 1 };
 	for (const int dx : verticalDirection)
 	{
-		Point moveVertical{ m_pos.x + dx, m_pos.y + m_dy };
+		Point moveVertical{ m_posistion.x + dx, m_posistion.y + yDirection };
 		if (moveVertical.x >= 0 && moveVertical.x < 8)
 		{
 			Piece* toCapture = board[CoordToIndex(moveVertical.x, moveVertical.y)];

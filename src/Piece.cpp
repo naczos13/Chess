@@ -25,7 +25,7 @@ bool Piece::moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point
 
 	// # Make a move
 	Piece* capturePiece = board[CoordToIndex(move->x, move->y)];
-	const Point prevPiecePosition = CurrentPiece->getPos();
+	const Point prevPiecePosition = CurrentPiece->getPosition();
 	CurrentPiece->setPosition(*move);
 	board[CoordToIndex(move->x, move->y)] = CurrentPiece;
 	board[CoordToIndex(prevPiecePosition.x, prevPiecePosition.y)] = nullptr;
@@ -96,7 +96,7 @@ King* Piece::getOwnKing(Piece** board)
 }
 
 Piece::Piece(Team team, Point pos, SDL_Handler* handler, PieceType type)
-	:m_team(team), m_pos(pos), m_handler(handler), m_texture(NULL), m_hasMoved(false), m_type(type)
+	:m_team(team), m_posistion(pos), m_handler(handler), m_texture(NULL), m_hasMoved(false), m_type(type)
 {
 	std::cout << "Created Piece: count: " << ++Piece::s_piece_counter << std::endl;
 }
@@ -107,7 +107,7 @@ Piece::Piece()
 }
 
 Piece::Piece(const Piece& piece)
-	:m_team(piece.m_team), m_pos(piece.m_pos), m_handler(piece.m_handler), m_texture(NULL), m_hasMoved(false), m_type(piece.m_type)
+	:m_team(piece.m_team), m_posistion(piece.m_posistion), m_handler(piece.m_handler), m_texture(NULL), m_hasMoved(false), m_type(piece.m_type)
 {
 	std::cout << "Copy Piece" << std::endl;
 }
@@ -116,7 +116,7 @@ Piece::~Piece()
 {
 	SDL_DestroyTexture(m_texture);
 
-	m_handler->undoPieceRender(m_pos.x, m_pos.y);
+	m_handler->undoPieceRender(m_posistion.x, m_posistion.y);
 }
 
 
@@ -127,8 +127,8 @@ void Piece::render()
 	{
 		sayMyName();
 	}
-	SDL_Rect dest = { m_handler->SCREEN_WIDTH / 8 * m_pos.x - 2,
-					  m_handler->SCREEN_HEIGHT / 8 * m_pos.y,
+	SDL_Rect dest = { m_handler->SCREEN_WIDTH / 8 * m_posistion.x - 2,
+					  m_handler->SCREEN_HEIGHT / 8 * m_posistion.y,
 					  m_handler->SCREEN_WIDTH / 8,
 					  m_handler->SCREEN_HEIGHT / 8 };
 	m_handler->DrawRectangle(src, dest, m_texture);

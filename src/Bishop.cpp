@@ -65,8 +65,8 @@ std::vector<Point> Bishop::getPhysicallyPossiblePositions(Piece** board) const
 	for (const auto [dx, dy] : moveDirection) {
 		for (int multiplyer{ 1 }; multiplyer < 8; multiplyer++) { // in each direction the the bishop can possible make 7 moves
 
-			int newX = m_pos.x + dx * multiplyer;
-			int newY = m_pos.y + dy * multiplyer;
+			int newX = m_posistion.x + dx * multiplyer;
+			int newY = m_posistion.y + dy * multiplyer;
 
 			// if pass the border, stop checking this direction
 			if (newX < 0 || newX > 7 || newY < 0 || newY > 7)
