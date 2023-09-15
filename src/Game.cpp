@@ -129,6 +129,7 @@ void Game::move(PossibleMove& move)
     Point oldPlace = pieceToMove->getPosition();
     Point placeToMove = { move.XCoord, move.YCoord };
     pieceToMove->setPosition(placeToMove);
+    pieceToMove->m_hasMoved = true;
     m_board[CoordToIndex(placeToMove)] = pieceToMove;
     m_board[CoordToIndex(oldPlace)] = nullptr;
 
@@ -390,6 +391,8 @@ void Game::renderPossibleMoves(const std::vector<PossibleMove>& possible)
                       m_handler->SCREEN_WIDTH / 8,
                       m_handler->SCREEN_HEIGHT / 8 };
         SDL_RenderFillRect(m_handler->m_renderer, &rectangle);
+
+        // TODO FIX the rendering
 
         for (int i = 0; i < 8; i++)
         {
