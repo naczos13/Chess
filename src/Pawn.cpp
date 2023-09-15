@@ -29,21 +29,21 @@ Pawn::Pawn(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-std::vector<Point> Pawn::getPhysicallyPossiblePositions(Piece** board) const
+std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board) const
 {
-	std::vector<Point> posible_positions;
+	std::vector<PossibleMove> posible_positions;
 
 	// single forward - only if the place is empty
-	Point singleForwardMove = { m_posistion.x, m_posistion.y + yDirection };
-	Piece* singleForwadPiece = board[CoordToIndex(singleForwardMove.x, singleForwardMove.y)];
+	PossibleMove singleForwardMove = { m_posistion.x, m_posistion.y + yDirection, MoveType::NORMAL};
+	Piece* singleForwadPiece = board[CoordToIndex(singleForwardMove.XCoord, singleForwardMove.YCoord)];
 	if (!singleForwadPiece)
 		posible_positions.emplace_back(singleForwardMove);
 
 	// double forward - only if this is first move and in the way are no pieces
-	Point doubleForward = { m_posistion.x, m_posistion.y + 2 * yDirection };
+	PossibleMove doubleForward = { m_posistion.x, m_posistion.y + 2 * yDirection , MoveType::NORMAL};
 	if (!m_hasMoved && // only if this is firs move
 		!singleForwadPiece && // only if the way is empty
-		!board[CoordToIndex(doubleForward.x, doubleForward.y)])
+		!board[CoordToIndex(doubleForward.XCoord, doubleForward.YCoord)])
 	{
 		posible_positions.emplace_back(doubleForward);
 	}
@@ -52,10 +52,10 @@ std::vector<Point> Pawn::getPhysicallyPossiblePositions(Piece** board) const
 	std::array<int, 2> verticalDirection{ -1, 1 };
 	for (const int dx : verticalDirection)
 	{
-		Point moveVertical{ m_posistion.x + dx, m_posistion.y + yDirection };
-		if (moveVertical.x >= 0 && moveVertical.x < 8)
+		PossibleMove moveVertical{ m_posistion.x + dx, m_posistion.y + yDirection , MoveType::NORMAL };
+		if (moveVertical.XCoord >= 0 && moveVertical.XCoord < 8)
 		{
-			Piece* toCapture = board[CoordToIndex(moveVertical.x, moveVertical.y)];
+			Piece* toCapture = board[CoordToIndex(moveVertical.XCoord, moveVertical.YCoord)];
 			if (toCapture && toCapture->getTeam() != getTeam())
 			{
 				posible_positions.push_back(moveVertical);

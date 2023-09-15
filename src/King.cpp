@@ -21,9 +21,9 @@ King::King(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-std::vector<Point> King::getPhysicallyPossiblePositions(Piece** board) const
+std::vector<PossibleMove> King::getPhysicallyPossibleMoves(Piece** board) const
 {
-	std::vector<Point> posible_positions;
+	std::vector<PossibleMove> posible_positions;
 	return posible_positions;
 }
 

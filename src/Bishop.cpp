@@ -19,9 +19,9 @@ Bishop::Bishop(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-std::vector<Point> Bishop::getPhysicallyPossiblePositions(Piece** board) const
+std::vector<PossibleMove> Bishop::getPhysicallyPossibleMoves(Piece** board) const
 {
-	std::vector<Point> posible_positions;
+	std::vector<PossibleMove> posible_positions;
 
 	// Bishop can move by diagonal
 	Point moveDirection[4] = {
@@ -46,14 +46,14 @@ std::vector<Point> Bishop::getPhysicallyPossiblePositions(Piece** board) const
 				// if the piece is in opossite team add this as possible move
 				if (potential_piece->getTeam() != m_team)
 				{
-					posible_positions.emplace_back(newX, newY);
+					posible_positions.emplace_back(newX, newY, MoveType::NORMAL);
 				}
 				// then stop checking this direction
 				break;
 			}
 
 			// if this is simply empty space, just add it
-			posible_positions.emplace_back(newX, newY);
+			posible_positions.emplace_back(newX, newY, MoveType::NORMAL);
 		}
 	}
 

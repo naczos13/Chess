@@ -58,10 +58,10 @@ bool Piece::moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point
 
 bool Piece::canEliminateKing(Piece** board, const Piece* king) const
 {
-	std::vector<Point> posible_positions = getPhysicallyPossiblePositions(board);
-	for (const auto& [x, y] : posible_positions)
+	std::vector<PossibleMove> posible_moves = getPhysicallyPossibleMoves(board);
+	for (const auto& move : posible_moves)
 	{
-		const Piece* possiblePiece = board[CoordToIndex(x, y)];
+		const Piece* possiblePiece = board[CoordToIndex(move.XCoord, move.YCoord)];
 		if (possiblePiece == king)
 			return true;
 	}
@@ -72,15 +72,14 @@ std::vector<PossibleMove> Piece::getPossibleMoves(Piece** board, bool checkCheck
 {
 	std::vector<PossibleMove> posible_moves;
 
-	std::vector<Point> posible_positions = getPhysicallyPossiblePositions(board);
-
-	for (const Point& newPosition : posible_positions)
+	for (const PossibleMove& move : getPhysicallyPossibleMoves(board))
 	{
 		// simulate the move
 		// need to check this because maybe this move can led to own checkmate
-		if (!moveMakeMyKingToBeCheck(board, getOwnKing(board), &newPosition, this))
+		Point Target = { move.XCoord, move.YCoord };
+		if (!moveMakeMyKingToBeCheck(board, getOwnKing(board), &Target, this))
 		{
-			posible_moves.emplace_back(PossibleMove{ newPosition.x, newPosition.y, MoveType::NORMAL });
+			posible_moves.emplace_back(move);
 		}
 	}
 

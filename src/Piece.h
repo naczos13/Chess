@@ -25,11 +25,15 @@ enum MoveType { NORMAL, CASTLE, ENPASSANT, NEWPIECE, INIT };
 
 class King;
 
+class Piece;
+
 struct PossibleMove
 {
 	PossibleMove(int x, int y, MoveType mt) : XCoord{ x }, YCoord{ y }, MoveType{ mt } {};
 	int XCoord, YCoord;
 	MoveType MoveType;
+	std::vector<Piece*> PiecesToMove;
+	Piece* PieceToCapture;
 };
 
 class Piece
@@ -71,7 +75,7 @@ public:
 
 	bool moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point* move, Piece* CurrentPiece) const;
 
-	virtual std::vector<Point> getPhysicallyPossiblePositions(Piece** board) const = 0;
+	virtual std::vector<PossibleMove> getPhysicallyPossibleMoves(Piece** board) const = 0;
 
 	bool canEliminateKing(Piece** board, const Piece* king) const;
 

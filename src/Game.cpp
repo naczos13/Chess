@@ -430,8 +430,8 @@ void Game::disableEnPassant()
 void Game::renderPossibleMoves(const std::vector<PossibleMove>& possible)
 {
     SDL_Rect rectangle;
-    for (const auto& [XCoord, YCoord, MoveType] : possible) {
-        if ((XCoord % 2 == 0 && YCoord % 2 == 1) || (XCoord % 2 == 1 && YCoord % 2 == 0))
+    for (const auto& move : possible) {
+        if ((move.XCoord % 2 == 0 && move.YCoord % 2 == 1) || (move.XCoord % 2 == 1 && move.YCoord % 2 == 0))
         {
             SDL_SetRenderDrawColor(m_handler->m_renderer, 0, 134, 139, 255);
         }
@@ -439,8 +439,8 @@ void Game::renderPossibleMoves(const std::vector<PossibleMove>& possible)
         {
             SDL_SetRenderDrawColor(m_handler->m_renderer, 164, 211, 238, 255);
         }
-        rectangle = { XCoord * m_handler->SCREEN_WIDTH / 8,
-                      YCoord * m_handler->SCREEN_HEIGHT / 8,
+        rectangle = { move.XCoord * m_handler->SCREEN_WIDTH / 8,
+                      move.YCoord * m_handler->SCREEN_HEIGHT / 8,
                       m_handler->SCREEN_WIDTH / 8,
                       m_handler->SCREEN_HEIGHT / 8 };
         SDL_RenderFillRect(m_handler->m_renderer, &rectangle);
@@ -460,8 +460,8 @@ void Game::renderPossibleMoves(const std::vector<PossibleMove>& possible)
 
 void Game::undoRenderPossibleMoves(const std::vector<PossibleMove>& possible)
 {
-    for (const auto& [XCoord, YCoord, MoveType] : possible) {
-        if ((XCoord % 2 == 0 && YCoord % 2 == 1) || (XCoord % 2 == 1 && YCoord % 2 == 0))
+    for (const auto& move : possible) {
+        if ((move.XCoord % 2 == 0 && move.YCoord % 2 == 1) || (move.XCoord % 2 == 1 && move.YCoord % 2 == 0))
         {
             SDL_SetRenderDrawColor(m_handler->m_renderer, 155, 103, 60, 255);
         }
@@ -469,8 +469,8 @@ void Game::undoRenderPossibleMoves(const std::vector<PossibleMove>& possible)
         {
             SDL_SetRenderDrawColor(m_handler->m_renderer, 255, 255, 255, 255);
         }
-        SDL_Rect rectangle = { XCoord * m_handler->SCREEN_WIDTH / 8,
-                                  YCoord * m_handler->SCREEN_HEIGHT / 8,
+        SDL_Rect rectangle = { move.XCoord * m_handler->SCREEN_WIDTH / 8,
+                                  move.YCoord * m_handler->SCREEN_HEIGHT / 8,
                                   m_handler->SCREEN_WIDTH / 8,
                                   m_handler->SCREEN_HEIGHT / 8 };
         SDL_RenderFillRect(m_handler->m_renderer, &rectangle);
