@@ -18,18 +18,6 @@ Knight::Knight(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-void Knight::sayMyName()
-{
-	if (m_team == BLACK)
-	{
-		std::cout << "BLACK KNIGHT" << std::endl;
-	}
-	else
-	{
-		std::cout << "WHTIE KNIGHT" << std::endl;
-	}
-}
-
 std::vector<Point> Knight::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;

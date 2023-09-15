@@ -21,18 +21,6 @@ King::King(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-void King::sayMyName()
-{
-	if (m_team == BLACK)
-	{
-		std::cout << "BLACK KING" << std::endl;
-	}
-	else
-	{
-		std::cout << "WHTIE KING" << std::endl;
-	}
-}
-
 std::vector<Point> King::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;

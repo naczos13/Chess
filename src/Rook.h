@@ -8,9 +8,6 @@ public:
     // Constructor
     Rook(Team team, Point pos, SDL_Handler* handler);
 
-    // prints name of piece
-    void sayMyName();
-
     // Destructor
     ~Rook();
 

@@ -18,19 +18,6 @@ Queen::Queen(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-
-void Queen::sayMyName()
-{
-	if (m_team == BLACK)
-	{
-		std::cout << "BLACK QUEEN" << std::endl;
-	}
-	else
-	{
-		std::cout << "WHTIE QUEEN" << std::endl;
-	}
-}
-
 std::vector<Point> Queen::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;

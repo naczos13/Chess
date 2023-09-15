@@ -63,9 +63,6 @@ public:
 	//render this piece
 	void render();
 
-	// prints name of piece
-	virtual void sayMyName() = 0;
-
 	// true, if piece has moved
 	bool m_hasMoved;
 

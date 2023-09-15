@@ -19,18 +19,6 @@ Bishop::Bishop(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-void Bishop::sayMyName()
-{
-	if (m_team == BLACK)
-	{
-		std::cout << "BLACK BISHOP" << std::endl;
-	}
-	else
-	{
-		std::cout << "WHTIE BISHOP" << std::endl;
-	}
-}
-
 std::vector<Point> Bishop::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;

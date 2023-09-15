@@ -19,18 +19,6 @@ Rook::Rook(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-void Rook::sayMyName()
-{
-	if (m_team == BLACK)
-	{
-		std::cout << "BLACK ROOK" << std::endl;
-	}
-	else
-	{
-		std::cout << "WHITE ROOK" << std::endl;
-	}
-}
-
 Rook::~Rook()
 {
 }

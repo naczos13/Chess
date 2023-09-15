@@ -8,9 +8,6 @@ public:
     // constructor
     Pawn(Team team, Point pos, SDL_Handler* handler);
 
-    // prints name of piece
-    void sayMyName();
-
     // direction the pawn moves
     int yDirection;
 

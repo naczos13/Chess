@@ -29,18 +29,6 @@ Pawn::Pawn(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-void Pawn::sayMyName()
-{
-	if (m_team == BLACK)
-	{
-		std::cout << "BLACK PAWN" << std::endl;
-	}
-	else
-	{
-		std::cout << "WHITE PAWN" << std::endl;
-	}
-}
-
 std::vector<Point> Pawn::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;
