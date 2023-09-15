@@ -21,7 +21,7 @@ enum Team { NONE=0, BLACK, WHITE };
 
 enum PieceType { EMPTY=0, PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN };
 
-enum MoveType { NORMAL, CASTLE, ENPASSANT, NEWPIECE, INIT };
+enum MoveType { NORMAL, CAPTURE, CASTLE, ENPASSANT, NEWPIECE, INIT };
 
 class King;
 
@@ -29,11 +29,23 @@ class Piece;
 
 struct PossibleMove
 {
-	PossibleMove(int x, int y, MoveType mt) : XCoord{ x }, YCoord{ y }, MoveType{ mt } {};
+	PossibleMove(int x, int y, Piece* pieceToMove, MoveType mt = MoveType::NORMAL, Piece* pieceToCapture=nullptr) 
+		: XCoord{ x }, YCoord{ y }, PieceToMove{ pieceToMove }, SecondPiecesToMove{ nullptr }, MoveType{ mt	}, PieceToCapture{ pieceToCapture }
+	{};
+
+	PossibleMove(Point moveTo, Piece* pieceToMove, MoveType mt = MoveType::NORMAL, Piece* pieceToCapture = nullptr)
+		: XCoord{ moveTo.x }, YCoord{ moveTo.y }, PieceToMove{ pieceToMove }, SecondPiecesToMove{ nullptr }, MoveType{ mt }, PieceToCapture{ pieceToCapture }
+	{};
+
+	PossibleMove(int x, int y, Piece* firstPieceToMove, Piece* secondPieceToMove, MoveType mt)
+		: XCoord{ x }, YCoord{ y }, PieceToMove{ firstPieceToMove }, SecondPiecesToMove{ secondPieceToMove }, MoveType{ mt }, PieceToCapture{ nullptr }
+	{};
+	
 	int XCoord, YCoord;
 	MoveType MoveType;
-	std::vector<Piece*> PiecesToMove;
-	Piece* PieceToCapture;
+	Piece* PieceToMove = nullptr;
+	Piece* SecondPiecesToMove = nullptr;
+	Piece* PieceToCapture = nullptr;
 };
 
 class Piece
@@ -73,11 +85,11 @@ public:
 	// returns type of piece
 	PieceType getType() const { return m_type; };
 
-	bool moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point* move, Piece* CurrentPiece) const;
+	bool moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point* move, Piece* CurrentPiece);
 
-	virtual std::vector<PossibleMove> getPhysicallyPossibleMoves(Piece** board) const = 0;
+	virtual std::vector<PossibleMove> getPhysicallyPossibleMoves(Piece** board) = 0;
 
-	bool canEliminateKing(Piece** board, const Piece* king) const;
+	bool canEliminateKing(Piece** board, const Piece* king);
 
 protected:
 

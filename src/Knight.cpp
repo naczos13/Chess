@@ -18,7 +18,7 @@ Knight::Knight(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-std::vector<PossibleMove> Knight::getPhysicallyPossibleMoves(Piece** board) const
+std::vector<PossibleMove> Knight::getPhysicallyPossibleMoves(Piece** board)
 {
 	std::vector<PossibleMove> posible_positions;
 	return posible_positions;

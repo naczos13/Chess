@@ -18,7 +18,7 @@ Queen::Queen(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-std::vector<PossibleMove> Queen::getPhysicallyPossibleMoves(Piece** board) const
+std::vector<PossibleMove> Queen::getPhysicallyPossibleMoves(Piece** board)
 {
 	std::vector<PossibleMove> posible_positions;
 	return posible_positions;

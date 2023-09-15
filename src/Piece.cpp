@@ -11,7 +11,7 @@ int CoordToIndex(Point p) {
 	return p.x * 8 + p.y;
 }
 
-bool Piece::moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point* move, Piece* CurrentPiece) const
+bool Piece::moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point* move, Piece* CurrentPiece)
 {
 	// make this move, loop over all the enemy pieces and check if this can lead to checkmate of own king, then revert the move
 
@@ -34,7 +34,7 @@ bool Piece::moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point
 	{
 		for (int y{ 0 }; y < 8; y++)
 		{
-			const Piece* potentialEnemy = board[CoordToIndex(x, y)];
+			Piece* potentialEnemy = board[CoordToIndex(x, y)];
 			if (potentialEnemy && potentialEnemy->getTeam() != king->getTeam())
 			{
 				if (potentialEnemy->canEliminateKing(board, king))
@@ -56,7 +56,7 @@ bool Piece::moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point
 	return false;
 }
 
-bool Piece::canEliminateKing(Piece** board, const Piece* king) const
+bool Piece::canEliminateKing(Piece** board, const Piece* king)
 {
 	std::vector<PossibleMove> posible_moves = getPhysicallyPossibleMoves(board);
 	for (const auto& move : posible_moves)

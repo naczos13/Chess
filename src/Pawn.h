@@ -18,7 +18,7 @@ public:
     void setEnPassant(std::pair<bool, int> modifi) { m_enPassant = modifi; };
 
     // Get the vector of Physically Possible Positions in next move, without checking for checkmate
-    std::vector<PossibleMove> getPhysicallyPossibleMoves(Piece** board) const override;
+    std::vector<PossibleMove> getPhysicallyPossibleMoves(Piece** board) override;
 
 private:
     // if true, en passant is possible in the int direction
