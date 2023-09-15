@@ -43,7 +43,6 @@ void MainLoop::run()
 		}
 		case SDL_MOUSEBUTTONUP:
 		{
-
 			if (clickedPiece)
 			{
 				// Clear the board from the possible moves
