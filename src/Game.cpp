@@ -117,33 +117,25 @@ Piece* Game::getPieceByPosition(int row, int col)
     return m_board[row * 8 + col];
 }
 
-void Game::move(Piece* start, PossibleMove move)
+void Game::move(PossibleMove& move)
 {
-    if (m_checkEnPassant)
-    {
-        disableEnPassant();
-    }
-    else
-    {
-        m_checkEnPassant = true;
+    if (move.MoveType == MoveType::CAPTURE) {
+        Piece* capturedPiece = move.PieceToCapture;
+        capturedPiece->deactivate();
+        m_board[CoordToIndex(capturedPiece->getPosition())] = nullptr;
     }
 
-    switch (move.MoveType)
+    Piece* pieceToMove = move.PieceToMove;
+    Point oldPlace = pieceToMove->getPosition();
+    Point placeToMove = { move.XCoord, move.YCoord };
+    pieceToMove->setPosition(placeToMove);
+    m_board[CoordToIndex(placeToMove)] = pieceToMove;
+    m_board[CoordToIndex(oldPlace)] = nullptr;
+
+    m_handler->renderBackground();
+    for (const auto& piece : pieces)
     {
-        case MoveType::NORMAL:
-            normal(start->getPosition().x, start->getPosition().y, move.XCoord, move.YCoord);
-            break;
-        case MoveType::CASTLE:
-            castles(start->getPosition().x, start->getPosition().y, move.XCoord, move.YCoord);
-            break;
-        case MoveType::ENPASSANT:
-            enPassant(start->getPosition().x, start->getPosition().y, move.XCoord, move.YCoord);
-            break;
-        case MoveType::NEWPIECE:
-            exchange(start->getPosition().x, start->getPosition().y, move.XCoord, move.YCoord);
-            break;
-        default:
-            break;
+        piece->render();
     }
 
     gameState();

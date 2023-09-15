@@ -54,7 +54,7 @@ void MainLoop::run()
 
 				if (auto move = game.GetValidMove(moveEnd, possibleMoves))
 				{
-					game.move(clickedPiece, *move);
+					game.move(*move);
 				}
 			}
 			break;

@@ -135,12 +135,15 @@ Piece::~Piece()
 
 void Piece::render()
 {
-	SDL_Rect src = {0, 0, 60, 60};
-	SDL_Rect dest = { m_handler->SCREEN_WIDTH / 8 * m_posistion.x - 2,
-					  m_handler->SCREEN_HEIGHT / 8 * m_posistion.y,
-					  m_handler->SCREEN_WIDTH / 8,
-					  m_handler->SCREEN_HEIGHT / 8 };
-	m_handler->DrawRectangle(src, dest, m_texture);
+	if (isActive())
+	{
+		SDL_Rect src = { 0, 0, 60, 60 };
+		SDL_Rect dest = { m_handler->SCREEN_WIDTH / 8 * m_posistion.x - 2,
+						  m_handler->SCREEN_HEIGHT / 8 * m_posistion.y,
+						  m_handler->SCREEN_WIDTH / 8,
+						  m_handler->SCREEN_HEIGHT / 8 };
+		m_handler->DrawRectangle(src, dest, m_texture);
+	}
 }
 
 

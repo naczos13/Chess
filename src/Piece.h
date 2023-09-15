@@ -91,6 +91,10 @@ public:
 
 	bool canEliminateKing(Piece** board, const Piece* king);
 
+	bool isActive() const { return m_stillInGame; };
+
+	void deactivate() { m_stillInGame = false; };
+
 protected:
 
 	// texture of this piece
@@ -115,6 +119,8 @@ protected:
 	King* getOwnKing(Piece** board);
 
 	King* m_ownKing = nullptr;
+
+	bool m_stillInGame = true;
 
 public:
 	static int s_piece_counter;

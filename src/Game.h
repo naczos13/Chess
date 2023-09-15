@@ -24,7 +24,7 @@ public:
     Piece* getPieceByPosition(int row, int col);
 
     //Moves a piece
-    void move(Piece* piece, PossibleMove move);
+    void move(PossibleMove& move);
 
     // returns m_turn
     Team getTurn() { return m_turn; };
@@ -39,7 +39,6 @@ public:
     void undoRenderPossibleMoves(const std::vector<PossibleMove>& possible);
 
     void createPieces();
-
 
     void createPiece(const PieceType& type, const Team& team, const Point& position);
 
