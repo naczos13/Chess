@@ -187,18 +187,6 @@ void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
     }
 }
 
-void Game::enPassant(int xStart, int yStart, int xEnd, int yEnd)
-{
-    Pawn* pawn_start = static_cast<Pawn*>(m_board[CoordToIndex(xStart, yStart)]);
-    m_board[CoordToIndex(xEnd, yEnd - pawn_start->yDirection)] = nullptr;
-    m_board[CoordToIndex(xEnd, yEnd)] = getPieceByPosition(xStart, yStart);
-    m_board[CoordToIndex(xEnd, yEnd)]->m_hasMoved = true;
-    m_board[CoordToIndex(xStart, yStart)] = nullptr;
-    m_handler->undoPieceRender(xStart, yStart);
-    m_handler->undoPieceRender(xEnd, yEnd - pawn_start->yDirection);
-    m_board[CoordToIndex(xEnd, yEnd)]->setPosition(Point(xEnd, yEnd));
-    m_board[CoordToIndex(xEnd, yEnd)]->render();
-}
 
 void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
 {
@@ -314,40 +302,6 @@ void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
     SDL_DestroyTexture(text_bishop);
     SDL_DestroyTexture(text_knight);
     SDL_DestroyTexture(text_queen);
-}
-
-void Game::castles(int xStart, int yStart, int xEnd, int yEnd)
-{
-    if (xEnd == 0)
-    {
-        m_board[CoordToIndex(2, yEnd)] = m_board[CoordToIndex(4, yEnd)];
-        m_board[CoordToIndex(3, yEnd)] = m_board[CoordToIndex(0, yEnd)];
-        m_board[CoordToIndex(2, yEnd)]->m_hasMoved = true;
-        m_board[CoordToIndex(3, yEnd)]->m_hasMoved = true;
-        m_board[CoordToIndex(2, yEnd)]->setPosition(Point(2, yEnd));
-        m_board[CoordToIndex(3, yEnd)]->setPosition(Point(3, yEnd));
-        m_board[CoordToIndex(4, yEnd)] = nullptr;
-        m_board[CoordToIndex(0, yEnd)] = nullptr;
-        m_handler->undoPieceRender(4, yEnd);
-        m_handler->undoPieceRender(0, yEnd);
-        m_board[CoordToIndex(2, yEnd)]->render();
-        m_board[CoordToIndex(3, yEnd)]->render();
-    }
-    else
-    {
-        m_board[CoordToIndex(6, yEnd)] = m_board[CoordToIndex(4, yEnd)];
-        m_board[CoordToIndex(5, yEnd)] = m_board[CoordToIndex(7, yEnd)];
-        m_board[CoordToIndex(6, yEnd)]->m_hasMoved = true;
-        m_board[CoordToIndex(5, yEnd)]->m_hasMoved = true;
-        m_board[CoordToIndex(6, yEnd)]->setPosition(Point(6, yEnd));
-        m_board[CoordToIndex(5, yEnd)]->setPosition(Point(5, yEnd));
-        m_board[CoordToIndex(4, yEnd)] = nullptr;
-        m_board[CoordToIndex(7, yEnd)] = nullptr;
-        m_handler->undoPieceRender(4, yEnd);
-        m_handler->undoPieceRender(7, yEnd);
-        m_board[CoordToIndex(6, yEnd)]->render();
-        m_board[CoordToIndex(5, yEnd)]->render();
-    }
 }
 
 void Game::gameState()
