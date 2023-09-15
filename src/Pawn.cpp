@@ -29,6 +29,28 @@ Pawn::Pawn(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
+bool Pawn::canEnPassant(Piece* toCapture)
+{
+	if (!toCapture)
+		return false;
+
+	if (toCapture->getType() != PieceType::PAWN)
+		return false;
+
+	if (toCapture->getTeam() == getTeam())
+		return false;
+
+	if (getTeam() == Team::BLACK && getPosition().y != 3)
+		return false;
+
+	if (getTeam() == Team::WHITE && getPosition().y != 4)
+		return false;
+
+	//TODO Implement check if the toCapture make as previous move the double move
+
+	return true;
+}
+
 std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
 {
 	std::vector<PossibleMove> posible_moves;
@@ -60,11 +82,15 @@ std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
 			{
 				posible_moves.emplace_back(moveVertical, this, MoveType::CAPTURE, toCapture);
 			}
+
+			// enpassant
+			Piece* toEnPassant = board[CoordToIndex(moveVertical.x, moveVertical.y - yDirection)];
+			if (canEnPassant(toEnPassant))
+			{
+				posible_moves.emplace_back(moveVertical, this, MoveType::CAPTURE, toEnPassant);
+			}
 		}
 	}
-
-	// enpassant
-	//TODO
 
 	return posible_moves;
 }
