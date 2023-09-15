@@ -11,9 +11,6 @@ public:
     // prints name of piece
     void sayMyName();
 
-    // calculates possible moves
-    virtual std::vector<PossibleMove> calcPossibleMoves(Piece** board, bool checkCheck) override;
-
     // direction the pawn moves
     int yDirection;
 

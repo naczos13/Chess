@@ -66,9 +66,6 @@ public:
 	// prints name of piece
 	virtual void sayMyName() = 0;
 
-	// calculates every possible Move this piece can do
-	virtual std::vector<PossibleMove> calcPossibleMoves(Piece** board, bool checkCheck) = 0;
-
 	// true, if piece has moved
 	bool m_hasMoved;
 

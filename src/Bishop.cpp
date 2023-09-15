@@ -31,25 +31,6 @@ void Bishop::sayMyName()
 	}
 }
 
-std::vector<PossibleMove> Bishop::calcPossibleMoves(Piece** board, bool checkCheck)
-{
-	std::vector<PossibleMove> posible_moves;
-
-	std::vector<Point> posible_positions = getPhysicallyPossiblePositions(board);
-
-	for (const Point& newPosition : posible_positions)
-	{
-		// simulate the move
-		// need to check this because maybe this move can led to own checkmate
-		if (!moveMakeMyKingToBeCheck(board, getOwnKing(board), &newPosition, this))
-		{
-			posible_moves.emplace_back(PossibleMove{ newPosition.x, newPosition.y, MoveType::NORMAL });
-		}
-	}
-
-	return posible_moves;
-}
-
 std::vector<Point> Bishop::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;
