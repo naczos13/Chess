@@ -19,11 +19,6 @@ Rook::Rook(Team team, Point pos, SDL_Handler* handler)
 	render();
 }
 
-Rook::~Rook()
-{
-}
-
-
 std::vector<Point> Rook::getPhysicallyPossiblePositions(Piece** board) const
 {
 	std::vector<Point> posible_positions;

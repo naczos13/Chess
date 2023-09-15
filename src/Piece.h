@@ -58,7 +58,7 @@ public:
 	Piece(const Piece& piece);
 
 	// Destructor
-	virtual ~Piece();
+	~Piece();
 
 	//render this piece
 	void render();

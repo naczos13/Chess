@@ -8,9 +8,6 @@ public:
     // Constructor
     Rook(Team team, Point pos, SDL_Handler* handler);
 
-    // Destructor
-    ~Rook();
-
     // Get the vector of Physically Possible Positions in next move, without checking for checkmate
     std::vector<Point> getPhysicallyPossiblePositions(Piece** board) const override;
 };
