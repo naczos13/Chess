@@ -55,7 +55,7 @@ bool Pawn::canEnPassant(Piece* toCapture)
 void Pawn::tryToMakeDoubleMove(Piece** board, std::vector<PossibleMove>& possibleMoves, Piece* singleForwardPiece)
 {
 	Point doubleForward = { m_posistion.x, m_posistion.y + 2 * yDirection };
-	if (!m_hasMoved && // only if this is firs move
+	if (!m_hasMoved && // only if this is first move
 		!singleForwardPiece && // only if the way is empty
 		!board[CoordToIndex(doubleForward.x, doubleForward.y)])
 	{
@@ -70,7 +70,8 @@ void Pawn::tryToMakeDoubleMove(Piece** board, std::vector<PossibleMove>& possibl
 		if (rightNeighborPosition.x < 8)
 			rightNeighbor = board[CoordToIndex(rightNeighborPosition)];
 
-		PossibleMove doubleMove = PossibleMove(doubleForward, this, MoveType::DOUBLE);
+		PossibleMove doubleMove = PossibleMove(doubleForward, this);
+		doubleMove.doubleMove = true;
 		doubleMove.addPieceToInfuence(leftNeighbor);
 		doubleMove.addPieceToInfuence(rightNeighbor);
 
@@ -102,14 +103,18 @@ std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
 			Piece* toCapture = board[CoordToIndex(moveVertical.x, moveVertical.y)];
 			if (toCapture && toCapture->getTeam() != getTeam())
 			{
-				posible_moves.emplace_back(moveVertical, this, MoveType::CAPTURE, toCapture);
+				PossibleMove move = PossibleMove(moveVertical, this);
+				move.addPieceToCapture(toCapture);
+				posible_moves.push_back(move);
 			}
 
 			// enpassant
 			Piece* toEnPassant = board[CoordToIndex(moveVertical.x, moveVertical.y - yDirection)];
 			if (canEnPassant(toEnPassant))
 			{
-				posible_moves.emplace_back(moveVertical, this, MoveType::CAPTURE, toEnPassant);
+				PossibleMove move = PossibleMove(moveVertical, this);
+				move.addPieceToCapture(toEnPassant);
+				posible_moves.push_back(move);
 			}
 		}
 	}

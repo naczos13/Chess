@@ -34,26 +34,27 @@ std::vector<PossibleMove> Rook::getPhysicallyPossibleMoves(Piece** board)
 	for (const auto [dx, dy] : moveDirection) {
 		for (int multiplyer{ 1 }; multiplyer < 8; multiplyer++) { // in each direction the the bishop can possible make 7 moves
 
-			int newX = m_posistion.x + dx * multiplyer;
-			int newY = m_posistion.y + dy * multiplyer;
+			Point newPosition{ m_posistion.x + dx * multiplyer, m_posistion.y + dy * multiplyer };
 
 			// if pass the border, stop checking this direction
-			if (newX < 0 || newX > 7 || newY < 0 || newY > 7)
+			if (newPosition.x < 0 || newPosition.x > 7 || newPosition.y < 0 || newPosition.y > 7)
 				break;
 
 			// if in the way is piece, 
-			if (Piece* potential_piece = board[CoordToIndex(newX, newY)]) {
+			if (Piece* potential_piece = board[CoordToIndex(newPosition)]) {
 				// if the piece is in opossite team add this as possible move
 				if (potential_piece->getTeam() != m_team)
 				{
-					posible_moves.emplace_back(newX, newY, this, MoveType::CAPTURE, potential_piece);
+					PossibleMove move = PossibleMove(newPosition, this);
+					move.addPieceToCapture(potential_piece);
+					posible_moves.push_back(move);
 				}
 				// then stop checking this direction
 				break;
 			}
 
 			// if this is simply empty space, just add it
-			posible_moves.emplace_back(newX, newY, this);
+			posible_moves.emplace_back(newPosition, this);
 		}
 	}
 

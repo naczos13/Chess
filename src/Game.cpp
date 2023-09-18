@@ -134,7 +134,7 @@ void Game::disableUnusedEnPassant()
 
 void Game::move(PossibleMove& move)
 {
-    if (move.MoveType == MoveType::CAPTURE) {
+    if (move.capturePiece) {
         Piece* capturedPiece = move.PieceToCapture;
         capturedPiece->deactivate();
         m_board[CoordToIndex(capturedPiece->getPosition())] = nullptr;
@@ -156,7 +156,7 @@ void Game::move(PossibleMove& move)
 
     disableUnusedEnPassant();
 
-    if (move.MoveType == MoveType::DOUBLE)
+    if (move.doubleMove)
     {
         for (auto pieceThatCanMakeEnPassant : move.PiecesToInfluence)
         {
