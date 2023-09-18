@@ -3,20 +3,10 @@
 #include <iostream>
 #include <stdlib.h>
 
-King::King(Team team, Point pos, SDL_Handler* handler)
-	:Piece(team, pos, handler, KING)
+King::King(Team team, Point pos, SDL_Handler* handler, SDL_Texture* texture)
+	:Piece(team, pos, handler, KING, texture)
 {
-	std::string filename;
-	if (team == BLACK)
-	{
-		filename = "../res/Chess_kdt60.png";
-	}
-	else
-	{
-		filename = "../res/Chess_klt60.png";
-	}
 	m_handler = handler;
-	m_texture = handler->loadImage(filename);
 
 	render();
 }

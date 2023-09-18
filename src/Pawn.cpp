@@ -2,21 +2,9 @@
 #include <iostream>
 #include <array>
 
-Pawn::Pawn(Team team, Point pos, SDL_Handler* handler)
-	:Piece(team, pos, handler, PAWN)
+Pawn::Pawn(Team team, Point pos, SDL_Handler* handler, SDL_Texture* texture)
+	: Piece(team, pos, handler, PAWN, texture)
 {
-	std::string filename;
-	if (team == BLACK)
-	{
-		filename = "../res/Chess_pdt60.png";
-	}
-	else
-	{
-		filename = "../res/Chess_plt60.png";
-	}
-	m_handler = handler;
-	m_texture = handler->loadImage(filename);
-
 	if (team == BLACK)
 	{
 		yDirection = -1;
@@ -87,7 +75,13 @@ std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
 	Point singleForwardMove = { m_posistion.x, m_posistion.y + yDirection};
 	Piece* singleForwadPiece = board[CoordToIndex(singleForwardMove.x, singleForwardMove.y)];
 	if (!singleForwadPiece)
-		posible_moves.emplace_back(singleForwardMove, this);
+	{
+		PossibleMove move = PossibleMove(singleForwardMove, this);
+		if (singleForwardMove.y == 0 || singleForwardMove.y == 7)
+			move.promoteThePawn = true;
+		posible_moves.push_back(move);
+	}
+		
 
 	// double forward - only if this is first move and in the way are no pieces
 	// Also Check if this move can make the pawn sensitive to enPassant
@@ -105,6 +99,8 @@ std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
 			{
 				PossibleMove move = PossibleMove(moveVertical, this);
 				move.addPieceToCapture(toCapture);
+				if (moveVertical.y == 0 || moveVertical.y == 7)
+					move.promoteThePawn = true;
 				posible_moves.push_back(move);
 			}
 
@@ -114,6 +110,8 @@ std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
 			{
 				PossibleMove move = PossibleMove(moveVertical, this);
 				move.addPieceToCapture(toEnPassant);
+				if (moveVertical.y == 0 || moveVertical.y == 7)
+					move.promoteThePawn = true;
 				posible_moves.push_back(move);
 			}
 		}

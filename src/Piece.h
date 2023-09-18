@@ -21,6 +21,13 @@ enum Team { NONE=0, BLACK, WHITE };
 
 enum PieceType { EMPTY=0, PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN };
 
+struct SpecificPiece
+{
+	PieceType pieceType;
+	Team team;
+
+};
+
 class King;
 
 class Piece;
@@ -42,6 +49,11 @@ struct PossibleMove
 	{
 		PieceToCapture = piece;
 		capturePiece = true;
+	}
+
+	Point getDestination()
+	{
+		return { XCoord, YCoord };
 	}
 	
 	int XCoord, YCoord;
@@ -70,7 +82,7 @@ public:
 	Point getPosition() const { return m_posistion; };
 
 	// Constructor
-	Piece(Team team, Point pos, SDL_Handler* handler, PieceType type);
+	Piece(Team team, Point pos, SDL_Handler* handler, PieceType type, SDL_Texture* texture);
 
 	// Empty Constructor
 	Piece();

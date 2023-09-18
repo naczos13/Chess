@@ -6,6 +6,7 @@ Game::Game(SDL_Handler* handler)
         m_handler(handler),
         m_checkEnPassant(true)
 {
+    loadPiecesTextures();
     createPieces();
 }
 
@@ -15,32 +16,32 @@ void Game::createPiece(const PieceType& type, const Team& team, const Point& pos
     {
     case PieceType::PAWN:
     {
-        pieces.push_back(std::make_unique<Pawn>(team, position, m_handler));
+        pieces.push_back(std::make_unique<Pawn>(team, position, m_handler, textures.at({team, type})));
         break;
     }
     case PieceType::BISHOP:
     {
-        pieces.push_back(std::make_unique<Bishop>(team, position, m_handler));
+        pieces.push_back(std::make_unique<Bishop>(team, position, m_handler, textures.at({ team, type })));
         break;
     }
     case PieceType::KNIGHT:
     {
-        pieces.push_back(std::make_unique<Knight>(team, position, m_handler));
+        pieces.push_back(std::make_unique<Knight>(team, position, m_handler, textures.at({ team, type })));
         break;
     }
     case PieceType::ROOK:
     {
-        pieces.push_back(std::make_unique<Rook>(team, position, m_handler));
+        pieces.push_back(std::make_unique<Rook>(team, position, m_handler, textures.at({ team, type })));
         break;
     }
     case PieceType::QUEEN:
     {
-        pieces.push_back(std::make_unique<Queen>(team, position, m_handler));
+        pieces.push_back(std::make_unique<Queen>(team, position, m_handler, textures.at({ team, type })));
         break;
     }
     case PieceType::KING:
     {
-        pieces.push_back(std::make_unique<King>(team, position, m_handler));
+        pieces.push_back(std::make_unique<King>(team, position, m_handler, textures.at({ team, type })));
         if (team == Team::BLACK)
         {
             blackKing = static_cast<King*>(pieces.back().get());
@@ -110,6 +111,25 @@ void Game::createPieces()
 
 Game::~Game()
 {
+    // destroy all textures
+    for (auto& [key, texture] : textures)
+        SDL_DestroyTexture(texture);
+}
+
+void Game::loadPiecesTextures()
+{
+    textures[{Team::BLACK, PieceType::PAWN}]    = m_handler->loadImage("../res/Chess_pdt60.png");
+    textures[{Team::WHITE, PieceType::PAWN}]    = m_handler->loadImage("../res/Chess_plt60.png");
+    textures[{Team::BLACK, PieceType::KING}]    = m_handler->loadImage("../res/Chess_kdt60.png");
+    textures[{Team::WHITE, PieceType::KING}]    = m_handler->loadImage("../res/Chess_klt60.png");
+    textures[{Team::BLACK, PieceType::KNIGHT}]  = m_handler->loadImage("../res/Chess_ndt60.png");
+    textures[{Team::WHITE, PieceType::KNIGHT}]  = m_handler->loadImage("../res/Chess_nlt60.png");
+    textures[{Team::BLACK, PieceType::BISHOP}]  = m_handler->loadImage("../res/Chess_bdt60.png");
+    textures[{Team::WHITE, PieceType::BISHOP}]  = m_handler->loadImage("../res/Chess_blt60.png");
+    textures[{Team::BLACK, PieceType::QUEEN}]   = m_handler->loadImage("../res/Chess_qdt60.png");
+    textures[{Team::WHITE, PieceType::QUEEN}]   = m_handler->loadImage("../res/Chess_qlt60.png");
+    textures[{Team::BLACK, PieceType::ROOK}]    = m_handler->loadImage("../res/Chess_rdt60.png");
+    textures[{Team::WHITE, PieceType::ROOK}]    = m_handler->loadImage("../res/Chess_rlt60.png");
 }
 
 Piece* Game::getPieceByPosition(int row, int col)
@@ -165,26 +185,24 @@ void Game::move(PossibleMove& move)
         }
     }
 
+    if (move.promoteThePawn)
+    {
+        std::cout << "Pawn To promote" << std::endl;
+        exchange(move);
+    }
+
     changeTurn();
 
     gameState();
 }
 
-void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
+void Game::exchange(PossibleMove& move)
 {
-    SDL_Texture* text_rook = m_handler->loadImage("../res/Chess_rlt60.png");
-    SDL_Texture* text_knight = m_handler->loadImage("../res/Chess_nlt60.png");
-    SDL_Texture* text_bishop = m_handler->loadImage("../res/Chess_blt60.png");
-    SDL_Texture* text_queen = m_handler->loadImage("../res/Chess_qlt60.png");
     int y_draw = 0;
     Team team = Team::WHITE;
 
-    if (m_board[CoordToIndex(xStart, yStart)]->getTeam() == Team::BLACK)
+    if (getTurn() == Team::BLACK)
     {
-        text_rook = m_handler->loadImage("../res/Chess_rdt60.png");
-        text_knight = m_handler->loadImage("../res/Chess_ndt60.png");
-        text_bishop = m_handler->loadImage("../res/Chess_bdt60.png");
-        text_queen = m_handler->loadImage("../res/Chess_qdt60.png");
         y_draw = 3 * m_handler->SCREEN_HEIGHT / 4;
         team = Team::BLACK;
     }
@@ -196,94 +214,80 @@ void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
                           m_handler->SCREEN_HEIGHT / 4 };
     SDL_RenderFillRect(m_handler->m_renderer, &rectangle);
     SDL_Rect src = { 0, 0, 60, 60 };
-    m_handler->DrawRectangle(src, rectangle, text_rook);
+    m_handler->DrawRectangle(src, rectangle, textures.at({ team, PieceType::ROOK }));
 
     SDL_SetRenderDrawColor(m_handler->m_renderer, 255, 255, 255, 255);
     rectangle.x = m_handler->SCREEN_WIDTH / 4;
     SDL_RenderFillRect(m_handler->m_renderer, &rectangle);
-    m_handler->DrawRectangle(src, rectangle, text_knight);
+    m_handler->DrawRectangle(src, rectangle, textures.at({ team, PieceType::KNIGHT }));
 
     SDL_SetRenderDrawColor(m_handler->m_renderer, 155, 103, 60, 255);
     rectangle.x = 2 * m_handler->SCREEN_WIDTH / 4;
     SDL_RenderFillRect(m_handler->m_renderer, &rectangle);
-    m_handler->DrawRectangle(src, rectangle, text_bishop);
+    m_handler->DrawRectangle(src, rectangle, textures.at({ team, PieceType::BISHOP }));
 
     SDL_SetRenderDrawColor(m_handler->m_renderer, 255, 255, 255, 255);
     rectangle.x = 3 * m_handler->SCREEN_WIDTH / 4;
     SDL_RenderFillRect(m_handler->m_renderer, &rectangle);
-    m_handler->DrawRectangle(src, rectangle, text_queen);
+    m_handler->DrawRectangle(src, rectangle, textures.at({ team, PieceType::QUEEN }));
 
     bool quit = false;
     int x = -1;
     int y = -1;
 
-    Piece* clickedPiece = nullptr;
-
-    std::cout << m_handler;
+    std::unique_ptr<Piece> clickedPiece;
     
-    while (quit == false)
+    while (!quit && SDL_WaitEvent(&m_handler->m_event))
     {
-        while (SDL_PollEvent(&m_handler->m_event))
+        if (m_handler->m_event.type == SDL_QUIT)
         {
-            if (m_handler->m_event.type == SDL_QUIT)
-            {
-                quit = true;
-            }
+            quit = true;
+        }
 
-            if (m_handler->m_event.type == SDL_MOUSEBUTTONDOWN)
+        if (m_handler->m_event.type == SDL_MOUSEBUTTONDOWN)
+        {
+            x = m_handler->m_event.button.x / 160;
+            y = m_handler->m_event.button.y / 160;
+
+            if (y >= y_draw / 160 && y < y_draw / 160 + 1)
             {
-                x = m_handler->m_event.button.x / 160;
-                y = m_handler->m_event.button.y / 160;
-                
-                if (y >= y_draw / 160 && y < y_draw / 160 + 1)
+                if (x < m_handler->SCREEN_WIDTH / 640)
                 {
-                    if (x < m_handler->SCREEN_WIDTH / 640)
-                    {
-                        clickedPiece = new Rook(team ,Point(xEnd, yEnd), m_handler);
-                    }
-                    else if (x < 2 * m_handler->SCREEN_WIDTH / 640)
-                    {
-                        clickedPiece = new Knight(team ,Point(xEnd, yEnd), m_handler);
-                    }
-                    else if (x < 3 * m_handler->SCREEN_WIDTH / 640)
-                    {
-                        clickedPiece = new Bishop(team ,Point(xEnd, yEnd), m_handler);
-                    }
-                    else if (x <= 4 * m_handler->SCREEN_WIDTH / 640)
-                    {
-                        clickedPiece = new Queen(team ,Point(xEnd, yEnd), m_handler);
-                    }
-                    std::cout << x << " " << m_handler->SCREEN_WIDTH / 640 << std::endl;
+                    clickedPiece = std::make_unique<Rook>(team, move.getDestination(), m_handler, textures.at({team, PieceType::ROOK}));
                 }
-            }
-            
-            if (m_handler->m_event.type == SDL_MOUSEBUTTONUP && clickedPiece != nullptr)
-            {
-                quit = true;
+                else if (x < 2 * m_handler->SCREEN_WIDTH / 640)
+                {
+                    clickedPiece = std::make_unique<Knight>(team, move.getDestination(), m_handler, textures.at({ team, PieceType::KNIGHT }));
+                }
+                else if (x < 3 * m_handler->SCREEN_WIDTH / 640)
+                {
+                    clickedPiece = std::make_unique<Bishop>(team, move.getDestination(), m_handler, textures.at({ team, PieceType::BISHOP }));
+                }
+                else if (x <= 4 * m_handler->SCREEN_WIDTH / 640)
+                {
+                    clickedPiece = std::make_unique<Queen>(team, move.getDestination(), m_handler, textures.at({ team, PieceType::QUEEN }));
+                }
+                std::cout << x << " " << m_handler->SCREEN_WIDTH / 640 << std::endl;
             }
         }
-    }
 
-    m_board[CoordToIndex(xEnd, yEnd)] = clickedPiece;
-    m_board[CoordToIndex(xStart, yStart)] = nullptr;
-    m_handler->undoPieceRender(xStart, yStart);
+        if (m_handler->m_event.type == SDL_MOUSEBUTTONUP && clickedPiece != nullptr)
+        {
+            quit = true;
+        }
+    }
+    
+    pieces.push_back(std::move(clickedPiece));
+    m_board[CoordToIndex(move.getDestination())] = pieces.back().get();
+    Piece* PawnToDelete = move.PieceToMove;
+    PawnToDelete->deactivate();
+    m_handler->undoPieceRender(PawnToDelete->getPosition().x, PawnToDelete->getPosition().y);
     m_handler->renderBackground();
     
-    for (int i = 0; i < 8; i++)
+    for (const auto& piece : pieces)
     {
-        for (int j = 0; j < 8; j++)
-        {
-            if (m_board[CoordToIndex(i, j)] != nullptr)
-            {
-                m_board[CoordToIndex(i, j)]->render();
-            }
-        }
+        piece->render();
     }
-    
-    SDL_DestroyTexture(text_rook);
-    SDL_DestroyTexture(text_bishop);
-    SDL_DestroyTexture(text_knight);
-    SDL_DestroyTexture(text_queen);
 }
 
 void Game::changeTurn()

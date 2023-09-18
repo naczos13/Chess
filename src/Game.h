@@ -10,6 +10,22 @@
 #include <memory>
 #include <optional>
 #include <array>
+#include <unordered_map>
+
+// A hash function used to hash a pair of any kind
+struct hash_pair {
+    template <class T1, class T2>
+    size_t operator()(const std::pair<T1, T2>& p) const
+    {
+        auto hash1 = std::hash<int>{}(static_cast<int>(p.first) + 1000);
+        auto hash2 = std::hash<T2>{}(p.second);
+
+        return hash1 + hash2;
+    }
+};
+
+using PieceKey = std::pair<Team, PieceType>;
+using TextureMap = std::unordered_map<PieceKey, SDL_Texture*, hash_pair>;
 
 class Game
 {
@@ -53,7 +69,7 @@ public:
 private: 
 
     // exchange move
-    void exchange(int xStart, int yStart, int xEnd, int yEnd);
+    void exchange(PossibleMove& move);
 
     // Background filename
     std::string m_backgroundFilename;
@@ -75,6 +91,10 @@ private:
 
     King* blackKing;
     King* whiteKing;
+
+    TextureMap textures;
+
+    void loadPiecesTextures();
 
 };
 

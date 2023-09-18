@@ -6,7 +6,7 @@ class Pawn :
 {
 public:
     // constructor
-    Pawn(Team team, Point pos, SDL_Handler* handler);
+    Pawn(Team team, Point pos, SDL_Handler* handler, SDL_Texture* texture);
 
     // direction the pawn moves
     int yDirection;

@@ -2,20 +2,10 @@
 #include <iostream>
 #include <array>
 
-Bishop::Bishop(Team team, Point pos, SDL_Handler* handler)
-	:Piece(team, pos, handler, BISHOP)
+Bishop::Bishop(Team team, Point pos, SDL_Handler* handler, SDL_Texture* texture)
+	:Piece(team, pos, handler, BISHOP, texture)
 {
-	std::string filename;
-	if (team == BLACK)
-	{
-		filename = "../res/Chess_bdt60.png";
-	}
-	else
-	{
-		filename = "../res/Chess_blt60.png";
-	}
 	m_handler = handler;
-	m_texture = handler->loadImage(filename);
 	render();
 }
 
