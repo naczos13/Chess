@@ -11,19 +11,14 @@ public:
     // direction the pawn moves
     int yDirection;
 
-    // getter m_enPassant
-    std::pair<bool, int> getEnPassant() { return m_enPassant; };
-
-    // set m_enPassant
-    void setEnPassant(std::pair<bool, int> modifi) { m_enPassant = modifi; };
-
     // Get the vector of Physically Possible Positions in next move, without checking for checkmate
     std::vector<PossibleMove> getPhysicallyPossibleMoves(Piece** board) override;
 
     bool canEnPassant(Piece* toCapture);
 
-private:
-    // if true, en passant is possible in the int direction
-    std::pair<bool, int> m_enPassant;
+    Piece* m_canBeCaptureByEnPassant = nullptr;
+
+    void tryToMakeDoubleMove(Piece** board, std::vector<PossibleMove>& possibleMoves, Piece* singleForwardPiece);
+
 };
 

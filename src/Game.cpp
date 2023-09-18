@@ -117,6 +117,21 @@ Piece* Game::getPieceByPosition(int row, int col)
     return m_board[row * 8 + col];
 }
 
+void Game::disableUnusedEnPassant()
+{
+    for (const auto& piece : pieces)
+    {
+        if (piece->getTeam() != getTurn())
+            continue;
+
+        if (piece->getType() != PieceType::PAWN)
+            continue;
+
+        Pawn* pawn = static_cast<Pawn*>(piece.get());
+        pawn->m_canBeCaptureByEnPassant = nullptr;
+    }
+}
+
 void Game::move(PossibleMove& move)
 {
     if (move.MoveType == MoveType::CAPTURE) {
@@ -139,55 +154,21 @@ void Game::move(PossibleMove& move)
         piece->render();
     }
 
-    gameState();
-}
+    disableUnusedEnPassant();
 
-void Game::normal(int xStart, int yStart, int xEnd, int yEnd)
-{
-    m_board[CoordToIndex(xEnd, yEnd)] = getPieceByPosition(xStart, yStart);
-    m_board[CoordToIndex(xEnd, yEnd)]->m_hasMoved = true;
-    m_board[CoordToIndex(xStart, yStart)] = nullptr;
-    m_handler->undoPieceRender(xStart, yStart);
-    m_board[CoordToIndex(xEnd, yEnd)]->setPosition(Point(xEnd, yEnd));
-    if (m_board[CoordToIndex(xEnd, yEnd)] != nullptr)
+    if (move.MoveType == MoveType::DOUBLE)
     {
-        m_handler->undoPieceRender(xEnd, yEnd);
-    }
-    m_board[CoordToIndex(xEnd, yEnd)]->render();
-
-    if (m_board[CoordToIndex(xEnd, yEnd)]->getType() == PieceType::PAWN)
-    {
-        if (abs(yEnd - yStart) == 2)
+        for (auto pieceThatCanMakeEnPassant : move.PiecesToInfluence)
         {
-            if (xEnd - 1 >= 0)
-            {
-                if (m_board[CoordToIndex(xEnd - 1, yEnd)] != nullptr)
-                {
-                    if (m_board[CoordToIndex(xEnd - 1, yEnd)]->getType() == PieceType::PAWN)
-                    {
-                        Pawn* pwn = static_cast<Pawn*>(m_board[CoordToIndex(xEnd - 1, yEnd)]);
-                        pwn->setEnPassant(std::pair<bool, int>(true, -1));
-                        m_checkEnPassant = false;
-                    }
-                }
-            }
-
-            if (xEnd + 1 <= 7)
-            {
-                if (m_board[CoordToIndex(xEnd + 1, yEnd)] != nullptr)
-                {
-                    if (m_board[CoordToIndex(xEnd + 1, yEnd)]->getType() == PieceType::PAWN)
-                    {
-                        Pawn* pwn = static_cast<Pawn*>(m_board[CoordToIndex(xEnd + 1, yEnd)]);
-                        pwn->setEnPassant(std::pair<bool, int>(true, 1));
-                        m_checkEnPassant = false;
-                    }
-                }
-            }
+            if (Pawn* pawnThatCanMakeEnPassant = dynamic_cast<Pawn*>(pieceThatCanMakeEnPassant))
+                pawnThatCanMakeEnPassant->m_canBeCaptureByEnPassant = move.PieceToMove;
         }
     }
-}
 
+    changeTurn();
+
+    gameState();
+}
 
 void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
 {
@@ -305,7 +286,7 @@ void Game::exchange(int xStart, int yStart, int xEnd, int yEnd)
     SDL_DestroyTexture(text_queen);
 }
 
-void Game::gameState()
+void Game::changeTurn()
 {
     // Change the turn
     if (m_turn == Team::BLACK)
@@ -316,7 +297,10 @@ void Game::gameState()
     {
         m_turn = Team::BLACK;
     }
+}
 
+void Game::gameState()
+{
     // when is game over?
     // when the team which turn is have no possible moves
     // how to check it?
@@ -354,24 +338,6 @@ void Game::gameState()
     SDL_Event quitEvent;
     quitEvent.type = SDL_QUIT;
     SDL_PushEvent(&quitEvent);
-}
-
-void Game::disableEnPassant()
-{
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            if (m_board[CoordToIndex(i, j)] != nullptr)
-            {
-                if (m_board[CoordToIndex(i, j)]->getType() == PieceType::PAWN)
-                {
-                    Pawn* pwn = static_cast<Pawn*>(m_board[CoordToIndex(i, j)]);
-                    pwn->setEnPassant(std::pair<bool, int>(false, 0));
-                }
-            }
-        }
-    }
 }
 
 void Game::renderPossibleMoves(const std::vector<PossibleMove>& possible)

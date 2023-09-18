@@ -21,7 +21,7 @@ enum Team { NONE=0, BLACK, WHITE };
 
 enum PieceType { EMPTY=0, PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN };
 
-enum MoveType { NORMAL, CAPTURE, CASTLE, ENPASSANT, NEWPIECE, INIT };
+enum MoveType { NORMAL, CAPTURE, DOUBLE, CASTLE, ENPASSANT, NEWPIECE, INIT };
 
 class King;
 
@@ -30,21 +30,26 @@ class Piece;
 struct PossibleMove
 {
 	PossibleMove(int x, int y, Piece* pieceToMove, MoveType mt = MoveType::NORMAL, Piece* pieceToCapture=nullptr) 
-		: XCoord{ x }, YCoord{ y }, PieceToMove{ pieceToMove }, SecondPiecesToMove{ nullptr }, MoveType{ mt	}, PieceToCapture{ pieceToCapture }
+		: XCoord{ x }, YCoord{ y }, PieceToMove{ pieceToMove }, MoveType{ mt	}, PieceToCapture{ pieceToCapture }
 	{};
 
 	PossibleMove(Point moveTo, Piece* pieceToMove, MoveType mt = MoveType::NORMAL, Piece* pieceToCapture = nullptr)
-		: XCoord{ moveTo.x }, YCoord{ moveTo.y }, PieceToMove{ pieceToMove }, SecondPiecesToMove{ nullptr }, MoveType{ mt }, PieceToCapture{ pieceToCapture }
+		: XCoord{ moveTo.x }, YCoord{ moveTo.y }, PieceToMove{ pieceToMove }, MoveType{ mt }, PieceToCapture{ pieceToCapture }
 	{};
 
-	PossibleMove(int x, int y, Piece* firstPieceToMove, Piece* secondPieceToMove, MoveType mt)
-		: XCoord{ x }, YCoord{ y }, PieceToMove{ firstPieceToMove }, SecondPiecesToMove{ secondPieceToMove }, MoveType{ mt }, PieceToCapture{ nullptr }
+	PossibleMove(int x, int y, Piece* firstPieceToMove, MoveType mt)
+		: XCoord{ x }, YCoord{ y }, PieceToMove{ firstPieceToMove }, MoveType{ mt }
 	{};
+
+	void addPieceToInfuence(Piece* piece)
+	{
+		PiecesToInfluence.push_back(piece);
+	}
 	
 	int XCoord, YCoord;
 	MoveType MoveType;
 	Piece* PieceToMove = nullptr;
-	Piece* SecondPiecesToMove = nullptr;
+	std::vector<Piece*> PiecesToInfluence;
 	Piece* PieceToCapture = nullptr;
 };
 

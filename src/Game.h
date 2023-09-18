@@ -40,6 +40,10 @@ public:
 
     void createPieces();
 
+    void disableUnusedEnPassant();
+
+    void changeTurn();
+
     void createPiece(const PieceType& type, const Team& team, const Point& position);
 
     // 2D board array, every Position has got a Team and a piece
@@ -48,20 +52,8 @@ public:
 
 private: 
 
-    // disables enPassant for every Piece
-    void disableEnPassant();
-
-    // normal move
-    void normal(int xStart, int yStart, int xEnd, int yEnd);
-
-    // enpassant move
-    void enPassant(int xStart, int yStart, int xEnd, int yEnd);
-
     // exchange move
     void exchange(int xStart, int yStart, int xEnd, int yEnd);
-
-    // castles move
-    void castles(int xStart, int yStart, int xEnd, int yEnd);
 
     // Background filename
     std::string m_backgroundFilename;
@@ -83,9 +75,6 @@ private:
 
     King* blackKing;
     King* whiteKing;
-
-
-
 
 };
 

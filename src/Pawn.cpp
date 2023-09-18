@@ -3,7 +3,7 @@
 #include <array>
 
 Pawn::Pawn(Team team, Point pos, SDL_Handler* handler)
-	:Piece(team, pos, handler, PAWN), m_enPassant(std::pair<bool, int>(false, 0))
+	:Piece(team, pos, handler, PAWN)
 {
 	std::string filename;
 	if (team == BLACK)
@@ -34,6 +34,9 @@ bool Pawn::canEnPassant(Piece* toCapture)
 	if (!toCapture)
 		return false;
 
+	if (toCapture != m_canBeCaptureByEnPassant)
+		return false;
+
 	if (toCapture->getType() != PieceType::PAWN)
 		return false;
 
@@ -46,9 +49,33 @@ bool Pawn::canEnPassant(Piece* toCapture)
 	if (getTeam() == Team::WHITE && getPosition().y != 4)
 		return false;
 
-	//TODO Implement check if the toCapture make as previous move the double move
-
 	return true;
+}
+
+void Pawn::tryToMakeDoubleMove(Piece** board, std::vector<PossibleMove>& possibleMoves, Piece* singleForwardPiece)
+{
+	Point doubleForward = { m_posistion.x, m_posistion.y + 2 * yDirection };
+	if (!m_hasMoved && // only if this is firs move
+		!singleForwardPiece && // only if the way is empty
+		!board[CoordToIndex(doubleForward.x, doubleForward.y)])
+	{
+		// Check if this move can make the pawn sensitive to enPassant
+		Point leftNeighborPosition = { doubleForward.x - 1, doubleForward.y };
+		Piece* leftNeighbor = nullptr;
+		if (leftNeighborPosition.x > 0)
+			leftNeighbor = board[CoordToIndex(leftNeighborPosition)];
+
+		Point rightNeighborPosition = { doubleForward.x + 1, doubleForward.y };
+		Piece* rightNeighbor = nullptr;
+		if (rightNeighborPosition.x < 8)
+			rightNeighbor = board[CoordToIndex(rightNeighborPosition)];
+
+		PossibleMove doubleMove = PossibleMove(doubleForward, this, MoveType::DOUBLE);
+		doubleMove.addPieceToInfuence(leftNeighbor);
+		doubleMove.addPieceToInfuence(rightNeighbor);
+
+		possibleMoves.push_back(doubleMove);
+	}
 }
 
 std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
@@ -62,13 +89,8 @@ std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
 		posible_moves.emplace_back(singleForwardMove, this);
 
 	// double forward - only if this is first move and in the way are no pieces
-	Point doubleForward = { m_posistion.x, m_posistion.y + 2 * yDirection};
-	if (!m_hasMoved && // only if this is firs move
-		!singleForwadPiece && // only if the way is empty
-		!board[CoordToIndex(doubleForward.x, doubleForward.y)])
-	{
-		posible_moves.emplace_back(doubleForward, this);
-	}
+	// Also Check if this move can make the pawn sensitive to enPassant
+	tryToMakeDoubleMove(board, posible_moves, singleForwadPiece);
 
 	// capture - only if still in bounds and there is a enemy piece
 	std::array<int, 2> verticalDirection{ -1, 1 };
@@ -94,7 +116,3 @@ std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
 
 	return posible_moves;
 }
-
-
-
-
