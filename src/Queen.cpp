@@ -1,11 +1,10 @@
 #include "Queen.h"
 #include <iostream>
 
-Queen::Queen(Team team, Point pos, SDL_Handler* handler, SDL_Texture* texture)
-	:Piece(team, pos, handler, QUEEN, texture)
+Queen::Queen(Team team, Point pos, SDL_Texture* texture)
+	:Piece(team, pos, PieceType::QUEEN, texture)
 {
-	m_handler = handler;
-	render();
+	//render();
 }
 
 std::vector<PossibleMove> Queen::getPhysicallyPossibleMoves(Piece** board)

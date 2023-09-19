@@ -1,12 +1,10 @@
 #include "Rook.h"
 #include <iostream>
 
-Rook::Rook(Team team, Point pos, SDL_Handler* handler, SDL_Texture* texture)
-	:Piece(team, pos, handler, ROOK, texture)
+Rook::Rook(Team team, Point pos, SDL_Texture* texture)
+	:Piece(team, pos, PieceType::ROOK, texture)
 {
-	m_handler = handler;
-
-	render();
+	//render();
 }
 
 std::vector<PossibleMove> Rook::getPhysicallyPossibleMoves(Piece** board)

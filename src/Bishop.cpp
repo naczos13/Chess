@@ -2,11 +2,9 @@
 #include <iostream>
 #include <array>
 
-Bishop::Bishop(Team team, Point pos, SDL_Handler* handler, SDL_Texture* texture)
-	:Piece(team, pos, handler, BISHOP, texture)
+Bishop::Bishop(Team team, Point pos, SDL_Texture* texture)
+	:Piece(team, pos, PieceType::BISHOP, texture)
 {
-	m_handler = handler;
-	render();
 }
 
 std::vector<PossibleMove> Bishop::getPhysicallyPossibleMoves(Piece** board)

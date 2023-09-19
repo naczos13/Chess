@@ -2,10 +2,10 @@
 #include <iostream>
 #include <array>
 
-Pawn::Pawn(Team team, Point pos, SDL_Handler* handler, SDL_Texture* texture)
-	: Piece(team, pos, handler, PAWN, texture)
+Pawn::Pawn(Team team, Point pos, SDL_Texture* texture)
+	: Piece(team, pos, PieceType::PAWN, texture)
 {
-	if (team == BLACK)
+	if (team == Team::BLACK)
 	{
 		yDirection = -1;
 	}
@@ -14,7 +14,7 @@ Pawn::Pawn(Team team, Point pos, SDL_Handler* handler, SDL_Texture* texture)
 		yDirection = 1;
 	}
 
-	render();
+	//render();
 }
 
 bool Pawn::canEnPassant(Piece* toCapture)

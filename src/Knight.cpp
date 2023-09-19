@@ -1,11 +1,10 @@
 #include "Knight.h"
 #include <iostream>
 
-Knight::Knight(Team team, Point pos, SDL_Handler* handler, SDL_Texture* texture)
-	:Piece(team, pos, handler, KNIGHT, texture)
+Knight::Knight(Team team, Point pos, SDL_Texture* texture)
+	:Piece(team, pos, PieceType::KNIGHT, texture)
 {
-	m_handler = handler;
-	render();
+	//render();
 }
 
 std::vector<PossibleMove> Knight::getPhysicallyPossibleMoves(Piece** board)

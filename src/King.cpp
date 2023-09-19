@@ -3,12 +3,10 @@
 #include <iostream>
 #include <stdlib.h>
 
-King::King(Team team, Point pos, SDL_Handler* handler, SDL_Texture* texture)
-	:Piece(team, pos, handler, KING, texture)
+King::King(Team team, Point pos, SDL_Texture* texture)
+	:Piece(team, pos, PieceType::KING, texture)
 {
-	m_handler = handler;
-
-	render();
+	//render();
 }
 
 std::vector<PossibleMove> King::getPhysicallyPossibleMoves(Piece** board)

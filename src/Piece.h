@@ -2,7 +2,6 @@
 
 #include <utility>
 #include <vector>
-#include "SDL_Handler.h"
 #include <SDL.h>
 
 struct Point
@@ -17,16 +16,9 @@ int CoordToIndex(int x, int y);
 
 int CoordToIndex(Point p);
 
-enum Team { NONE=0, BLACK, WHITE };
+enum class Team { NONE=0, BLACK, WHITE };
 
-enum PieceType { EMPTY=0, PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN };
-
-struct SpecificPiece
-{
-	PieceType pieceType;
-	Team team;
-
-};
+enum class PieceType { EMPTY=0, PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN };
 
 class King;
 
@@ -82,7 +74,7 @@ public:
 	Point getPosition() const { return m_posistion; };
 
 	// Constructor
-	Piece(Team team, Point pos, SDL_Handler* handler, PieceType type, SDL_Texture* texture);
+	Piece(Team team, Point pos, PieceType type, SDL_Texture* texture);
 
 	// Empty Constructor
 	Piece();
@@ -92,9 +84,6 @@ public:
 
 	// Destructor
 	~Piece();
-
-	//render this piece
-	void render();
 
 	// true, if piece has moved
 	bool m_hasMoved;
@@ -112,13 +101,12 @@ public:
 
 	void deactivate() { m_stillInGame = false; };
 
+	SDL_Texture* getTexture() const { return m_texture; };
+
 protected:
 
 	// texture of this piece
 	SDL_Texture* m_texture;
-
-	// SDL Handler
-	SDL_Handler* m_handler;
 
 	// Team this piece plays for
 	Team m_team;

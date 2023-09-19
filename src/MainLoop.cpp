@@ -8,9 +8,6 @@
 void MainLoop::run()
 {
 	SDL_Handler handler = SDL_Handler();
-
-	handler.renderBackground();
-
 	Game game = Game(&handler);
 
 	Point moveStart;
@@ -28,15 +25,15 @@ void MainLoop::run()
 		}
 		case SDL_MOUSEBUTTONDOWN:
 		{
-			moveStart.x = handler.m_event.button.x / SDL_Handler::CELL_WIDTH;
-			moveStart.y = handler.m_event.button.y / SDL_Handler::CELL_HEIGHT;
+			moveStart.x = handler.m_event.button.x / handler.CELL_WIDTH;
+			moveStart.y = handler.m_event.button.y / handler.CELL_HEIGHT;
 			clickedPiece = game.getPieceByPosition(moveStart.x, moveStart.y);
 			if (clickedPiece)
 			{
 				if (clickedPiece->getTeam() == game.getTurn())
 				{
 					possibleMoves = clickedPiece->getPossibleMoves(game.m_board);
-					game.renderPossibleMoves(possibleMoves);
+					handler.renderPossibleMoves(game.getPieces(), possibleMoves);
 				}
 			}
 			break;
@@ -46,10 +43,10 @@ void MainLoop::run()
 			if (clickedPiece)
 			{
 				// Clear the board from the possible moves
-				game.undoRenderPossibleMoves(possibleMoves);
+				handler.refreshTheWindow(game.getPieces());
 
-				moveEnd.x = handler.m_event.button.x / SDL_Handler::CELL_WIDTH;
-				moveEnd.y = handler.m_event.button.y / SDL_Handler::CELL_HEIGHT;
+				moveEnd.x = handler.m_event.button.x / handler.CELL_WIDTH;
+				moveEnd.y = handler.m_event.button.y / handler.CELL_HEIGHT;
 
 				if (auto move = game.GetValidMove(moveEnd, possibleMoves))
 				{

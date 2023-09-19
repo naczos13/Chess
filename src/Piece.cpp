@@ -108,8 +108,8 @@ King* Piece::getOwnKing(Piece** board)
 	return m_ownKing;
 }
 
-Piece::Piece(Team team, Point pos, SDL_Handler* handler, PieceType type, SDL_Texture* texture)
-	:m_team(team), m_posistion(pos), m_handler(handler), m_texture(texture), m_hasMoved(false), m_type(type)
+Piece::Piece(Team team, Point pos, PieceType type, SDL_Texture* texture)
+	:m_team(team), m_posistion(pos), m_texture(texture), m_hasMoved(false), m_type(type)
 {
 	std::cout << "Created Piece: count: " << ++Piece::s_piece_counter << std::endl;
 }
@@ -120,17 +120,16 @@ Piece::Piece()
 }
 
 Piece::Piece(const Piece& piece)
-	:m_team(piece.m_team), m_posistion(piece.m_posistion), m_handler(piece.m_handler), m_texture(piece.m_texture), m_hasMoved(false), m_type(piece.m_type)
+	:m_team(piece.m_team), m_posistion(piece.m_posistion), m_texture(piece.m_texture), m_hasMoved(false), m_type(piece.m_type)
 {
 	std::cout << "Copy Piece" << std::endl;
 }
 
 Piece::~Piece()
 {
-	m_handler->undoPieceRender(m_posistion.x, m_posistion.y);
 }
 
-
+/*
 void Piece::render()
 {
 	if (isActive())
@@ -143,7 +142,7 @@ void Piece::render()
 		m_handler->DrawRectangle(src, dest, m_texture);
 	}
 }
-
+*/
 
 int Piece::s_piece_counter = 0;
 

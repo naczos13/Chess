@@ -10,22 +10,7 @@
 #include <memory>
 #include <optional>
 #include <array>
-#include <unordered_map>
 
-// A hash function used to hash a pair of any kind
-struct hash_pair {
-    template <class T1, class T2>
-    size_t operator()(const std::pair<T1, T2>& p) const
-    {
-        auto hash1 = std::hash<int>{}(static_cast<int>(p.first) + 1000);
-        auto hash2 = std::hash<T2>{}(p.second);
-
-        return hash1 + hash2;
-    }
-};
-
-using PieceKey = std::pair<Team, PieceType>;
-using TextureMap = std::unordered_map<PieceKey, SDL_Texture*, hash_pair>;
 
 class Game
 {
@@ -48,12 +33,6 @@ public:
     // return the move if exist in the pool of possible moves
     std::optional<PossibleMove> GetValidMove(const Point& endPoint, const std::vector<PossibleMove>& possibleMoves) const;
 
-    // light up the possible Moves
-    void renderPossibleMoves(const std::vector<PossibleMove>& possible);
-
-    // undos the renderPossibleMoves function
-    void undoRenderPossibleMoves(const std::vector<PossibleMove>& possible);
-
     void createPieces();
 
     void disableUnusedEnPassant();
@@ -65,6 +44,8 @@ public:
     // 2D board array, every Position has got a Team and a piece
     std::array<Piece*, 64> board;
     Piece** m_board = board.data();
+
+    const std::vector<std::unique_ptr<Piece>>& getPieces() const { return pieces; };
 
 private: 
 
@@ -80,9 +61,6 @@ private:
     // handler
     SDL_Handler* m_handler;
 
-    // if true, disable en Passant! if false, dont
-    bool m_checkEnPassant;
-
     // checks current game state, determines winner or remis
     void gameState();
 
@@ -91,10 +69,6 @@ private:
 
     King* blackKing;
     King* whiteKing;
-
-    TextureMap textures;
-
-    void loadPiecesTextures();
 
 };
 
