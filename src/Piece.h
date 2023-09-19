@@ -27,10 +27,10 @@ class Piece;
 struct PossibleMove
 {
 	PossibleMove(int x, int y, Piece* pieceToMove) 
-		: XCoord{ x }, YCoord{ y }, PieceToMove{ pieceToMove } {};
+		: XCoord{ x }, YCoord{ y }, PieceToMove{ pieceToMove }, promoteThePawn{ false }  {};
 
 	PossibleMove(Point moveTo, Piece* pieceToMove)
-		: XCoord{ moveTo.x }, YCoord{ moveTo.y }, PieceToMove{ pieceToMove } {};
+		: XCoord{ moveTo.x }, YCoord{ moveTo.y }, PieceToMove{ pieceToMove }, promoteThePawn{ false } {};
 
 	void addPieceToInfuence(Piece* piece)
 	{
@@ -47,6 +47,16 @@ struct PossibleMove
 	{
 		return { XCoord, YCoord };
 	}
+
+	void makeAPromoteMove()
+	{
+		promoteThePawn = true;
+	}
+
+	bool isPromoteThePawn()
+	{
+		return promoteThePawn;
+	}
 	
 	int XCoord, YCoord;
 	Piece* PieceToMove = nullptr;
@@ -54,6 +64,8 @@ struct PossibleMove
 	Piece* PieceToCapture = nullptr;
 	bool capturePiece = false;
 	bool doubleMove = false;
+
+private:
 	bool promoteThePawn = false;
 };
 

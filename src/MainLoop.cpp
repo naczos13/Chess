@@ -35,6 +35,10 @@ void MainLoop::run()
 					possibleMoves = clickedPiece->getPossibleMoves(game.m_board);
 					handler.renderPossibleMoves(game.getPieces(), possibleMoves);
 				}
+				else
+				{
+					clickedPiece = nullptr;
+				}
 			}
 			break;
 		}
@@ -53,6 +57,7 @@ void MainLoop::run()
 					game.move(*move);
 				}
 			}
+			clickedPiece = nullptr;
 			break;
 		}
 		}

@@ -165,7 +165,7 @@ void Game::move(PossibleMove& move)
         }
     }
 
-    if (move.promoteThePawn)
+    if (move.isPromoteThePawn())
     {
         std::cout << "Pawn To promote" << std::endl;
         exchange(move);
@@ -178,6 +178,7 @@ void Game::move(PossibleMove& move)
 
 void Game::exchange(PossibleMove& move)
 {
+    // TODO fix the bug with double promotion
     PieceType pieceType = m_handler->chooseNewPiece(getTurn());
 
     createPiece(pieceType, getTurn(), move.getDestination());

@@ -78,7 +78,7 @@ std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
 	{
 		PossibleMove move = PossibleMove(singleForwardMove, this);
 		if (singleForwardMove.y == 0 || singleForwardMove.y == 7)
-			move.promoteThePawn = true;
+			move.makeAPromoteMove();
 		posible_moves.push_back(move);
 	}
 		
@@ -100,7 +100,7 @@ std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
 				PossibleMove move = PossibleMove(moveVertical, this);
 				move.addPieceToCapture(toCapture);
 				if (moveVertical.y == 0 || moveVertical.y == 7)
-					move.promoteThePawn = true;
+					move.makeAPromoteMove();
 				posible_moves.push_back(move);
 			}
 
@@ -111,7 +111,7 @@ std::vector<PossibleMove> Pawn::getPhysicallyPossibleMoves(Piece** board)
 				PossibleMove move = PossibleMove(moveVertical, this);
 				move.addPieceToCapture(toEnPassant);
 				if (moveVertical.y == 0 || moveVertical.y == 7)
-					move.promoteThePawn = true;
+					move.makeAPromoteMove();
 				posible_moves.push_back(move);
 			}
 		}
