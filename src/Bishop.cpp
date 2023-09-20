@@ -3,9 +3,7 @@
 #include <array>
 
 Bishop::Bishop(Team team, Point pos, SDL_Texture* texture)
-	:Piece(team, pos, PieceType::BISHOP, texture)
-{
-}
+	:Piece(team, pos, PieceType::BISHOP, texture) {}
 
 std::vector<PossibleMove> Bishop::getPhysicallyPossibleMoves(Piece** board)
 {

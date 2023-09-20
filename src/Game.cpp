@@ -131,7 +131,7 @@ void Game::disableUnusedEnPassant()
             continue;
 
         Pawn* pawn = static_cast<Pawn*>(piece.get());
-        pawn->m_canBeCaptureByEnPassant = nullptr;
+        pawn->canBeCaptureByEnPassantByPiece = nullptr;
     }
 }
 
@@ -147,7 +147,7 @@ void Game::move(PossibleMove& move)
     Point oldPlace = pieceToMove->getPosition();
     Point placeToMove = { move.XCoord, move.YCoord };
     pieceToMove->setPosition(placeToMove);
-    pieceToMove->m_hasMoved = true;
+    pieceToMove->setPieceIsMoved();
     m_board[CoordToIndex(placeToMove)] = pieceToMove;
     m_board[CoordToIndex(oldPlace)] = nullptr;
 
@@ -161,7 +161,7 @@ void Game::move(PossibleMove& move)
         for (auto pieceThatCanMakeEnPassant : move.PiecesToInfluence)
         {
             if (Pawn* pawnThatCanMakeEnPassant = dynamic_cast<Pawn*>(pieceThatCanMakeEnPassant))
-                pawnThatCanMakeEnPassant->m_canBeCaptureByEnPassant = move.PieceToMove;
+                pawnThatCanMakeEnPassant->canBeCaptureByEnPassantByPiece = move.PieceToMove;
         }
     }
 
@@ -178,7 +178,6 @@ void Game::move(PossibleMove& move)
 
 void Game::exchange(PossibleMove& move)
 {
-    // TODO fix the bug with double promotion
     PieceType pieceType = m_handler->chooseNewPiece(getTurn());
 
     createPiece(pieceType, getTurn(), move.getDestination());

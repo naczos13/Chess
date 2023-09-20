@@ -62,13 +62,13 @@ bool Piece::canEliminateKing(Piece** board, const Piece* king)
 	for (const auto& move : posible_moves)
 	{
 		const Piece* possiblePiece = board[CoordToIndex(move.XCoord, move.YCoord)];
-		if (possiblePiece == king)
+		if (possiblePiece && possiblePiece == king)
 			return true;
 	}
 	return false;
 }
 
-std::vector<PossibleMove> Piece::getPossibleMoves(Piece** board, bool checkCheck)
+std::vector<PossibleMove> Piece::getPossibleMoves(Piece** board)
 {
 	std::vector<PossibleMove> posible_moves;
 
@@ -110,39 +110,6 @@ King* Piece::getOwnKing(Piece** board)
 
 Piece::Piece(Team team, Point pos, PieceType type, SDL_Texture* texture)
 	:m_team(team), m_posistion(pos), m_texture(texture), m_hasMoved(false), m_type(type)
-{
-	std::cout << "Created Piece: count: " << ++Piece::s_piece_counter << std::endl;
-}
+{ }
 
-Piece::Piece()
-{
-	std::cout << "Created Empty Piece: count: " << ++Piece::s_piece_counter << std::endl;
-}
-
-Piece::Piece(const Piece& piece)
-	:m_team(piece.m_team), m_posistion(piece.m_posistion), m_texture(piece.m_texture), m_hasMoved(false), m_type(piece.m_type)
-{
-	std::cout << "Copy Piece" << std::endl;
-}
-
-Piece::~Piece()
-{
-}
-
-/*
-void Piece::render()
-{
-	if (isActive())
-	{
-		SDL_Rect src = { 0, 0, 60, 60 };
-		SDL_Rect dest = { m_handler->SCREEN_WIDTH / 8 * m_posistion.x - 2,
-						  m_handler->SCREEN_HEIGHT / 8 * m_posistion.y,
-						  m_handler->SCREEN_WIDTH / 8,
-						  m_handler->SCREEN_HEIGHT / 8 };
-		m_handler->DrawRectangle(src, dest, m_texture);
-	}
-}
-*/
-
-int Piece::s_piece_counter = 0;
 

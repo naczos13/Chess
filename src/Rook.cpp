@@ -2,10 +2,7 @@
 #include <iostream>
 
 Rook::Rook(Team team, Point pos, SDL_Texture* texture)
-	:Piece(team, pos, PieceType::ROOK, texture)
-{
-	//render();
-}
+	:Piece(team, pos, PieceType::ROOK, texture) {}
 
 std::vector<PossibleMove> Rook::getPhysicallyPossibleMoves(Piece** board)
 {
@@ -20,7 +17,7 @@ std::vector<PossibleMove> Rook::getPhysicallyPossibleMoves(Piece** board)
 	};
 
 	for (const auto [dx, dy] : moveDirection) {
-		for (int multiplyer{ 1 }; multiplyer < 8; multiplyer++) { // in each direction the the bishop can possible make 7 moves
+		for (int multiplyer{ 1 }; multiplyer < 8; multiplyer++) { // in each direction the the ROOK can possible make 7 moves
 
 			Point newPosition{ m_posistion.x + dx * multiplyer, m_posistion.y + dy * multiplyer };
 

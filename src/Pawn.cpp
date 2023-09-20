@@ -13,8 +13,6 @@ Pawn::Pawn(Team team, Point pos, SDL_Texture* texture)
 	{
 		yDirection = 1;
 	}
-
-	//render();
 }
 
 bool Pawn::canEnPassant(Piece* toCapture)
@@ -22,7 +20,7 @@ bool Pawn::canEnPassant(Piece* toCapture)
 	if (!toCapture)
 		return false;
 
-	if (toCapture != m_canBeCaptureByEnPassant)
+	if (toCapture != canBeCaptureByEnPassantByPiece)
 		return false;
 
 	if (toCapture->getType() != PieceType::PAWN)

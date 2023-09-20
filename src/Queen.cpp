@@ -2,10 +2,7 @@
 #include <iostream>
 
 Queen::Queen(Team team, Point pos, SDL_Texture* texture)
-	:Piece(team, pos, PieceType::QUEEN, texture)
-{
-	//render();
-}
+	:Piece(team, pos, PieceType::QUEEN, texture) {}
 
 std::vector<PossibleMove> Queen::getPhysicallyPossibleMoves(Piece** board)
 {

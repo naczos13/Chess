@@ -2,10 +2,7 @@
 #include <iostream>
 
 Knight::Knight(Team team, Point pos, SDL_Texture* texture)
-	:Piece(team, pos, PieceType::KNIGHT, texture)
-{
-	//render();
-}
+	:Piece(team, pos, PieceType::KNIGHT, texture) {}
 
 std::vector<PossibleMove> Knight::getPhysicallyPossibleMoves(Piece** board)
 {

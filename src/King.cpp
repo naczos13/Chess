@@ -4,10 +4,7 @@
 #include <stdlib.h>
 
 King::King(Team team, Point pos, SDL_Texture* texture)
-	:Piece(team, pos, PieceType::KING, texture)
-{
-	//render();
-}
+	:Piece(team, pos, PieceType::KING, texture) {}
 
 std::vector<PossibleMove> King::getPhysicallyPossibleMoves(Piece** board)
 {

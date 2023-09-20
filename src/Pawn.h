@@ -16,9 +16,8 @@ public:
 
     bool canEnPassant(Piece* toCapture);
 
-    Piece* m_canBeCaptureByEnPassant = nullptr;
+    Piece* canBeCaptureByEnPassantByPiece = nullptr;
 
     void tryToMakeDoubleMove(Piece** board, std::vector<PossibleMove>& possibleMoves, Piece* singleForwardPiece);
-
 };
 

@@ -73,8 +73,26 @@ class Piece
 {
 public:
 
+	// Constructor
+	Piece(Team team, Point pos, PieceType type, SDL_Texture* texture);
+
+	// Copy-Constructor
+	Piece(const Piece& other) = delete;
+
+	// Copy-Assigment
+	Piece operator=(const Piece& other) = delete;
+
+	// Move-Contructor
+	Piece(Piece&& other) = delete;
+
+	// Move-Assigment
+	Piece operator=(Piece&& other) = delete;
+
+	// Destructor
+	~Piece() = default;
+
 	// returns list of possible Moves
-	std::vector<PossibleMove> getPossibleMoves(Piece** board, bool checkCheck=true);
+	std::vector<PossibleMove> getPossibleMoves(Piece** board);
 
 	// return whether BLACK or WHITE
 	Team getTeam() const { return m_team; };
@@ -85,37 +103,34 @@ public:
 	// return position of piece
 	Point getPosition() const { return m_posistion; };
 
-	// Constructor
-	Piece(Team team, Point pos, PieceType type, SDL_Texture* texture);
-
-	// Empty Constructor
-	Piece();
-
-	// Copy-Constructor
-	Piece(const Piece& piece);
-
-	// Destructor
-	~Piece();
-
-	// true, if piece has moved
-	bool m_hasMoved;
-
 	// returns type of piece
 	PieceType getType() const { return m_type; };
 
+	// Check if specific move expose own King to be capture
 	bool moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point* move, Piece* CurrentPiece);
 
+	// Check the possible move without checking for safty of own King
 	virtual std::vector<PossibleMove> getPhysicallyPossibleMoves(Piece** board) = 0;
 
+	// Check if this piece can capture the Enemy King
 	bool canEliminateKing(Piece** board, const Piece* king);
 
+	// Check if the Piece is still in the game
 	bool isActive() const { return m_stillInGame; };
 
+	// Deactivate the Piece from the game, when was capture or Promoted
 	void deactivate() { m_stillInGame = false; };
 
+	// Get the SDL texture
 	SDL_Texture* getTexture() const { return m_texture; };
 
+	// Give information that the Piece is already moved
+	void setPieceIsMoved() { m_hasMoved = true; };
+
 protected:
+
+	// true, if piece has moved
+	bool m_hasMoved;
 
 	// texture of this piece
 	SDL_Texture* m_texture;
