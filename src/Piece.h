@@ -64,6 +64,10 @@ struct PossibleMove
 	Piece* PieceToCapture = nullptr;
 	bool capturePiece = false;
 	bool doubleMove = false;
+	bool castling = false;
+	Piece* PieceToCastle = nullptr;
+	Point RookTargetPosition;
+
 
 private:
 	bool promoteThePawn = false;
@@ -94,6 +98,9 @@ public:
 	// returns list of possible Moves
 	std::vector<PossibleMove> getPossibleMoves(Piece** board);
 
+	// return if the Piece moved already
+	bool hasAlreadyMoved() const { return m_hasMoved; };
+
 	// return whether BLACK or WHITE
 	Team getTeam() const { return m_team; };
 
@@ -107,7 +114,9 @@ public:
 	PieceType getType() const { return m_type; };
 
 	// Check if specific move expose own King to be capture
-	bool moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point* move, Piece* CurrentPiece);
+	bool moveMakeMyKingToBeCheck(Piece** board, const King* king, PossibleMove& move);
+
+	std::array<Piece*, 64> createSimulatedBoard(Piece** board, PossibleMove& move);
 
 	// Check the possible move without checking for safty of own King
 	virtual std::vector<PossibleMove> getPhysicallyPossibleMoves(Piece** board) = 0;

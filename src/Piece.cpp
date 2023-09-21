@@ -2,6 +2,7 @@
 #include "King.h"
 #include <string>
 #include <iostream>
+#include <array>
 
 int CoordToIndex(int x, int y) {
 	return x * 8 + y;
@@ -11,48 +12,39 @@ int CoordToIndex(Point p) {
 	return p.x * 8 + p.y;
 }
 
-bool Piece::moveMakeMyKingToBeCheck(Piece** board, const King* king, const Point* move, Piece* CurrentPiece)
+std::array<Piece*, 64> Piece::createSimulatedBoard(Piece** board, PossibleMove& move)
 {
-	// make this move, loop over all the enemy pieces and check if this can lead to checkmate of own king, then revert the move
+	std::array<Piece*, 64> boardCopy;
+	for (size_t i{}; i < 64; i++)
+	{
+		boardCopy[i] = board[i];
+	}
 
-	// what I need
-	// - make a move
-	// - list of enemy Pieces
-	// - function that check if piece can capture a king
-	// - revert the move
+	boardCopy[CoordToIndex(move.PieceToMove->getPosition())] = nullptr;
+	if (move.capturePiece)
+		boardCopy[CoordToIndex(move.PieceToCapture->getPosition())] = nullptr;
+	boardCopy[CoordToIndex(move.getDestination())] = move.PieceToMove;
 
+	return boardCopy;
+}
+
+bool Piece::moveMakeMyKingToBeCheck(Piece** board, const King* king, PossibleMove& move)
+{
 	bool captureTheKing = false;
 
-	// # Make a move
-	Piece* capturePiece = board[CoordToIndex(move->x, move->y)];
-	const Point prevPiecePosition = CurrentPiece->getPosition();
-	CurrentPiece->setPosition(*move);
-	board[CoordToIndex(move->x, move->y)] = CurrentPiece;
-	board[CoordToIndex(prevPiecePosition.x, prevPiecePosition.y)] = nullptr;
+	std::array<Piece*, 64> boardCopy = createSimulatedBoard(board, move);
 
-	for (int x{ 0 }; x < 8; x++)
+	for (Piece* potentialEnemy : boardCopy)
 	{
-		for (int y{ 0 }; y < 8; y++)
+		if (potentialEnemy && potentialEnemy->getTeam() != king->getTeam())
 		{
-			Piece* potentialEnemy = board[CoordToIndex(x, y)];
-			if (potentialEnemy && potentialEnemy->getTeam() != king->getTeam())
+			if (potentialEnemy->canEliminateKing(boardCopy.data(), king))
 			{
-				if (potentialEnemy->canEliminateKing(board, king))
-				{
-					// revert the move
-					board[CoordToIndex(move->x, move->y)] = capturePiece;
-					CurrentPiece->setPosition(prevPiecePosition);
-					board[CoordToIndex(prevPiecePosition.x, prevPiecePosition.y)] = CurrentPiece;
-					return true;
-				}
+				return true;
 			}
 		}
 	}
 
-	// revert the move
-	board[CoordToIndex(move->x, move->y)] = capturePiece;
-	CurrentPiece->setPosition(prevPiecePosition);
-	board[CoordToIndex(prevPiecePosition.x, prevPiecePosition.y)] = CurrentPiece;
 	return false;
 }
 
@@ -72,12 +64,11 @@ std::vector<PossibleMove> Piece::getPossibleMoves(Piece** board)
 {
 	std::vector<PossibleMove> posible_moves;
 
-	for (const PossibleMove& move : getPhysicallyPossibleMoves(board))
+	for (PossibleMove& move : getPhysicallyPossibleMoves(board))
 	{
 		// simulate the move
 		// need to check this because maybe this move can led to own checkmate
-		Point Target = { move.XCoord, move.YCoord };
-		if (!moveMakeMyKingToBeCheck(board, getOwnKing(board), &Target, this))
+		if (!moveMakeMyKingToBeCheck(board, getOwnKing(board), move))
 		{
 			posible_moves.emplace_back(move);
 		}

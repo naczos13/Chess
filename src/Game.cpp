@@ -151,10 +151,18 @@ void Game::move(PossibleMove& move)
     m_board[CoordToIndex(placeToMove)] = pieceToMove;
     m_board[CoordToIndex(oldPlace)] = nullptr;
 
+    if (move.castling)
+    {
+        m_board[CoordToIndex(move.RookTargetPosition)] = move.PieceToCastle;
+        move.PieceToCastle->setPieceIsMoved();
+        move.PieceToCastle->setPosition(move.RookTargetPosition);
+    }
+    
     m_handler->refreshTheWindow(pieces);
    
 
     disableUnusedEnPassant();
+
 
     if (move.doubleMove)
     {
